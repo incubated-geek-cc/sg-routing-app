@@ -44,7 +44,7 @@ app.use(express.static(path.join(__dirname, "public")))
 .get("/index.html", (req, res) => res.render("index.html"))
 .listen(PORT, () => {
   console.log(`SG Transportation Routing App [using Proxy] is listening on port ${PORT}!`)
-  require("openurl").open(`http://localhost:${PORT}/index.html`)
+  // require("openurl").open(`http://localhost:${PORT}/index.html`)
 });
 
 var ONEMAP_API_TOKEN = ""; // Onemap API Token
