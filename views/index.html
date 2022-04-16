@@ -29,9 +29,24 @@
   <body>
       <div class='container-full'>
         <nav id='top-bar' class='navbar navbar-expand-sm bg-light navbar-light'>
-            <ul class='navbar-nav w-100'>
-              <li class='nav-item ml-0 mr-2'>🕹 <span><kbd>L</kbd>⬌<kbd>R</kbd></span></li>
-              <li class='nav-item ml-1 mr-0 w-25'>
+          <ul class='navbar-nav w-100'>
+            <li class='nav-item ml-1 mr-1'>
+              <div class="form-check-inline">
+                  <label class="form-check-label mr-2 ml-0">
+                      <span><input type="radio" class="form-check-input routeType" name="routeType" value="0" checked />🚗</span>
+                  </label>
+                  <label class="form-check-label mr-2 ml-0">
+                      <span><input type="radio" class="form-check-input routeType" name="routeType" value="1" />👣</span>
+                  </label>
+                  <label class="form-check-label mr-2 ml-0">
+                      <span><input type="radio" class="form-check-input routeType" name="routeType" value="2" />🚲</span>
+                  </label>
+              </div>
+            </li>
+            <li class='nav-item ml-1 mr-1'>
+              <table class='w-100'>
+                <tr>
+                <td>
                 <form onsubmit='return!1' class='pure-form'>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
@@ -40,9 +55,11 @@
                         <input id='geocoder_o' type='text' class='form-control rounded-0' name='geocoder_o' placeholder='Search Origin...' />
                     </div>
                 </form>
-              </li>
-              <li class='nav-item ml-1 mr-1'><strong id='switch_origin_destination' class='btn btn-sm btn-outline-dark border rounded-circle'>⇋</strong></li>
-              <li class='nav-item ml-0 mr-1 w-25'>
+                </td>
+                <td>
+                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-dark border rounded-circle'>⇋</strong>
+                </td>
+                <td>
                 <form onsubmit='return!1' class='pure-form'>
                    <div class="input-group input-group-sm">
                       <div class="input-group-prepend">
@@ -51,77 +68,66 @@
                       <input id='geocoder_d' type='text' class='form-control rounded-0' name='geocoder_d' placeholder='Search Destination...' />
                   </div>
                 </form>
-              </li>
-              <li class='nav-item ml-1 mr-1'>
-                <div class="form-check-inline">
-                    <label class="form-check-label mr-2 ml-0">
-                        <span><input type="radio" class="form-check-input routeType" name="routeType" value="0" checked />🚗</span>
-                    </label>
-                    <label class="form-check-label mr-2 ml-0">
-                        <span><input type="radio" class="form-check-input routeType" name="routeType" value="1" />👣</span>
-                    </label>
-                    <label class="form-check-label mr-2 ml-0">
-                        <span><input type="radio" class="form-check-input routeType" name="routeType" value="2" />🚲</span>
-                    </label>
-                </div>
-              </li>
-              <li class='nav-item ml-1 mr-1'>
-                <div class='form-check-inline'>
+                </td>
+                </tr>
+              </table>
+            </li>
+            <li class='nav-item ml-1 mr-1'>
+              <div class='form-check-inline'>
 
-                  <label class='form-check-label mr-2 ml-0'>
-                    <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='OneMap' checked /><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg>
-                  </label>
+                <label class='form-check-label mr-2 ml-0'>
+                  <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='OneMap' checked /><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg>
+                </label>
 
-                  <label class='form-check-label mr-2 ml-0'>
-                    <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='Graphhopper' /><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg>
-                  </label>
+                <label class='form-check-label mr-2 ml-0'>
+                  <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='Graphhopper' /><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg>
+                </label>
 
-                  <label class='form-check-label mr-2 ml-0'>
-                    <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='HERE' /><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg>
-                  </label>
-                 </div>
-              </li>
-              <li class='nav-item ml-1 mr-1'><button id='resetMapBtn' class='btn btn-sm btn-outline-danger rounded-circle'><b>⭮</b></button></li>
-              <li class='nav-item ml-1 mr-1'>
-                <button type='button' class='btn btn-sm btn-outline-info rounded-circle' data-toggle="popover" data-title="🏅 Acknowledgement & Credits" data-dismissible="true" data-placement="right" data-content="
-                  <small class='text-muted'>
-                    <dl>
-                      <dt>❶ Routing APIs</dt>
-                      <dd class='pl-3'>
-                        <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg> <a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap Rest APIs</a>, by <a href='http://SLA.gov.sg' target='_blank'><abbr title='Singapore Land Authority'>SLA</abbr></a>
-                      </dd>
-                      <dd class='pl-3'>
-                        <svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg> <a href='https://graphhopper.com/maps/' target='_blank'>The Graphhopper Directions API</a>
-                      </dd>
-                      <dd class='pl-3'>
-                        <svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg> <a href='https://www.here.com/platform/routing' target='_blank'>HERE Routing API</a>
-                      </dd>
+                <label class='form-check-label mr-2 ml-0'>
+                  <input type='radio' class='form-check-input serviceProvider' name='serviceProvider' value='HERE' /><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg>
+                </label>
+               </div>
+           
+              <button id='resetMapBtn' class='btn btn-sm btn-outline-danger rounded-circle'><b>⭮</b></button>
+              <button type='button' class='btn btn-sm btn-outline-info rounded-circle' data-toggle="popover" data-title="🏅 Acknowledgement & Credits" data-dismissible="true" data-placement="right" data-content="
+                <small class='text-muted'>
+                  <dl>
+                    <dt>❶ Routing APIs</dt>
+                    <dd class='pl-3'>
+                      <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg> <a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap Rest APIs</a>, by <a href='http://SLA.gov.sg' target='_blank'><abbr title='Singapore Land Authority'>SLA</abbr></a>
+                    </dd>
+                    <dd class='pl-3'>
+                      <svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg> <a href='https://graphhopper.com/maps/' target='_blank'>The Graphhopper Directions API</a>
+                    </dd>
+                    <dd class='pl-3'>
+                      <svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg> <a href='https://www.here.com/platform/routing' target='_blank'>HERE Routing API</a>
+                    </dd>
 
-                      <dt>❷ Geocoding APIs</dt>
-                      <dd class='pl-3'>
-                        <svg class='selection-side-icon icon icon-opencage'><use xlink:href='symbol-defs.svg#icon-opencage'></use></svg> <a href='https://opencagedata.com/credits' target='_blank'>OpenCage Geocoding API</a>
-                      </dd>
-                      <dd class='pl-3'>
-                         <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg> <a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap Rest APIs</a>, by <a href='http://SLA.gov.sg' target='_blank'><abbr title='Singapore Land Authority'>SLA</abbr></a>
-                      </dd>
+                    <dt>❷ Geocoding APIs</dt>
+                    <dd class='pl-3'>
+                      <svg class='selection-side-icon icon icon-opencage'><use xlink:href='symbol-defs.svg#icon-opencage'></use></svg> <a href='https://opencagedata.com/credits' target='_blank'>OpenCage Geocoding API</a>
+                    </dd>
+                    <dd class='pl-3'>
+                       <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg> <a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap Rest APIs</a>, by <a href='http://SLA.gov.sg' target='_blank'><abbr title='Singapore Land Authority'>SLA</abbr></a>
+                    </dd>
 
-                      <dt>❸ JavaScript Map Plugin</dt>
-                      <dd class='pl-3'>
-                        <svg class='selection-side-icon icon icon-leaflet'><use xlink:href='symbol-defs.svg#icon-leaflet'></use></svg> Powered by <a href='https://leafletjs.com/SlavaUkraini/reference.html' target='_blank'> Leaflet</a>
-                      </dd>
+                    <dt>❸ JavaScript Map Plugin</dt>
+                    <dd class='pl-3'>
+                      <svg class='selection-side-icon icon icon-leaflet'><use xlink:href='symbol-defs.svg#icon-leaflet'></use></svg> Powered by <a href='https://leafletjs.com/SlavaUkraini/reference.html' target='_blank'> Leaflet</a>
+                    </dd>
 
-                      <dt>❹ Basemap</dt>
-                      <dd class='pl-3'>
-                        🗺 <a href='https://carto.com/attributions' target='_blank'> CARTO</a>, by <a href='http://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>
-                      </dd>
+                    <dt>❹ Basemap</dt>
+                    <dd class='pl-3'>
+                      🗺 <a href='https://carto.com/attributions' target='_blank'> CARTO</a>, by <a href='http://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a>
+                    </dd>
 
-                    </dl>
-                  </small>"
-                ><small>🏅</small>
-                </button>
-              </li>
+                  </dl>
+                </small>"
+              ><small>🏅</small>
+              </button>
               <button id='loaderSignal' class='btn btn-sm btn-light p-0' disabled><span class='spinner-border spinner-border-sm m-1'></span><small>Loading..</small></button>
-            </ul>
+            </li>
+          </ul>
         </nav>
         <div id='map'></div>
       </div>
@@ -190,11 +196,11 @@
           htmlStr += "<ul id='mainTabs' class='nav nav-tabs' role='tablist'>";
 
           htmlStr += "<li class='nav-item'><a class='nav-link rounded-0 active' id='route_instructions-tab' href='#route_instructions' data-bs-toggle='tab' data-height='true' aria-controls='route_instructions' aria-selected='true' role='tab'>";
-          htmlStr += '⛖ Route Instructions';
+          htmlStr += '⛖ Instructions';
           htmlStr += '</a></li>';
 
           htmlStr += "<li class='nav-item'><a class='nav-link rounded-0' id='geojson-tab' href='#geojson' data-bs-toggle='tab' data-height='true' aria-controls='geojson' aria-selected='true' role='tab'>";
-          htmlStr += '❮⁄❯ Export GeoJSON Data';
+          htmlStr += '❮⁄❯ GeoJSON';
           htmlStr += '</a></li>';
 
           htmlStr += '<li class="nav-item ml-1">';
