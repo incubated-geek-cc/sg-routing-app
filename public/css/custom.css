@@ -1,0 +1,181 @@
+html,body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+#map {
+    width: 100vw;
+    height: calc(100vh - 47px);
+    margin:0;
+    background: #ffffff;
+}
+
+.autocomplete-suggestions {
+    font-family: inherit;
+    font-size: .875rem;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    border-top: 0;
+    background: #fff;
+    box-shadow: -1px 1px 3px rgba(0,0,0,.1);
+    position: absolute;
+    display: none;
+    z-index: 9999;
+    max-height: 254px;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.autocomplete-suggestion {
+    position: relative;
+    padding: .6em;
+    line-height: 23px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-family: inherit;
+    font-size: x-small;
+    color: #333
+}
+
+.autocomplete-suggestion b {
+    font-weight: 400;
+    color: #1f8dd6
+}
+
+.autocomplete-suggestion.selected {
+    background: #f0f0f0
+}
+
+.pure-form {
+    background: 0 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    width: 100%
+}
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+}
+.route {
+  color: #000000;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+  stroke-opacity: 0.75;
+}
+#top-bar {
+  box-shadow: rgb(0 0 0 / 25%) 0px 54px 55px, 
+  rgb(0 0 0 / 12%) 0px -12px 30px, 
+  rgb(0 0 0 / 12%) 0px 4px 6px, 
+  rgb(0 0 0 / 17%) 0px 12px 13px, 
+  rgb(0 0 0 / 9%) 0px -3px 5px;
+  z-index: 500;
+}
+#geocoder_o,
+#geocoder_d { 
+  font-size: smaller; 
+}
+#switch_origin_destination {
+  cursor:pointer;
+}
+.leaflet-right .leaflet-control {
+    margin-right: 0;
+}
+div.command.leaflet-control {
+  margin-top: 0;
+}
+div.leaflet-control-layers.leaflet-control.leaflet-control-layers-expanded {
+    width: 30vw;
+    opacity: 0.925;
+    margin-top: 0.65px;
+    border-radius: 0;
+    border: none;
+    height: calc(100vh - 48px);
+    background: #f8f9fa;
+    padding-right: 0;
+    padding-left: 2px;
+    font-size: smaller;
+}
+.selection-side-icon {
+  height: 17px;
+}
+div.card-body.tab-content {
+  padding: 0.55rem;
+}
+#route_instructions,
+#geojson{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100vh - 170px - 108px - 1.25rem);
+}
+hr {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+pre {
+  padding: 2.5px;
+  margin: 5px;
+}
+#geojson pre {
+  white-space: pre-wrap;
+}
+#geojson pre .string { 
+  color: green; 
+}
+#geojson pre .number { 
+  color: darkorange; 
+}
+#geojson pre .boolean { 
+  color: blue; 
+}
+#geojson pre .null { 
+  color: magenta; 
+}
+#geojson pre .key { 
+  color: red; 
+}
+
+#loaderSignal {
+  display:inline-flex;
+}
+
+#loaderSignal small {
+  display: contents;
+}
+
+.leaflet-left .leaflet-control {
+    margin-left: 0;
+}
+
+.leaflet-touch .leaflet-bar a:first-child, 
+.leaflet-touch .leaflet-bar a:last-child {
+  border-radius: 50%;
+  margin: 2px;
+  box-shadow: rgb(3 102 214 / 30%) 0px 0px 0px 2px;
+}
+
+.leaflet-touch .leaflet-bar a:first-child {
+  margin-top:0;
+  margin-bottom:2px;
+}
+.leaflet-touch .leaflet-bar a:last-child {
+  margin-top:2px;
+  margin-bottom:0;
+}
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+    border: none;
+}

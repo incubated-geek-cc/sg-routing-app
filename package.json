@@ -1,0 +1,39 @@
+{
+  "name": "sg_transportation_routing_app",
+  "version": "1.0.0",
+  "description": "A web viz application which shows Routing capabilities.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "16.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/incubated-geek-cc/sg-routing-app.git",
+    "directory": "sg-routing-app"
+  },
+  "keywords": [
+    "geospatial",
+    "api",
+    "proxy",
+    "here",
+    "graphhopper",
+    "onemap",
+    "singapore"
+  ],
+  "author": "geek_cc",
+  "dependencies": {
+    "bufferutil": "^4.0.3",
+    "consolidate": "^0.16.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mustache": "^4.0.1",
+    "openurl": "^1.1.1",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "serve-favicon": "^2.5.0",
+    "utf-8-validate": "^5.0.5"
+  }
+}
