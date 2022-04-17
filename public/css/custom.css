@@ -7,12 +7,6 @@ body {
     width: 100vw;
     height: 100vh;
 }
-#map {
-    width: calc(100vw - 320px);
-    height: 100vh;
-    margin:0;
-    background: transparent;
-}
 .autocomplete-suggestions {
     font-family: inherit;
     font-size: .875rem;
@@ -74,23 +68,101 @@ body {
   stroke-opacity: 0.75;
 }
 
-#searchbar {
-  background: linear-gradient(to bottom right,#f9f5ed 30%,#e0eed1,#ade1f5);
-  border-radius: 0;
-  box-shadow: 1px 0 rgb(0 0 0 / 15%);
-  left: 0;
-  right: auto;
-  top: 0;
-  height: 100vh;
-  transform: none;
-  -webkit-backdrop-filter: blur(10px) saturate(3);
-  backdrop-filter: blur(10px) saturate(3);
-  background-color: hsla(0,0%,100%,.7);
+#map {
+  margin:0;
   position:absolute;
   z-index: 1000;
+  background: transparent;
+}
+
+#searchbar {
+    background: linear-gradient(to bottom right,#f9f5ed 30%,#e0eed1,#ade1f5);
+    border-radius: 0;
+    box-shadow: 1px 0 rgb(0 0 0 / 15%);
+    -webkit-backdrop-filter: blur(10px) saturate(3);
+    backdrop-filter: blur(10px) saturate(3);
+    background-color: hsla(0,0%,100%,.7);
+    position:absolute;
+    z-index: 1005;
+    padding: 0.5rem 0.25rem;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#navbarTop {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  display: flex;
+  min-height: 3.75em;
   padding: 0.5rem 0.25rem;
+}
+.navbar-brand {
+  background-image: url("../img/logo.png");
+  background-color: #ffffff;
+  height: 1.875rem;
+  width: 1.875rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#navbarToggler {
   padding-right: 0;
-  width: 320px;
+}
+
+@media (min-width: 768px) {
+  #map {
+    height: 100vh;
+    left: 320px;
+    right: 0;
+    width: auto;
+  }
+
+  #searchbar {
+    height: 100vh;
+    width: 320px;
+    top: 0;
+    left: 0;
+    right: auto;
+
+    overflow-y:hidden;
+    transform: none;
+  }
+
+  #navbarToggler {
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
+}
+
+@media (max-width: 600px) {
+  #map {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    transition: filter 0.3s ease-in-out;
+  }
+
+  #searchbar {
+    top: -60px;
+    height: 100%;
+    bottom: 0;
+    transform: translateY(55%);
+    display: flex;
+    flex-direction: column;
+
+    overflow-y:auto;
+    transition: all 0.3s ease-in-out;
+  }
+  #searchbar:hover,
+  #searchbar:focus,
+  #searchbar:active {
+    top: 0px;
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+  }
 }
 
 li.nav-item.pl-1.pr-1 {
@@ -104,28 +176,6 @@ li.nav-item.pl-1.pr-1 {
 }
 li.nav-item.pl-1.pr-1:last-child {
   border-bottom-color: transparent;
-}
-
-#navbarTop {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  display: flex;
-  min-height: 60px;
-  padding: 0.5rem 0.25rem;
-}
-.navbar-brand {
-  background-image: url("../img/logo.png");
-  background-color: #ffffff;
-  height: 30px;
-  width: 30px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-#navbarToggler {
-  padding-right: 0;
-  max-height: calc(100vh - 60px);
-  overflow-x:hidden;
-  overflow-y:auto;
 }
 
 #geocoder_o,

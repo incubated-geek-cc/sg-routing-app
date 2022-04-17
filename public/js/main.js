@@ -140,8 +140,11 @@ var routeType=0;
 
 window.onload=function() {
   function setSearchBarHeight() {
-    let calcH=(document.getElementById('searchbar').clientHeight)-(document.getElementById('navbarTop').clientHeight);
-    document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
+    // let windowWidth=window.innerWidth;
+    // if(windowWidth>=600) {
+      let calcH=(document.getElementById('searchbar').clientHeight)-(document.getElementById('navbarTop').clientHeight);
+      document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
+    // }
   }
   setSearchBarHeight();
 
