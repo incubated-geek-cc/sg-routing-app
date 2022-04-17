@@ -62,7 +62,7 @@ const routeDirectionObj={
   'east':'➝',
   'west':'⭠',
 
-  'northeast':'⭧',
+  'northeast':'🡕',
   'northwest':'⭦',
 
   'left':'⭠',
