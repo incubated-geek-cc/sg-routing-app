@@ -58,17 +58,17 @@ function setGeojsonPreview(geojsonOutput) {
 
 const routeDirectionObj={
   'north':'⭡',
-  'south':'⮧',
-  'east':'⭢',
+  'south':'⭣',
+  'east':'➝',
   'west':'⭠',
 
   'northeast':'⭧',
   'northwest':'⭦',
 
-  'left':'⮢',
-  'right':'⮣',
+  'left':'⭠',
+  'right':'➝',
 
-  'straight': '⭫'
+  'straight': '⭡'
 };
 
 
@@ -121,7 +121,7 @@ function setRouteInstructions(routeInstructions) {
   carouselIndicatorsHTMLStr+='</ol>';
   
 
-  var carouselHTMLStr=carouselIndicatorsHTMLStr+'<div class="carousel-inner">'+carouselItemsHTMLStr+'</div>'+'<a class="carousel-control-prev" href="#routeIntructionsCarousel" role="button" data-slide="prev">⮜</a>'+'<a class="carousel-control-next" href="#routeIntructionsCarousel" role="button" data-slide="next">⮞</a>';
+  var carouselHTMLStr=carouselIndicatorsHTMLStr+'<div class="carousel-inner">'+carouselItemsHTMLStr+'</div>'+'<a class="carousel-control-prev" href="#routeIntructionsCarousel" role="button" data-slide="prev">❮</a>'+'<a class="carousel-control-next" href="#routeIntructionsCarousel" role="button" data-slide="next">❯</a>';
   document.getElementById('routeIntructionsCarousel').innerHTML=carouselHTMLStr;
 
   var routeInstructionsInit = new BSN.Carousel('#routeIntructionsCarousel', {
