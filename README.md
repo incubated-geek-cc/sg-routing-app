@@ -1,18 +1,17 @@
 # sg-routing-app
 
-<img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/logo.png' alt='sg-routing-app' width='25' height='25' />
-sɢᴿᵒᵘᵗᵉʳ
+## sɢᴿᵒᵘᵗᵉʳ 
+<img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/logo.png' alt='sg-routing-app' width='55' height='55' />
 
+📍 [sg-routing-app](https://sg-routing-app.glitch.me/) is a web application which integrates multiple routing APIs for custom selection and visualisation.
 
-[sg-routing-app](https://sg-routing-app.glitch.me/) is a web application which integrates multiple routing APIs for custom selection and visualisation.
+🧰 Web application was built with <strong>HTML5</strong> and <strong>NodeJS</strong>. Rationale of development was for self-exploration. From a macro-perspective this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers.
 
-Web application was built with HTML5 and NodeJS. Rationale of development was for self-exploration. From a macro-perspective this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers.
-
-## 🧰 Implementation
+## ℹ Implementation Overview
 
 ### ❶ Routing APIs
 
-All 3 Routing APIs implemented are open-sourced and for public use. (Please note that this web application pertains to Singapore's roads and traffic. For international usage, feel free to fork this repo and tweak the code accordingly.)
+All <strong>3</strong> Routing APIs implemented are open-sourced and for public use. (Please note that this web application pertains to Singapore's roads and traffic. To cater to alternative or global use-cases please feel free to fork this repo and tweak the code accordingly.)
 
 * <a href="https://www.onemap.gov.sg/docs/#onemap-rest-apis" target="_blank">OneMap Rest APIs</a>, by <a href="http://SLA.gov.sg" target="_blank"><abbr title="Singapore Land Authority">SLA</abbr></a>
 * <a href="https://graphhopper.com/maps/" target="_blank">The Graphhopper Directions API</a>
@@ -20,7 +19,7 @@ All 3 Routing APIs implemented are open-sourced and for public use. (Please note
 
 ### ❷ Geocoding APIs
 
-2 Geocoding APIs were used. 
+<strong>2</strong> Geocoding APIs were used. 
 
 * <a href="https://opencagedata.com/credits" target="_blank">OpenCage Geocoding API</a>
 * <a href="https://www.onemap.gov.sg/docs/#onemap-rest-apis" target="_blank">OneMap Rest APIs</a>, by <a href="http://SLA.gov.sg" target="_blank"><abbr title="Singapore Land Authority">SLA</abbr></a> (auto-complete of addresses for Origin & Destination fields were read from static data crawled from this API.)
@@ -40,7 +39,7 @@ The choice of JavaScript map plugin in this Geospatial web application is <a hre
 
 ---
 
-## Project Status
+## 📌 Project Status
 
-* Currently still WIP. Would eventually finetune its layout for mobile responsiveness.
-* In-depth development process shall be published in an article ✍ via [Medium](https://geek-cc.medium.com/). Feel free to follow me on [Medium](https://geek-cc.medium.com/) if you are interested in Data Analytics (including Tableau Dashboarding), 🌐 Geospatial Intelligence & GIS or other web-related content.
+* Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness.
+* In-depth development process shall be published in an article ✍ via [Medium](https://geek-cc.medium.com/). Feel free to follow me on 🔗[Medium](https://geek-cc.medium.com/) if you are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>.
