@@ -35,11 +35,11 @@
             <tr>
               <td rowspan='2' class='text-center'>
                 <a class='navbar-brand'></a>
-                <span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span>
+                <small><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></small>
               </td>
               <td>
                 <div class='form-check-inline small'>
-                    <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ</label>
+                    <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ&nbsp;</label>
 
                     <input type='radio' class='form-check-input routeType' name='routeType' value="0" checked /><label class='form-check-label mr-2 ml-0'>🚗</label>
 
@@ -52,13 +52,13 @@
             <tr>
               <td>
                 <div class="form-check-inline small">
-                  <label class="form-check-label mr-1 ml-0 text-dark unicode">ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                  <label class="form-check-label mr-1 ml-0 text-dark unicode">ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
 
                   <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="OneMap" checked /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
                   
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="Graphhopper" /><label class="form-check-label mr-2 ml-0"><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg>&nbsp;&nbsp;</label>
+                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="Graphhopper" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
                   
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="HERE" /><label class="form-check-label mr-2 ml-0"><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
+                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="HERE" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
                 </div>
               </td>
             </tr>
@@ -73,7 +73,7 @@
                     </div>
                 </form>
               
-                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light text-dark border-secondary rounded-circle m-1 pt-0 pb-0 pl-1 pr-1'><small>⇵</small></strong>
+                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light text-dark border-secondary rounded-circle m-1 pt-0 pb-0 pl-1 pr-1'><small>&nbsp;⇵&nbsp;</small></strong>
 
                 <form onsubmit='return!1' class='pure-form'>
                    <div class="input-group input-group-sm">
@@ -95,7 +95,7 @@
               <table class='small w-100'>
                 <tr>
                   <td class='pl-0 pr-2'>
-                    <button id='resetMapBtn' class='btn btn-sm btn-danger w-100 p-1 rounded-0'><small class='small'>⟲ <span class='unicode'>ʀᴇsᴇᴛ</span></small></button>
+                    <button id='resetMapBtn' class='btn btn-sm btn-danger p-1 rounded-0'><small class='small'>⟲ <span class='unicode'>ʀᴇsᴇᴛ</span></small></button>
                   </td>
                   <td class='pl-0 pr-0'>
                     <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-left' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>
@@ -104,7 +104,7 @@
                   </td>
                   <td class='pl-0 pr-0 text-center'>➝</td>
                   <td class='pl-0 pr-0'>
-                    <button id="exportBtn" class="btn btn-sm btn-primary w-100 p-1 rounded-0"><small class='small'>💾 <span class='unicode'>sᴀᴠᴇ</span></small></button>
+                    <button id="exportBtn" class="btn btn-sm btn-primary p-1 rounded-0"><small class='small'>💾 <span class='unicode'>sᴀᴠᴇ ᴅᴀᴛᴀ</span></small></button>
                   </td>
                 </tr>
                 <tr>

@@ -56,20 +56,20 @@ function setGeojsonPreview(geojsonOutput) {
   previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
 }
 
-const routeDirectionObj={
-  'north':'⭡',
-  'south':'⭣',
-  'east':'➝',
-  'west':'⭠',
+// const routeDirectionObj={
+//   'north':'⭡',
+//   'south':'⭣',
+//   'east':'➝',
+//   'west':'⭠',
 
-  'northeast':'🡕',
-  'northwest':'⭦',
+//   'northeast':'🡕',
+//   'northwest':'⭦',
 
-  'left':'⭠',
-  'right':'➝',
+//   'left':'⭠',
+//   'right':'➝',
 
-  'straight': '⭡'
-};
+//   'straight': '⭡'
+// };
 
 
 function setRouteInstructions(routeInstructions) {
@@ -98,14 +98,14 @@ function setRouteInstructions(routeInstructions) {
       carouselItemsHTMLStr+='<div class="carousel-item'+ (rowIndex==0 ? ' active' : '') +'">';
       carouselItemsHTMLStr+='<h1 class="text-right text-muted pr-2 pl-2">';
 
-      let arrowSymbol='⭫';
+      let arrowSymbol='🧭';
 
-      let str=instructionText.toLowerCase();
-      for(var directionTxt in routeDirectionObj) {
-        if(str.includes(directionTxt)) {
-          arrowSymbol=routeDirectionObj[directionTxt];
-        }
-      }
+      // let str=instructionText.toLowerCase();
+      // for(var directionTxt in routeDirectionObj) {
+      //   if(str.includes(directionTxt)) {
+      //     arrowSymbol=routeDirectionObj[directionTxt];
+      //   }
+      // }
       
       carouselItemsHTMLStr+=arrowSymbol;
       carouselItemsHTMLStr+='</h1>';
