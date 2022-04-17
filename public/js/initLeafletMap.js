@@ -25,7 +25,7 @@ async function initmap() {
     maxWidth: 100,
     metric: true,
     imperial: true,
-    position: 'bottomleft'
+    position: 'topright'
   });
   map = L.map('map', {
     zoomControl: false,

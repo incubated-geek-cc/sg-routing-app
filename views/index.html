@@ -33,9 +33,8 @@
         <div id='navbarTop'>
           <table>
             <tr>
-              <td rowspan='2' class='text-center'>
+              <td class='text-center'>
                 <a class='navbar-brand'></a>
-                <small><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></small>
               </td>
               <td>
                 <div class='form-check-inline small'>
@@ -50,6 +49,9 @@
               </td>
             </tr>
             <tr>
+              <td class='text-center'>
+                <small><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></small>
+              </td>
               <td>
                 <div class="form-check-inline small">
                   <label class="form-check-label mr-1 ml-0 text-dark unicode">ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
@@ -73,7 +75,7 @@
                     </div>
                 </form>
               
-                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light text-dark border-secondary rounded-circle m-1 pt-0 pb-0 pl-1 pr-1'><small>&nbsp;⇵&nbsp;</small></strong>
+                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light pt-1 pb-1 pr-2 pl-2 rounded-circle text-dark border-secondary m-1'><small>&nbsp;⇵&nbsp;</small></strong>
 
                 <form onsubmit='return!1' class='pure-form'>
                    <div class="input-group input-group-sm">
@@ -95,16 +97,16 @@
               <table class='small w-100'>
                 <tr>
                   <td class='pl-0 pr-2'>
-                    <button id='resetMapBtn' class='btn btn-sm btn-danger p-1 rounded-0'><small class='small'>⟲ <span class='unicode'>ʀᴇsᴇᴛ</span></small></button>
+                    <button id='resetMapBtn' class='btn btn-sm btn-danger w-100 p-1 rounded-0 text-center'><small class='small'>⟲ <span class='unicode'>ʀᴇsᴇᴛ</span></small></button>
                   </td>
                   <td class='pl-0 pr-0'>
-                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-left' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>
+                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>
                       <small class='small'>❮⁄❯ <span class='unicode'>ᴘʀᴇᴠɪᴇᴡ ɢᴇᴏᴊsᴏɴ [📖]</span> </small>
                     </button>
                   </td>
                   <td class='pl-0 pr-0 text-center'>▷</td>
                   <td class='pl-0 pr-0'>
-                    <button id="exportBtn" class="btn btn-sm btn-primary p-1 rounded-0"><small class='small'>💾 <span class='unicode'>sᴀᴠᴇ ᴅᴀᴛᴀ</span></small></button>
+                    <button id="exportBtn" class="btn btn-sm btn-primary p-1 rounded-0 text-center"><small class='small'>💾 <span class='unicode'>sᴀᴠᴇ ᴅᴀᴛᴀ</span></small></button>
                   </td>
                 </tr>
                 <tr>
@@ -123,7 +125,7 @@
                 <tr>
                   <td colspan='4'>
                     <hr>
-                    <button id="speakBtn" class="btn btn-sm btn-outline-light p-1 rounded-circle border-secondary">🔊</button> <span><small class='small pr-1'>◁ select to read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="ℹ Route Instructions" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>"><small class='small'>ℹ <span class='unicode'>ɪɴsᴛʀᴜᴄᴛɪᴏɴs [📖]</span> </small></button>
+                    <button id="speakBtn" class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small>🔊</small></button> <span><small class='small pr-1'>◁ select to read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="ℹ Route Instructions" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>"><small class='small'>ℹ <span class='unicode'>ɪɴsᴛʀᴜᴄᴛɪᴏɴs [📖]</span> </small></button>
                   </td>
                 </tr>
                 <tr>
@@ -183,7 +185,7 @@
     <script type='text/javascript' src='js/ie10-viewport-bug-workaround.js'></script>
     <script type='text/javascript' src='js/bootstrap-native-v4.js'></script>
     <script type='text/javascript' src='js/leaflet-1.3.1.js'></script>
-    <script type='text/javascript' src='js/L.Polyline.SnakeAnim.js'></script>
+    <script type='text/javascript' src='js/leaflet-ant-path.js'></script>
     <script type='text/javascript' src='js/polyline.js'></script>
     <script type='text/javascript' src='js/flexi-polyline.js'></script>
     <script type='text/javascript' src='js/svgxuse.js' defer></script>

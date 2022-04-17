@@ -33,21 +33,11 @@ var originMarker=null;
 var destinationMarker=null; 
 var originName=null;
 var destinationName=null;
-var snakingSpeed=400; // pixels per second
 
 var serviceProvider='OneMap';
 var url = '';
 var apiCall = '';
 var params = {};
-
-function getCurrentDatetimeStamp() {
-  const d = new Date();
-  var datestamp=d.getFullYear()+''+(d.getMonth()+1)+''+d.getDate();
-  var timestamp=d.getHours()+''+d.getMinutes()+''+d.getSeconds();
-
-  var datetimeStr=datestamp+'_'+timestamp;
-  return datetimeStr;
-}
 
 function setGeojsonPreview(geojsonOutput) {
   let geojsonDIV=document.createElement('div');
@@ -55,22 +45,6 @@ function setGeojsonPreview(geojsonOutput) {
   geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
   previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
 }
-
-// const routeDirectionObj={
-//   'north':'⭡',
-//   'south':'⭣',
-//   'east':'➝',
-//   'west':'⭠',
-
-//   'northeast':'🡕',
-//   'northwest':'⭦',
-
-//   'left':'⭠',
-//   'right':'➝',
-
-//   'straight': '⭡'
-// };
-
 
 function setRouteInstructions(routeInstructions) {
   let route_instructionsDIV=document.createElement('div');
@@ -80,7 +54,6 @@ function setRouteInstructions(routeInstructions) {
   route_instructionsDIV.innerHTML=routeInstructions;
   route_instructions_btn.setAttribute('data-content', route_instructionsDIV.outerHTML);
   route_instructions_hidden.innerHTML=routeInstructions;
-
 
   var instructionsRows=document.getElementById('route_instructions_hidden').getElementsByTagName('tr');
 
@@ -96,22 +69,9 @@ function setRouteInstructions(routeInstructions) {
       carouselIndicatorsHTMLStr+='<li data-target="#routeIntructionsCarousel" data-slide-to="'+rowIndex+'" '+ (rowIndex==0 ? 'class="active"' : '') +'></li>';
 
       carouselItemsHTMLStr+='<div class="carousel-item'+ (rowIndex==0 ? ' active' : '') +'">';
-      carouselItemsHTMLStr+='<h1 class="text-right text-muted pr-2 pl-2">';
-
-      let arrowSymbol='🧭';
-
-      // let str=instructionText.toLowerCase();
-      // for(var directionTxt in routeDirectionObj) {
-      //   if(str.includes(directionTxt)) {
-      //     arrowSymbol=routeDirectionObj[directionTxt];
-      //   }
-      // }
-      
-      carouselItemsHTMLStr+=arrowSymbol;
-      carouselItemsHTMLStr+='</h1>';
-
+      carouselItemsHTMLStr+='<h1 class="text-right text-muted pr-2 pl-2">🧭</h1>';
       carouselItemsHTMLStr+='<div class="carousel-caption text-left">';
-      carouselItemsHTMLStr+='<mark class="small text-dark"><small class="text-dark">'+instructionIndex+'. '+instructionText+'</small></mark>';
+      carouselItemsHTMLStr+='<kbd class="rounded-0"><small>'+instructionIndex+'. '+instructionText+'</small></kbd>';
       carouselItemsHTMLStr+='</div>';
       carouselItemsHTMLStr+='</div>';
       
@@ -140,11 +100,8 @@ var routeType=0;
 
 window.onload=function() {
   function setSearchBarHeight() {
-    // let windowWidth=window.innerWidth;
-    // if(windowWidth>=600) {
       let calcH=(document.getElementById('searchbar').clientHeight)-(document.getElementById('navbarTop').clientHeight);
       document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
-    // }
   }
   setSearchBarHeight();
 
@@ -174,8 +131,8 @@ window.onload=function() {
     }
   }, false);
 
-  const playSymbol='🔊';
-  const pauseSymbol='🔇';
+  const playSymbol='<small>🔊</small>';
+  const pauseSymbol='<small>🔇</small>';
 
   speakBtn.addEventListener('click', (evt) => {
     let isPaused=$().articulate('isPaused');
@@ -372,6 +329,17 @@ window.onload=function() {
       execAjax();
     }
   });
+  
+  var antpathSettings={
+    'delay': 400,
+    'dashArray': [10, 20],
+    'weight': 5,
+    'color': '#0000FF',
+    'pulseColor': '#FFFFFF',
+    'paused': false,
+    'reverse': false,
+    'hardwareAccelerated': true
+  };
 
   function renderHERERoutesOnMap(responseObj) {
     let sections=responseObj['routes'][0]['sections'][0];
@@ -381,8 +349,8 @@ window.onload=function() {
     map.fitBounds(L.latLngBounds(latlngs_1));
     originMarker=L.marker(latlngs_1[0], {
         icon: L.icon({      
-            iconUrl: 'img/origin.png',
-            iconSize: iconSize
+          iconUrl: 'img/origin.png',
+          iconSize: iconSize
         })
     });
     map.addLayer(originMarker);
@@ -395,16 +363,12 @@ window.onload=function() {
     });
     map.addLayer(destinationMarker);
 
-    let path_1 = L.polyline(latlngs_1, {
-        snakingSpeed: snakingSpeed,
-        className: 'route',
-        color: generateRandomColor()
-    });
+    antpathSettings['color']=generateRandomColor();
+    let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
     map.addLayer(path_1);
-    path_1.snakeIn();
 
     let route_1 = {
-        path: path_1
+      path: path_1
     };
     routes.push(route_1);
   }
@@ -428,13 +392,9 @@ window.onload=function() {
     });
     map.addLayer(destinationMarker);
 
-    let path_1 = L.polyline(latlngs_1, {
-        snakingSpeed: snakingSpeed,
-        className: 'route',
-        color: generateRandomColor()
-    });
+    antpathSettings['color']=generateRandomColor();
+    let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
     map.addLayer(path_1);
-    path_1.snakeIn();
 
     let route_1 = {
         path: path_1
@@ -444,12 +404,8 @@ window.onload=function() {
     let phyroute=responseObj['phyroute'];
     if(typeof phyroute !== 'undefined') {
       let latlngs_2 = polyline.decode(phyroute['route_geometry']);
-
-      let path_2 = L.polyline(latlngs_2, {
-        snakingSpeed: snakingSpeed,
-        className: 'route',
-        color: generateRandomColor()
-      });
+      antpathSettings['color']=generateRandomColor();
+      let path_2 = L.polyline.antPath(latlngs_2, antpathSettings);
 
       let route_2 = { path: path_2 };
       routes.push(route_2);
@@ -459,12 +415,8 @@ window.onload=function() {
     if(typeof alternativeroute !== 'undefined') {
       alternativeroute=alternativeroute[0];
       let latlngs_3 = polyline.decode(alternativeroute['route_geometry']);
-
-      let path_3 = L.polyline(latlngs_3, {
-        snakingSpeed: snakingSpeed,
-        className: 'route',
-        color: generateRandomColor()
-      });
+      antpathSettings['color']=generateRandomColor();
+      let path_3 = L.polyline.antPath(latlngs_3, antpathSettings);
 
       let route_3 = {
         path: path_3
@@ -496,16 +448,12 @@ window.onload=function() {
     });
     map.addLayer(destinationMarker);
 
-    let path_1 = L.polyline(latlngs_1, {
-        snakingSpeed: snakingSpeed,
-        className: 'route',
-        color: generateRandomColor()
-    });
+    antpathSettings['color']=generateRandomColor();
+    let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
     map.addLayer(path_1);
-    path_1.snakeIn();
 
     let route_1 = {
-        path: path_1
+       path: path_1
     };
     routes.push(route_1);
   }
@@ -560,9 +508,7 @@ window.onload=function() {
     let route_instructions=routeObj["route_instructions"];
     let path=routeObj["path"];
 
-    // render route on map
     map.addLayer(path);
-    path.snakeIn();
 
     originName=routeObj["start_point"];
     destinationName=routeObj["end_point"];
@@ -829,7 +775,6 @@ window.onload=function() {
     controlHtmlStr += '<span> ' + description + '</span>';
     controlHtmlStr += '</div>';
     
-    // console.log(routeCounter);
     routes[routeCounter]["name"]=name;
     routes[routeCounter]["description"]=description;
     routes[routeCounter]["start_point"]=start_point;
@@ -980,14 +925,11 @@ window.onload=function() {
     routeInstructions += '<table>';
     let route_instructions=responseObj['paths'][0]['instructions'];
 
-    // let allPoints=responseObj['paths'][0]['points'];
     for(let r in route_instructions) {
       let route = route_instructions[r];
       let routeSeconds=parseInt(route['time']/1000);
       let distance_metres=parseInt(route['distance']);
 
-      // let instruction_points = allPoints.slice(route['interval'][0], route['interval'][1]);
-      // routeInstructions+=JSON.stringify(instruction_points);
       routeInstructions+= '<tr>';
       routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
       routeInstructions+= '<td>';
@@ -1045,7 +987,6 @@ window.onload=function() {
       }
       routeInstructions+= '</table>';
 
-      // console.log(routeCounter);
       routes[routeCounter]['route_instructions']=routeInstructions;
       routeCounter++;
     }
@@ -1061,7 +1002,7 @@ window.onload=function() {
         let route = route_instructions[r];
 
         routeInstructions+= "<tr>";
-        routeInstructions+= "<th>" + parseInt(parseInt(r)+1) + "</th>";
+        routeInstructions+= "<th valign='top' class='pr-2'>" + parseInt(parseInt(r)+1) + "</th>";
         routeInstructions+= "<td>";
 
         routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
@@ -1084,7 +1025,55 @@ window.onload=function() {
     'Jln':'Jalan',
     'Bt':'Bukit',
     'Ave':'Avenue',
-    'Upp':'Upper'
+    'Upp':'Upper',
+    'Tg':'Tanjong',
+    'St':'Street',
+    'Kg':'Kampong',
+    'Lor':'Lorong',
+    'Blvd':'Boulevard',
+    'Ctrl':'Central',
+    'Cl':'Close',
+    'Cres':'Crescent',
+    'Expy':'Expressway',
+    'Brg':'Bridge',
+    'Mt':'Mount',
+    'Ctr':'Centre',
+    'Pl':'Place',
+    'Pk':'Park',
+    'Stn':'Station',
+    'Sq':'Square',
+    'Ind':'Industrial',
+    'Mt':'Mount',
+    'Road N':'Road North',
+    'Road E':'Road East',
+    'Road S':'Road South',
+    'Road W':'Road West',
+    'Ter':'Terrace',
+    'Twr':'Tower',
+    'Int':'Interchange',
+    'Ln':'Lane',
+    'Hwy':'Highway',
+    "Street George's ":"Saint George's ",
+    "Street Gregory ":"Saint Gregory ",
+    "Street Vincent ":"Saint Vincent ",
+    "Street John ":"Saint John ",
+    "Street Thomas ":"Saint Thomas ", 
+    "Street Bernadette ":"Saint Bernadette ", 
+    "Street Regis ":"Saint Regis ",
+    "Street Michael ":"Saint Michael ",
+    "Street Wilfred ":"Saint Wilfred ", 
+    "Street Wilfrid ":"Saint Wilfrid ", 
+    "Street Francis ":"Saint Francis ", 
+    "Street Stephen ":"Saint Stephen ", 
+    "Street Nicholas ":"Saint Nicholas ", 
+    "Street Luke's ":"Saint Luke's ",
+    "Street Andrew's ":"Saint Andrew's ", 
+    "Street Mary ":"Saint Mary ",
+    "Street Joseph ":"Saint Joseph ", 
+    "Street Anthony ":"Saint Anthony ", 
+    "Street Clare ":"Saint Clare ", 
+    "Street James ":"Saint James ", 
+    "Street Teresa ":"Saint Teresa "
   };
 
   function replaceAllStr(inputStr,searchStr,replaceStr) {
@@ -1116,9 +1105,15 @@ window.onload=function() {
       for(let toReplace in addressPatterns) {
         let replaceWith=addressPatterns[toReplace];
 
+        intrText=replaceAllStr(intrText,  `/${toReplace} `, `/${replaceWith} `);
+        intrText=replaceAllStr(intrText,  ` ${toReplace})`, ` ${replaceWith})`);
+        intrText=replaceAllStr(intrText,  ` ${toReplace}/`, ` ${replaceWith}/`);
+        intrText=replaceAllStr(intrText,  ` ${toReplace}.`, ` ${replaceWith}.`);
         intrText=replaceAllStr(intrText,  ` ${toReplace},`, ` ${replaceWith},`);
         intrText=replaceAllStr(intrText,  ` ${toReplace} `, ` ${replaceWith} `);
       }
+
+      intrText=replaceAllStr(intrText, ".,", ",");
 
       routeInstructions+= '<tr>';
       routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
