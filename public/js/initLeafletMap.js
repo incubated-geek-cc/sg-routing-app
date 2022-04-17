@@ -11,10 +11,6 @@ const defaultZoom=14;
 const ne=[1.56073, 104.6202];
 const sw=[1.16, 103.188];
 
-var command = L.control({
-  position: 'topright'
-});
-
 function drawRectInCenter(x, y, width, height) {
   return [x - width / 2, y - height / 2, width, height];  
 }
@@ -47,20 +43,7 @@ async function initmap() {
 
     await position.addTo(map);
     await scale.addTo(map);
-    await command.addTo(map);
-
-    command.getContainer().addEventListener('mouseover', function () {
-        map.dragging.disable();
-        map.doubleClickZoom.disable(); 
-        map.scrollWheelZoom.disable();
-        map.touchZoom.disable();
-    });
-    command.getContainer().addEventListener('mouseout', function () {
-        map.dragging.enable();
-        map.doubleClickZoom.enable(); 
-        map.scrollWheelZoom.enable();
-        map.touchZoom.enable();
-    });
+    
     return map;
   }
 }

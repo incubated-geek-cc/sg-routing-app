@@ -3,19 +3,16 @@ html,body {
     padding: 0;
     overflow: hidden;
 }
-
 body {
     width: 100vw;
     height: 100vh;
 }
-
 #map {
-    width: 100vw;
-    height: calc(100vh - 47px);
+    width: calc(100vw - 320px);
+    height: 100vh;
     margin:0;
-    background: #ffffff;
+    background: transparent;
 }
-
 .autocomplete-suggestions {
     font-family: inherit;
     font-size: .875rem;
@@ -33,7 +30,6 @@ body {
     overflow-y: auto;
     box-sizing: border-box;
 }
-
 .autocomplete-suggestion {
     position: relative;
     padding: .6em;
@@ -77,20 +73,69 @@ body {
   stroke-width: 5;
   stroke-opacity: 0.75;
 }
-#top-bar {
-  box-shadow: rgb(0 0 0 / 25%) 0px 54px 55px, 
-  rgb(0 0 0 / 12%) 0px -12px 30px, 
-  rgb(0 0 0 / 12%) 0px 4px 6px, 
-  rgb(0 0 0 / 17%) 0px 12px 13px, 
-  rgb(0 0 0 / 9%) 0px -3px 5px;
-  z-index: 500;
+
+#searchbar {
+  background: linear-gradient(to bottom right,#f9f5ed 30%,#e0eed1,#ade1f5);
+  border-radius: 0;
+  box-shadow: 1px 0 rgb(0 0 0 / 15%);
+  left: 0;
+  right: auto;
+  top: 0;
+  height: 100vh;
+  transform: none;
+  -webkit-backdrop-filter: blur(10px) saturate(3);
+  backdrop-filter: blur(10px) saturate(3);
+  background-color: hsla(0,0%,100%,.7);
+  position:absolute;
+  z-index: 1000;
+  padding: 0.5rem 0.25rem;
+  padding-right: 0;
+  width: 320px;
 }
+
+li.nav-item.pl-1.pr-1 {
+  align-items: center;
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  color: #000;
+  display: flex;
+  padding: 0.15rem;
+  padding-right: 0;
+  text-decoration: none;
+}
+li.nav-item.pl-1.pr-1:last-child {
+  border-bottom-color: transparent;
+}
+
+#navbarTop {
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  display: flex;
+  min-height: 60px;
+  padding: 0.5rem 0.25rem;
+}
+.navbar-brand {
+  background-image: url("../img/logo.png");
+  background-color: #ffffff;
+  height: 30px;
+  width: 30px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+#navbarToggler {
+  padding-right: 0;
+  max-height: calc(100vh - 60px);
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
 #geocoder_o,
 #geocoder_d { 
   font-size: smaller; 
+  font-size: .875rem;
 }
 #switch_origin_destination {
   cursor:pointer;
+  margin: 0 auto;
 }
 .leaflet-right .leaflet-control {
     margin-right: 0;
@@ -117,14 +162,15 @@ div.card-body.tab-content {
   padding: 0.55rem;
 }
 #route_instructions,
-#geojson{
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: calc(100vh - 170px - 108px - 1.25rem);
+#geojson {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height:35vh;
+  font-size: smaller;
 }
 hr {
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 pre {
   padding: 2.5px;
@@ -150,7 +196,13 @@ pre {
 }
 
 #loaderSignal {
-  display:inline-flex;
+  width: 100vw;
+  position: absolute;
+  z-index: 5000;
+  left: auto;
+  right: auto;
+  height: 100vh;
+  transition: all 0.3s ease-in-out;
 }
 
 #loaderSignal small {
@@ -178,4 +230,70 @@ pre {
 }
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
     border: none;
+}
+
+label.form-check-label.mr-2.ml-0 {
+  font-family: emoji;
+  font-size: 11.5px;
+}
+
+.unicode {
+  font-family:cambria;
+}
+
+.carousel-indicators li {
+  box-sizing: content-box;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+  width: 3px;
+  height: 3px;
+  padding: 1.5px;
+  border-radius: 50%;
+  margin-right: 3px;
+  margin-left: 3px;
+  text-indent: -999px;
+  cursor: pointer;
+  background-color: currentColor;
+  background-clip: padding-box;
+  opacity: .5;
+  transition: opacity .6s ease;
+}
+
+.carousel-caption {
+    position: absolute;
+    right: 4.5%;    
+    bottom: 20px;
+    left: 4.5%;
+    z-index: 10;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: currentColor;
+    text-align: center;
+}
+
+.carousel-control-next, 
+.carousel-control-prev {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 2.5%;
+    color: inherit;
+    text-align: center;
+    opacity: .75;
+    transition: opacity .15s ease;
+}
+
+#route_instructions_hidden {
+  display:none;
+}
+
+#carousel-item h1 {
+  opacity: 0.45;
 }

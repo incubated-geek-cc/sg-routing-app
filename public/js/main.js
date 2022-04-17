@@ -1,0 +1,1137 @@
+var switch_origin_destination=document.getElementById('switch_origin_destination');
+var previewGeojsonBtn=document.getElementById('previewGeojsonBtn');
+var exportBtn=document.getElementById('exportBtn');
+var speakBtn=document.getElementById('speakBtn');
+
+var route_options=document.getElementById('route_options');
+var route_info=document.getElementById('route_info');
+var route_instructions_btn=document.getElementById('route_instructions_btn');
+var route_instructions_hidden=document.getElementById('route_instructions_hidden');
+var routeIntructionsCarousel=document.getElementById('routeIntructionsCarousel');
+
+const loaderSignalCSS='block';
+var loaderSignal=document.getElementById('loaderSignal');
+loaderSignal['style']['display']='none';
+
+var initStartPoint='1.30607515954354,103.831003321455';
+var initEndPoint='1.3249477928719,103.805704361472';
+
+var initStartAddr='CLAYMORE HILL';
+var initEndAddr='DUCHESS ROAD';
+
+var startPoint=initStartPoint;
+var endPoint=initEndPoint;
+
+geocoder_o.value=initStartAddr;
+geocoder_d.value=initEndAddr;
+
+var routes=[];
+
+const iconSize=[25, 25];
+
+var originMarker=null; 
+var destinationMarker=null; 
+var originName=null;
+var destinationName=null;
+var snakingSpeed=400; // pixels per second
+
+var serviceProvider='OneMap';
+var url = '';
+var apiCall = '';
+var params = {};
+
+function getCurrentDatetimeStamp() {
+  const d = new Date();
+  var datestamp=d.getFullYear()+''+(d.getMonth()+1)+''+d.getDate();
+  var timestamp=d.getHours()+''+d.getMinutes()+''+d.getSeconds();
+
+  var datetimeStr=datestamp+'_'+timestamp;
+  return datetimeStr;
+}
+
+function setGeojsonPreview(geojsonOutput) {
+  let geojsonDIV=document.createElement('div');
+  geojsonDIV.id='geojson';
+  geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
+  previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
+}
+
+const routeDirectionObj={
+  'north':'⭡',
+  'south':'⮧',
+  'east':'⭢',
+  'west':'⭠',
+
+  'northeast':'⭧',
+  'northwest':'⭦',
+
+  'left':'⮢',
+  'right':'⮣',
+
+  'straight': '⭫'
+};
+
+
+function setRouteInstructions(routeInstructions) {
+  let route_instructionsDIV=document.createElement('div');
+  route_instructionsDIV.route_instructions='geojson';
+  route_instructionsDIV.classList.add('small');
+  route_instructionsDIV.id='route_instructions';
+  route_instructionsDIV.innerHTML=routeInstructions;
+  route_instructions_btn.setAttribute('data-content', route_instructionsDIV.outerHTML);
+  route_instructions_hidden.innerHTML=routeInstructions;
+
+
+  var instructionsRows=document.getElementById('route_instructions_hidden').getElementsByTagName('tr');
+
+  var carouselIndicatorsHTMLStr='<ol class="carousel-indicators">';
+  var carouselItemsHTMLStr='';
+
+  var rowIndex=0;
+  for(var instructionsRow of instructionsRows) {
+      var instructionText=instructionsRow.innerText;
+      var instructionIndex=(parseInt(rowIndex)+1);
+
+      instructionText=instructionText.replace( (instructionIndex+''), '' );
+      carouselIndicatorsHTMLStr+='<li data-target="#routeIntructionsCarousel" data-slide-to="'+rowIndex+'" '+ (rowIndex==0 ? 'class="active"' : '') +'></li>';
+
+      carouselItemsHTMLStr+='<div class="carousel-item'+ (rowIndex==0 ? ' active' : '') +'">';
+      carouselItemsHTMLStr+='<h1 class="text-right text-muted pr-2 pl-2">';
+
+      let arrowSymbol='⭫';
+
+      let str=instructionText.toLowerCase();
+      for(var directionTxt in routeDirectionObj) {
+        if(str.includes(directionTxt)) {
+          arrowSymbol=routeDirectionObj[directionTxt];
+        }
+      }
+      
+      carouselItemsHTMLStr+=arrowSymbol;
+      carouselItemsHTMLStr+='</h1>';
+
+      carouselItemsHTMLStr+='<div class="carousel-caption text-left">';
+      carouselItemsHTMLStr+='<mark class="small text-dark"><small class="text-dark">'+instructionIndex+'. '+instructionText+'</small></mark>';
+      carouselItemsHTMLStr+='</div>';
+      carouselItemsHTMLStr+='</div>';
+      
+      rowIndex++;
+  }
+
+  carouselIndicatorsHTMLStr+='</ol>';
+  
+
+  var carouselHTMLStr=carouselIndicatorsHTMLStr+'<div class="carousel-inner">'+carouselItemsHTMLStr+'</div>'+'<a class="carousel-control-prev" href="#routeIntructionsCarousel" role="button" data-slide="prev">⮜</a>'+'<a class="carousel-control-next" href="#routeIntructionsCarousel" role="button" data-slide="next">⮞</a>';
+  document.getElementById('routeIntructionsCarousel').innerHTML=carouselHTMLStr;
+
+  var routeInstructionsInit = new BSN.Carousel('#routeIntructionsCarousel', {
+    interval: false,
+    pause: false,
+    keyboard: false
+  });
+}
+var routeTypes=[
+  { 'OneMap': 'drive', 'Graphhopper': 'car', 'HERE': 'car'},
+  { 'OneMap': 'walk', 'Graphhopper': 'foot', 'HERE': 'pedestrian' },
+  { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'HERE': 'bicycle'}
+];
+
+var routeType=0;
+
+window.onload=function() {
+  function setSearchBarHeight() {
+    let calcH=(document.getElementById('searchbar').clientHeight)-(document.getElementById('navbarTop').clientHeight);
+    document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
+  }
+  setSearchBarHeight();
+
+  window.addEventListener('resize', (evt) => {
+    setSearchBarHeight();
+  }, false);
+  
+
+  exportBtn.addEventListener('click', () => {
+    if (!window.Blob) {
+      alert('Your browser does not support HTML5 "Blob" function required to save a file.');
+    } else {
+      let geojsonHTMLStr=previewGeojsonBtn.getAttribute('data-content');
+      let tempDIV=document.createElement('div');
+      tempDIV.innerHTML=geojsonHTMLStr;
+      let geojsonStr=tempDIV.innerText;
+
+      let textblob = new Blob([geojsonStr], {
+          type: 'application/json'
+      });
+      let dwnlnk = document.createElement('a');
+      dwnlnk.download = 'georoutes_'+getCurrentDatetimeStamp()+'.geojson';
+      if (window.webkitURL != null) {
+          dwnlnk.href = window.webkitURL.createObjectURL(textblob);
+      }
+      dwnlnk.click();
+    }
+  }, false);
+
+  const playSymbol='🔊';
+  const pauseSymbol='🔇';
+
+  speakBtn.addEventListener('click', (evt) => {
+    let isPaused=$().articulate('isPaused');
+    let isSpeaking=$().articulate('isSpeaking');
+
+    if(!isPaused && !isSpeaking) {
+      $('#route_instructions_hidden td').articulate('speak');
+      evt.currentTarget.innerHTML=pauseSymbol;
+    } else if(!isPaused) {
+      $().articulate('pause');
+      evt.currentTarget.innerHTML=playSymbol;
+    } else if(isPaused) {
+      $().articulate('resume');
+      evt.currentTarget.innerHTML=pauseSymbol;
+    }
+  }, false);
+
+  window.addEventListener('utteranceHasEnded', (e) => {
+    speakBtn.innerHTML=playSymbol;
+    $().articulate('stop');
+  }, false);
+  
+
+  var popoverTargets = document.querySelectorAll('[data-content]');
+
+  Array.from(popoverTargets).map(
+    popTarget => new BSN.Popover(popTarget, {
+      placement: 'right',
+      animation: 'show',
+      delay: 100,
+      dismissible: true,
+      trigger: 'click'
+    })
+  );
+
+  switch_origin_destination.addEventListener('click', (e) => {
+    let tempPoint=endPoint;
+    endPoint=startPoint;
+    startPoint=tempPoint;
+
+    initParams(startPoint, endPoint);
+    execAjax();
+  }, false);
+
+  var resetMapBtn=document.getElementById('resetMapBtn');
+  var serviceProviderOptions=document.getElementsByClassName('serviceProvider');
+
+  for(var serviceProviderOption of serviceProviderOptions) {
+    serviceProviderOption.addEventListener('change', (e) => {
+      serviceProvider=e.target.value;
+      initParams(startPoint, endPoint);
+      execAjax();
+    }, false);
+  }
+
+  function removeAllRoutes() {
+    if(routes.length>0) { 
+      for(var r in routes) {
+          var path=routes[r]["path"];
+          map.removeLayer(path);
+      }
+    }
+  }
+
+  function removeAllMarkers() {
+    if(originMarker!==null) {
+        map.removeLayer(originMarker);
+    }
+    if(destinationMarker!==null) {
+        map.removeLayer(destinationMarker);
+    }
+  }
+  
+  function resetMap() {
+    removeAllRoutes();
+    routes=[];
+    removeAllMarkers();
+
+    route_options.innerHTML='';
+    route_info.innerHTML='';
+    route_instructions_hidden.innerHTML='';
+
+    route_instructions_btn.setAttribute('data-content','<div id="route_instructions" class="small"></div>');
+    previewGeojsonBtn.setAttribute('data-content','<div id="geojson"></div>');
+  }
+
+  resetMapBtn.addEventListener('click', (evt) => {
+    resetMap();
+
+    loaderSignal['style']['display']='none';
+
+    startPoint=initStartPoint;
+    endPoint=initEndPoint;
+
+    geocoder_o.value=initStartAddr;
+    geocoder_d.value=initEndAddr;
+
+    serviceProvider='OneMap';
+    for(var serviceProviderOption of serviceProviderOptions) {
+      if(serviceProviderOption.value==serviceProvider) {
+        serviceProviderOption.click();
+        break;
+      }
+    }
+    initParams(startPoint, endPoint);
+    execAjax();
+  }, false);
+
+  function initParams(start, end) {
+    resetMap();
+    switch(serviceProvider) {
+      case 'OneMap':
+        url='/api/onemap/directions/json/';
+        params = {
+          'routeType':routeTypes[routeType][serviceProvider],
+          'start': start,
+          'end':end
+        };
+        break;
+      case 'Graphhopper':
+        url='api/graphhopper/route/json/';
+        start=start.split(',');
+        start=parseFloat(start[0]).toFixed(4) + '%2C' + parseFloat(start[1]).toFixed(4);
+
+        end=end.split(',');
+        end=parseFloat(end[0]).toFixed(4) + '%2C' + parseFloat(end[1]).toFixed(4);
+        params = {
+          'locale':'en',
+          'point_o':start,
+          'point_d':end,
+          'elevation': (routeType==0) ? 'false' : 'true',
+          'profile':routeTypes[routeType][serviceProvider]
+        };
+        break;
+      case 'HERE':
+        url='api/hereapi/v8/route/json/';
+        params = {
+          'origin': start,
+          'destination':end,
+          'routeType':routeTypes[routeType][serviceProvider]
+        };
+        break;
+    }
+    apiCall = '';
+    apiCall+=url;
+    for(let p in params) {
+      apiCall+=params[p]+'/';
+    }
+  }
+
+  var geocoder_o=document.getElementById('geocoder_o');
+  var geocoder_d=document.getElementById('geocoder_d');
+
+  var o_geocoder=new autoComplete({
+    selector:'#geocoder_o',
+    minChars:2,
+    source: function(term, suggest){
+      term = term.toLowerCase();
+      var choices = Object.keys(geocoders);
+      var suggestions = [];
+      for (var i=0;i<choices.length;i++) {
+          if (~choices[i].toLowerCase().indexOf(term)) {
+            suggestions.push(choices[i]);
+          }
+      }
+      suggest(suggestions);
+    },
+    onSelect: function(e, term, item) {
+      let coordinatesStr=geocoders[term];
+      startPoint=coordinatesStr;
+      initParams(startPoint, endPoint);
+      execAjax();
+    }
+  });
+
+  var d_geocoder=new autoComplete({
+    selector:'#geocoder_d',
+    minChars:2,
+    source: function(term, suggest){
+      term = term.toLowerCase();
+      var choices = Object.keys(geocoders);
+      var suggestions = [];
+      for (var i=0;i<choices.length;i++) {
+          if (~choices[i].toLowerCase().indexOf(term)) {
+            suggestions.push(choices[i]);
+          }
+      }
+      suggest(suggestions);
+    },
+    onSelect: function(e, term, item) {
+      let coordinatesStr=geocoders[term];
+      endPoint=coordinatesStr;
+      initParams(startPoint, endPoint);
+      execAjax();
+    }
+  });
+
+  function renderHERERoutesOnMap(responseObj) {
+    let sections=responseObj['routes'][0]['sections'][0];
+    let polyline=sections['polyline'];
+    let latlngs_1 = decodeFlexiPolyline(polyline).polyline;
+    
+    map.fitBounds(L.latLngBounds(latlngs_1));
+    originMarker=L.marker(latlngs_1[0], {
+        icon: L.icon({      
+            iconUrl: 'img/origin.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(originMarker);
+
+    destinationMarker=L.marker(latlngs_1[latlngs_1.length - 1], {
+        icon: L.icon({ 
+            iconUrl: 'img/destination.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(destinationMarker);
+
+    let path_1 = L.polyline(latlngs_1, {
+        snakingSpeed: snakingSpeed,
+        className: 'route',
+        color: generateRandomColor()
+    });
+    map.addLayer(path_1);
+    path_1.snakeIn();
+
+    let route_1 = {
+        path: path_1
+    };
+    routes.push(route_1);
+  }
+
+  function renderOneMapRoutesOnMap(responseObj) {
+    let latlngs_1 = polyline.decode(responseObj['route_geometry']);
+    map.fitBounds(L.latLngBounds(latlngs_1));
+    originMarker=L.marker(latlngs_1[0], {
+        icon: L.icon({      
+            iconUrl: 'img/origin.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(originMarker);
+
+    destinationMarker=L.marker(latlngs_1[latlngs_1.length - 1], {
+        icon: L.icon({ 
+            iconUrl: 'img/destination.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(destinationMarker);
+
+    let path_1 = L.polyline(latlngs_1, {
+        snakingSpeed: snakingSpeed,
+        className: 'route',
+        color: generateRandomColor()
+    });
+    map.addLayer(path_1);
+    path_1.snakeIn();
+
+    let route_1 = {
+        path: path_1
+    };
+    routes.push(route_1);
+    
+    let phyroute=responseObj['phyroute'];
+    if(typeof phyroute !== 'undefined') {
+      let latlngs_2 = polyline.decode(phyroute['route_geometry']);
+
+      let path_2 = L.polyline(latlngs_2, {
+        snakingSpeed: snakingSpeed,
+        className: 'route',
+        color: generateRandomColor()
+      });
+
+      let route_2 = { path: path_2 };
+      routes.push(route_2);
+    }
+
+    let alternativeroute=responseObj['alternativeroute'];
+    if(typeof alternativeroute !== 'undefined') {
+      alternativeroute=alternativeroute[0];
+      let latlngs_3 = polyline.decode(alternativeroute['route_geometry']);
+
+      let path_3 = L.polyline(latlngs_3, {
+        snakingSpeed: snakingSpeed,
+        className: 'route',
+        color: generateRandomColor()
+      });
+
+      let route_3 = {
+        path: path_3
+      };
+      routes.push(route_3);
+    }
+  }
+
+  function renderGraphhopperRoutesOnMap(responseObj) {
+    let points=responseObj['paths'][0]['points'];
+
+    let paths=responseObj["paths"][0];
+    let latlngs_1 = polyline.decode(points);
+    
+    map.fitBounds(L.latLngBounds(latlngs_1));
+    originMarker=L.marker(latlngs_1[0], {
+        icon: L.icon({      
+            iconUrl: 'img/origin.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(originMarker);
+
+    destinationMarker=L.marker(latlngs_1[latlngs_1.length - 1], {
+        icon: L.icon({ 
+            iconUrl: 'img/destination.png',
+            iconSize: iconSize
+        })
+    });
+    map.addLayer(destinationMarker);
+
+    let path_1 = L.polyline(latlngs_1, {
+        snakingSpeed: snakingSpeed,
+        className: 'route',
+        color: generateRandomColor()
+    });
+    map.addLayer(path_1);
+    path_1.snakeIn();
+
+    let route_1 = {
+        path: path_1
+    };
+    routes.push(route_1);
+  }
+
+  async function geocodeLatlng(lat,lng) {
+    loaderSignal['style']['display']=loaderSignalCSS;
+    let response=await fetch(`api/opencage/geocode/json/v1/en/${lat}+${lng}`);
+    let responseObj=await response.json();
+    loaderSignal['style']['display']='none';
+    return new Promise((resolve) => resolve(responseObj));
+  }
+
+  async function execAjax() {
+    loaderSignal['style']['display']=loaderSignalCSS;
+    let response=await fetch(apiCall);
+    let result=await response.text();
+    let responseObj=JSON.parse(result);
+    loaderSignal['style']['display']='none';
+
+    switch(serviceProvider) {
+      case 'OneMap':
+        renderOneMapRoutesOnMap(responseObj);
+        renderOneMapGeojson(responseObj);
+        renderOneMapRouteInstructions(responseObj);
+        break;
+      case 'Graphhopper':
+        renderGraphhopperRoutesOnMap(responseObj);
+        renderGraphhoperGeojson(responseObj);
+        renderGraphhoperRouteInstructions(responseObj);
+        break;
+      case 'HERE':
+        renderHERERoutesOnMap(responseObj);
+        renderHEREGeojson(responseObj);
+        renderHERERouteInstructions(responseObj);
+        break;
+    }
+  }
+
+  function handleCommand() {
+    // console.log(routes);
+    removeAllRoutes();
+
+    let routeIndex = parseInt(this.value);
+    let routeObj = routes[routeIndex];
+
+    let name=routeObj["name"];
+    let start_point=routeObj["start_point"];
+    let end_point=routeObj["end_point"];
+    let description=routeObj["description"];
+    let time_seconds=routeObj["time_seconds"];
+    let distance_metres=routeObj["distance_metres"];
+    let route_instructions=routeObj["route_instructions"];
+    let path=routeObj["path"];
+
+    // render route on map
+    map.addLayer(path);
+    path.snakeIn();
+
+    originName=routeObj["start_point"];
+    destinationName=routeObj["end_point"];
+
+    geocoder_o.value=originName;
+    geocoder_d.value=destinationName;
+
+    let routeInfo = "";
+    routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
+    routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
+    routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + routeObj["time_seconds"]%60 + ' s</div>';
+    routeInfo+='<div><b>Description:</b> ' + name + '</div>';
+
+    route_info.innerHTML=routeInfo;
+    setRouteInstructions(route_instructions);
+  }
+
+  async function renderOneMapGeojson(responseObj) {
+    let routeCounter=0;
+    let geojsonOutput={
+      "type": "FeatureCollection",
+      "features": []
+    };
+    let geometry=polyline.toGeoJSON(responseObj["route_geometry"]);
+
+    let name = responseObj["route_name"][0] + " via " + responseObj["viaRoute"] + " through " + responseObj["route_name"][1];
+    let description = responseObj["subtitle"];
+    let start_point = responseObj["route_summary"]["start_point"];
+    let end_point = responseObj["route_summary"]["end_point"];
+    let time_seconds = responseObj["route_summary"]["total_time"];
+    let distance_metres = responseObj["route_summary"]["total_distance"];
+
+    let route_instructions=responseObj['route_instructions'];
+
+    let startLatLng=route_instructions[0][3];
+    if(start_point.length===0) {
+      let start_point_arr=startLatLng.split(',');
+      let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
+      start_point=obj['results'][0]['formatted'];
+    }
+
+    let endLatLng=route_instructions[route_instructions.length-1][3];
+    if(end_point.length===0) {
+      let end_point_arr=endLatLng.split(',');
+      let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
+      end_point=obj['results'][0]['formatted'];
+    }
+
+    if(routeType==2) { // cycle
+      name="Cycling Path";
+      description="Cycling Path";
+    } else if(routeType==1) { // walking
+      name="Walking Path";
+      description="Walking Path";
+    } // end of walking path
+
+    let feature={
+      "type": "Feature",
+      "geometry": geometry,
+      "properties": {
+          "name": name,
+          "description": description,
+          "start_point": start_point,
+          "end_point": end_point,
+          "time_seconds": time_seconds,
+          "distance_metres": distance_metres,
+          "route_type": routeTypes[routeType][serviceProvider]
+      }
+    };
+    geojsonOutput["features"].push(feature);
+
+    let controlHtmlStr = '';
+    controlHtmlStr += '<div>';
+    controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
+    controlHtmlStr += '<span> ' + description + '</span>';
+    controlHtmlStr += '</div>';
+    
+    // console.log(routeCounter);
+    routes[routeCounter]["name"]=name;
+    routes[routeCounter]["description"]=description;
+    routes[routeCounter]["start_point"]=start_point;
+    routes[routeCounter]["end_point"]=end_point;
+    routes[routeCounter]["time_seconds"]=time_seconds;
+    routes[routeCounter]["distance_metres"]=distance_metres;
+    routeCounter++;
+
+    originName=start_point;
+    destinationName=end_point;
+
+    geocoder_o.value=originName;
+    geocoder_d.value=destinationName;
+
+    let routeInfo = '';
+    routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
+    routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
+    routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + time_seconds%60 + ' s</div>';
+    routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+
+    route_info.innerHTML=routeInfo;
+    
+    let phyroute=responseObj["phyroute"];
+    if(typeof phyroute !== "undefined") {
+      geometry = polyline.toGeoJSON(phyroute["route_geometry"]);   
+
+      name = phyroute["route_name"][0] + " via " + phyroute["viaRoute"] + " through " + phyroute["route_name"][1];
+      description = phyroute["subtitle"];
+      start_point = phyroute["route_summary"]["start_point"];
+      end_point = phyroute["route_summary"]["end_point"];
+      time_seconds = phyroute["route_summary"]["total_time"];
+      distance_metres = phyroute["route_summary"]["total_distance"];
+
+      feature={
+        "type": "Feature",
+        "geometry": geometry,
+        "properties": {
+            "name": name,
+            "description": description,
+            "start_point": start_point,
+            "end_point": end_point,
+            "time_seconds": time_seconds,
+            "distance_metres": distance_metres,
+            "route_type": routeTypes[routeType][serviceProvider]
+        }
+      };
+      geojsonOutput["features"].push(feature);
+      
+      controlHtmlStr += "<div>";
+      controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
+      controlHtmlStr += "<span> " + description + "</span>";
+      controlHtmlStr += "</div>";
+
+      // console.log(routeCounter);
+      routes[routeCounter]["name"]=name;
+      routes[routeCounter]["description"]=description;
+      routes[routeCounter]["start_point"]=start_point;
+      routes[routeCounter]["end_point"]=end_point;
+      routes[routeCounter]["time_seconds"]=time_seconds;
+      routes[routeCounter]["distance_metres"]=distance_metres;
+      routeCounter++;
+    }
+
+    let alternativeroute=responseObj["alternativeroute"];
+
+    if(typeof alternativeroute !== "undefined") {
+      alternativeroute=alternativeroute[0];
+      geometry = polyline.toGeoJSON(alternativeroute["route_geometry"]);   
+
+      name = alternativeroute["route_name"][0] + " via " + alternativeroute["viaRoute"] + " through " + alternativeroute["route_name"][1];
+      description = alternativeroute["subtitle"];
+      start_point = alternativeroute["route_summary"]["start_point"];
+      end_point = alternativeroute["route_summary"]["end_point"];
+      time_seconds = alternativeroute["route_summary"]["total_time"];
+      distance_metres = alternativeroute["route_summary"]["total_distance"];
+
+      feature={
+        "type": "Feature",
+        "geometry": geometry,
+        "properties": {
+            "name": name,
+            "description": description,
+            "start_point": start_point,
+            "end_point": end_point,
+            "time_seconds": time_seconds,
+            "distance_metres": distance_metres,
+            "route_type": routeTypes[routeType][serviceProvider]
+        }
+      };
+      geojsonOutput["features"].push(feature);
+
+      controlHtmlStr += "<div>";
+      controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
+      controlHtmlStr += "<span> " + description + "</span>";
+      controlHtmlStr += "</div>";
+
+      // console.log(routeCounter);
+      routes[routeCounter]["name"]=name;
+      routes[routeCounter]["description"]=description;
+      routes[routeCounter]["start_point"]=start_point;
+      routes[routeCounter]["end_point"]=end_point;
+      routes[routeCounter]["time_seconds"]=time_seconds;
+      routes[routeCounter]["distance_metres"]=distance_metres;
+      routeCounter++;
+    }
+
+    route_options.innerHTML=controlHtmlStr;
+    
+    setGeojsonPreview(geojsonOutput);
+
+    let commands = document.getElementsByClassName("leaflet-control-layers-selector");
+    for(let c in commands) {
+      let cmd = commands[c];
+      if(cmd.type == "radio") {
+        cmd.addEventListener("change", handleCommand, false);
+      }
+    }
+  } // renderOneMapGeojson
+
+  async function renderGraphhoperGeojson(responseObj) {
+    let paths=responseObj["paths"][0];
+    let latlngs = polyline.decode(paths['points']);
+
+    let routeCounter=0;
+    let geojsonOutput={
+      "type": "FeatureCollection",
+      "features": []
+    };
+    let geometry=polyline.toGeoJSON(paths["points"]);
+
+    let start_point = '';
+    let end_point = '';
+    let time_seconds = (paths["time"]/1000);
+    let distance_metres = paths["distance"];
+
+    let startLatLng=latlngs[0];
+    if(start_point.length===0) {
+      let start_point_arr=startLatLng;
+      let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
+      start_point=obj['results'][0]['components']['road'];
+    }
+
+    let endLatLng=latlngs[latlngs.length-1];
+    if(end_point.length===0) {
+      let end_point_arr=endLatLng;
+      let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
+      end_point=obj['results'][0]['components']['road'];
+    }
+
+    let name = start_point + " through " + end_point;
+    let description = start_point + " through " + end_point;;
+
+    if(routeType==2) { // cycle
+      name="Cycling Path";
+      description="Cycling Path";
+    } else if(routeType==1) { // walking
+      name="Walking Path";
+      description="Walking Path";
+    } // end of walking path
+
+    let feature={
+      "type": "Feature",
+      "geometry": {
+        "type":"LineString",
+        "coordinates": latlngs
+      },
+      "properties": {
+          "name": name,
+          "description": description,
+          "start_point": start_point,
+          "end_point": end_point,
+          "time_seconds": time_seconds,
+          "distance_metres": distance_metres,
+          "route_type": routeTypes[routeType][serviceProvider]
+      }
+    };
+    geojsonOutput["features"].push(feature);
+
+    let controlHtmlStr = '';
+    controlHtmlStr += '<div>';
+    controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
+    controlHtmlStr += '<span> ' + description + '</span>';
+    controlHtmlStr += '</div>';
+    
+    // console.log(routeCounter);
+    routes[routeCounter]["name"]=name;
+    routes[routeCounter]["description"]=description;
+    routes[routeCounter]["start_point"]=start_point;
+    routes[routeCounter]["end_point"]=end_point;
+    routes[routeCounter]["time_seconds"]=time_seconds;
+    routes[routeCounter]["distance_metres"]=distance_metres;
+    routeCounter++;
+
+    originName=start_point;
+    destinationName=end_point;
+
+    geocoder_o.value=originName;
+    geocoder_d.value=destinationName;
+
+    let routeInfo = '';
+    routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
+    routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
+    routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
+    routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+
+    route_info.innerHTML=routeInfo;
+
+    route_options.innerHTML=controlHtmlStr;
+    setGeojsonPreview(geojsonOutput);
+
+    let commands = document.getElementsByClassName("leaflet-control-layers-selector");
+    for(let c in commands) {
+      let cmd = commands[c];
+      if(cmd.type == "radio") {
+        cmd.addEventListener("change", handleCommand, false);
+      }
+    }
+  } // renderGraphhoperGeojson
+
+  async function renderHEREGeojson(responseObj) {
+    let sections=responseObj['routes'][0]['sections'][0];
+    let polyline=sections['polyline'];
+    let latlngs = decodeFlexiPolyline(polyline).polyline;
+
+    let routeCounter=0;
+    let geojsonOutput={
+      "type": "FeatureCollection",
+      "features": []
+    };
+    let start_point = '';
+    let end_point = '';
+    let time_seconds = (sections["travelSummary"]["duration"]);
+    let distance_metres = (sections["travelSummary"]["length"]);
+
+    let startLatLng=latlngs[0];
+    if(start_point.length===0) {
+      let start_point_arr=startLatLng;
+      let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
+      start_point=obj['results'][0]['components']['road'];
+    }
+
+    let endLatLng=latlngs[latlngs.length-1];
+    if(end_point.length===0) {
+      let end_point_arr=endLatLng;
+      let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
+      end_point=obj['results'][0]['components']['road'];
+    }
+
+    let name = start_point + " through " + end_point;
+    let description = start_point + " through " + end_point;;
+
+    if(routeType==2) { // cycle
+      name="Cycling Path";
+      description="Cycling Path";
+    } else if(routeType==1) { // walking
+      name="Walking Path";
+      description="Walking Path";
+    } // end of walking path
+
+    let feature={
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": reverseLatLng(latlngs)
+      },
+      "properties": {
+          "name": name,
+          "description": description,
+          "start_point": start_point,
+          "end_point": end_point,
+          "time_seconds": time_seconds,
+          "distance_metres": distance_metres,
+          "route_type": routeTypes[routeType][serviceProvider]
+      }
+    };
+    geojsonOutput["features"].push(feature);
+
+    let controlHtmlStr = '';
+    controlHtmlStr += '<div>';
+    controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
+    controlHtmlStr += '<span> ' + description + '</span>';
+    controlHtmlStr += '</div>';
+    
+    routes[routeCounter]["name"]=name;
+    routes[routeCounter]["description"]=description;
+    routes[routeCounter]["start_point"]=start_point;
+    routes[routeCounter]["end_point"]=end_point;
+    routes[routeCounter]["time_seconds"]=time_seconds;
+    routes[routeCounter]["distance_metres"]=distance_metres;
+    routeCounter++;
+
+    originName=start_point;
+    destinationName=end_point;
+
+    geocoder_o.value=originName;
+    geocoder_d.value=destinationName;
+
+    let routeInfo = '';
+    routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
+    routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+    routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
+    routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
+    routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+
+    route_info.innerHTML=routeInfo;
+    route_options.innerHTML=controlHtmlStr;
+    setGeojsonPreview(geojsonOutput);
+
+    let commands = document.getElementsByClassName("leaflet-control-layers-selector");
+    for(let c in commands) {
+      let cmd = commands[c];
+      if(cmd.type == "radio") {
+        cmd.addEventListener("change", handleCommand, false);
+      }
+    }
+  } // renderHEREGeojson
+
+  var routeTypeOptions=document.getElementsByClassName('routeType');
+  for(var routeTypeOption of routeTypeOptions) {
+    routeTypeOption.addEventListener('change', (e) => {
+       routeType=parseInt(e.target.value);
+        initParams(startPoint, endPoint);
+        execAjax();
+    }, false);
+  }
+
+  function renderGraphhoperRouteInstructions(responseObj) {
+    let routeCounter=0;
+    let routeInstructions = '';
+    routeInstructions += '<table>';
+    let route_instructions=responseObj['paths'][0]['instructions'];
+
+    // let allPoints=responseObj['paths'][0]['points'];
+    for(let r in route_instructions) {
+      let route = route_instructions[r];
+      let routeSeconds=parseInt(route['time']/1000);
+      let distance_metres=parseInt(route['distance']);
+
+      // let instruction_points = allPoints.slice(route['interval'][0], route['interval'][1]);
+      // routeInstructions+=JSON.stringify(instruction_points);
+      routeInstructions+= '<tr>';
+      routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
+      routeInstructions+= '<td>';
+      routeInstructions+= `${route['text']}, at ${distance_metres} metres, for ${routeSeconds} seconds.`;
+      routeInstructions+= '</td>';
+      routeInstructions+= '</tr>';
+    }
+    routeInstructions+= '</table>';
+
+    routes[routeCounter]['route_instructions']=routeInstructions;
+    routeCounter++;
+
+    setRouteInstructions(routeInstructions);
+  }
+
+  function renderOneMapRouteInstructions(responseObj) {
+    let routeCounter=0;
+    let routeInstructions = '';
+    routeInstructions += '<table>';
+
+    let route_instructions=responseObj['route_instructions'];
+    for(let r in route_instructions) {
+      let route = route_instructions[r];
+
+      routeInstructions+= '<tr>';
+      routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
+      routeInstructions+= '<td>';
+      routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+      routeInstructions+= '</td>';
+      routeInstructions+= '</tr>';
+    }
+    routeInstructions+= '</table>';
+
+    // console.log(routeCounter);
+    routes[routeCounter]['route_instructions']=routeInstructions;
+    routeCounter++;
+
+    setRouteInstructions(routeInstructions);
+      
+    routeInstructions = '';
+    routeInstructions += '<table>';
+    let phyroute=responseObj['phyroute'];
+    if(typeof phyroute !== 'undefined') {
+      route_instructions=phyroute['route_instructions'];
+    
+      for(let r in route_instructions) {
+        let route = route_instructions[r];
+
+        routeInstructions+= '<tr>';
+        routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
+        routeInstructions+= '<td>';
+        routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+        routeInstructions+= '</td>';
+        routeInstructions+= '</tr>';
+      }
+      routeInstructions+= '</table>';
+
+      // console.log(routeCounter);
+      routes[routeCounter]['route_instructions']=routeInstructions;
+      routeCounter++;
+    }
+
+    routeInstructions = "";
+    routeInstructions += "<table>";
+    let alternativeroute=responseObj["alternativeroute"];
+    if(typeof alternativeroute !== "undefined") {
+      alternativeroute=alternativeroute[0];
+      route_instructions=alternativeroute["route_instructions"];
+    
+      for(let r in route_instructions) {
+        let route = route_instructions[r];
+
+        routeInstructions+= "<tr>";
+        routeInstructions+= "<th>" + parseInt(parseInt(r)+1) + "</th>";
+        routeInstructions+= "<td>";
+
+        routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+
+        routeInstructions+= "</td>";
+        routeInstructions+= "</tr>";
+      }
+      routeInstructions+= "</table>";
+      // console.log(routeCounter);
+      routes[routeCounter]["route_instructions"]=routeInstructions;
+      routeCounter++;
+    }
+
+  }
+
+  var addressPatterns={
+    'Hl':'Hill',
+    'Rd':'Road',
+    'Dr':'Drive',
+    'Jln':'Jalan',
+    'Bt':'Bukit',
+    'Ave':'Avenue',
+    'Upp':'Upper'
+  };
+
+  function replaceAllStr(inputStr,searchStr,replaceStr) {
+    let str=inputStr.split(searchStr).join(replaceStr);
+    return str;
+  }
+
+  function renderHERERouteInstructions(responseObj) {
+    let sections=responseObj['routes'][0]['sections'][0];
+
+    let routeCounter=0;
+    let routeInstructions = '';
+    routeInstructions += '<table>';
+    let route_instructions=sections['actions'];
+
+    for(let r in route_instructions) {
+      let route = route_instructions[r];
+      let routeSeconds=parseInt(route['duration']);
+      let distance_metres=parseInt(route['length']);
+
+      let intrText=route['instruction'];
+
+      let pattern = new RegExp(`. Go for ${distance_metres} m.`, 'g');
+      intrText=intrText.replace(pattern, '');
+      pattern = new RegExp(`. Go for ${(distance_metres/1000).toFixed(1)} km.`, 'g');
+      intrText=intrText.replace(pattern, '');
+      intrText=`${intrText},`;
+
+      for(let toReplace in addressPatterns) {
+        let replaceWith=addressPatterns[toReplace];
+
+        intrText=replaceAllStr(intrText,  ` ${toReplace},`, ` ${replaceWith},`);
+        intrText=replaceAllStr(intrText,  ` ${toReplace} `, ` ${replaceWith} `);
+      }
+
+      routeInstructions+= '<tr>';
+      routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
+      routeInstructions+= '<td>';
+      routeInstructions+= `${intrText} at ${distance_metres} metres, for ${routeSeconds} seconds.`;
+      routeInstructions+= '</td>';
+      routeInstructions+= '</tr>';
+    }
+    routeInstructions+= '</table>';
+
+    routes[routeCounter]['route_instructions']=routeInstructions;
+    routeCounter++;
+
+    setRouteInstructions(routeInstructions);
+  }
+
+  initParams(startPoint, endPoint);
+  execAjax();
+}; // window.onload
