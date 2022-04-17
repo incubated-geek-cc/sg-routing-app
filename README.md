@@ -1,6 +1,6 @@
 # sg-routing-app
 
-## sɢᴿᵒᵘᵗᵉʳ 
+### sɢᴿᵒᵘᵗᵉʳ 
 <img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/logo.png' alt='sg-routing-app' width='55' height='55' />
 
 📍 [sg-routing-app](https://sg-routing-app.glitch.me/) is a web application which integrates multiple routing APIs for custom selection and visualisation.
@@ -41,5 +41,6 @@ The choice of JavaScript map plugin in this Geospatial web application is <a hre
 
 ## 📌 Project Status
 
-* Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness.
-* In-depth development process shall be published in an article ✍ via [Medium](https://geek-cc.medium.com/). Feel free to follow me on 🔗[Medium](https://geek-cc.medium.com/) if you are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>.
+* Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness
+* The in-depth implementation recount shall be published sometime soon on [Medium](https://geek-cc.medium.com/) - End of the April 2022 ✍ 
+* Feel free to follow me on 🔗 [Medium](https://geek-cc.medium.com/) if you are interested in this piece of work or are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>
