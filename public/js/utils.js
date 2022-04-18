@@ -16,19 +16,13 @@ function syntaxHighlight(json) {
       return "<span class='" + cls + "'>" + match + "</span>";
   });
 }
+
+
+const allColors=["#003366","#336699","#3366CC","#003399","#000099","#0000CC","#000066","#0000FF","#3333FF","#333399","#0066FF","#3366FF","#3333CC","#666699","#6666FF","#6600FF","#6600CC","#9966FF","#9933FF","#9900FF","#CC00FF","#9900CC","#FFCCFF","#FF99FF","#FF66FF","#FF00FF","#CC00CC","#660066","#CC0099","#993399","#FF3399","#CC3399","#990099","#FF6666","#FF0066","#CC6699","#993366","#FF9933","#FF6600","#FF5050","#CC0066","#660033","#996633","#CC9900","#FF9900","#CC6600","#FF3300","#FF0000","#CC0000","#990033","#663300","#996600","#CC3300","#993300","#990000","#800000","#993333"];
+
 function generateRandomColor() {
-    var lum = -0.25;
-    var hex = String('#' + Math.random().toString(16).slice(2, 8).toUpperCase()).replace(/[^0-9a-f]/gi, '');
-    if (hex.length < 6) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    var rgb = '#', c, i;
-    for (i = 0; i < 3; i++) {
-        c = parseInt(hex.substr(i * 2, 2), 16);
-        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-        rgb += ('00' + c).substr(c.length);
-    }
-    return rgb;
+    let colorIndex=Math.floor(Math.random() * allColors.length);
+    return allColors[colorIndex];
 }
 
 const reverseLatLng = (inputLatLng) => {

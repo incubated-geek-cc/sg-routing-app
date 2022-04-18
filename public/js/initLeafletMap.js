@@ -2,14 +2,13 @@ const myApp = Object.create(null);
 // ======================= MAP =========================
 var map='';
 var mapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-// 
 const lat = 1.352083;
 const lng = 103.819836;
 const minZoom=11;
-const maxZoom=19;
+const maxZoom=18;
 const defaultZoom=14;
-const ne=[1.56073, 104.6202];
-const sw=[1.16, 103.188];
+const ne=[1.56073, 104.11475];
+const sw=[1.16, 103.502];
 
 function drawRectInCenter(x, y, width, height) {
   return [x - width / 2, y - height / 2, width, height];  
@@ -24,7 +23,7 @@ async function initmap() {
   let scale = L.control.scale({
     maxWidth: 100,
     metric: true,
-    imperial: true,
+    imperial: false,
     position: 'topright'
   });
   map = L.map('map', {
