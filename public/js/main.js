@@ -103,7 +103,7 @@ window.onload=function() {
   var cancelSearchBarBtn=document.getElementById('cancelSearchBarBtn');
 
   function makeSearchbarVisible(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
   
     searchbarElement['style']['top']='0px';
     searchbarElement['style']['transform']='translateY(0)';
