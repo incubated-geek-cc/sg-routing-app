@@ -109,6 +109,10 @@ body {
   padding-right: 0;
 }
 
+#cancelSearchBarBtn {
+  visibility: hidden;
+}
+
 @media (min-width: 768px) {
   #map {
     height: 100vh;
@@ -126,6 +130,10 @@ body {
 
     overflow-y:hidden;
     transform: none;
+  }
+
+  #cancelSearchBarBtn {
+    visibility: hidden;
   }
 
   #navbarToggler {
@@ -154,7 +162,11 @@ body {
     overflow-y:auto;
     transition: all 0.3s ease-in-out;
   }
-  #searchbar:hover,
+
+  #cancelSearchBarBtn {
+    visibility: hidden;
+  }
+  /*#searchbar:hover,
   #searchbar:focus,
   #searchbar:active {
     top: 0px;
@@ -162,7 +174,7 @@ body {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease-in-out;
-  }
+  }*/
 }
 
 li.nav-item.pl-1.pr-1 {

@@ -99,19 +99,73 @@ var routeTypes=[
 var routeType=0;
 
 window.onload=function() {
+  var searchbarElement=document.getElementById('searchbar');
+  var cancelSearchBarBtn=document.getElementById('cancelSearchBarBtn');
+
+  function makeSearchbarVisible(evt) {
+    evt.preventDefault();
+  
+    searchbarElement['style']['top']='0px';
+    searchbarElement['style']['transform']='translateY(0)';
+    searchbarElement['style']['display']='flex';
+    searchbarElement['style']['flex-direction']='column';
+    searchbarElement['style']['transition']='all 0.3s ease-in-out';
+
+    if(window.innerWidth < 600) {
+      cancelSearchBarBtn['style']['visibility']='visible';
+    } else {
+      cancelSearchBarBtn['style']['visibility']='hidden';
+    }
+    searchbarElement.removeEventListener('click', makeSearchbarVisible);
+  }
+
+
+  function revertSearchbar(evt) {
+    evt.stopPropagation();
+    // let clickEvent = new MouseEvent('click', { view: window, bubbles: false, cancelable: false });
+    // inputVideoClipFile.dispatchEvent(clickEvent);
+    searchbarElement['style']['top']='-60px';
+    searchbarElement['style']['height']='100%';
+    searchbarElement['style']['bottom']='0;';
+    searchbarElement['style']['transform']='translateY(55%)';
+    searchbarElement['style']['display']='flex';
+    searchbarElement['style']['flex-direction']='column';
+    searchbarElement['style']['overflow-y']='auto';
+    searchbarElement['style']['transition']='all 0.3s ease-in-out';
+
+    cancelSearchBarBtn['style']['visibility']='hidden';
+  }
+
+  function resizeSearchbar() {
+    searchbarElement['style']['height']='100vh';
+    searchbarElement['style']['width']='320px';
+    searchbarElement['style']['top']='0';
+    searchbarElement['style']['left']='0';
+    searchbarElement['style']['right']='auto';
+    searchbarElement['style']['overflow-y']='hidden';
+    searchbarElement['style']['transform']='none';
+  }
+
   function setSearchBarHeight() {
-      let calcH=(document.getElementById('searchbar').clientHeight)-(document.getElementById('navbarTop').clientHeight);
+      let calcH=(searchbarElement.clientHeight)-(document.getElementById('navbarTop').clientHeight);
       document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
+
+      if(window.innerWidth < 600) {
+        searchbarElement.addEventListener('click', (e1) => makeSearchbarVisible(e1));
+        cancelSearchBarBtn.addEventListener('click', (e2) => revertSearchbar(e2));
+      } else {
+        resizeSearchbar();
+      }
   }
   setSearchBarHeight();
 
   window.addEventListener('resize', (evt) => {
     setSearchBarHeight();
   }, false);
-  
+
 
   exportBtn.addEventListener('click', () => {
-    if (!window.Blob) {
+    if (!window.Blob) {;
       alert('Your browser does not support HTML5 "Blob" function required to save a file.');
     } else {
       let geojsonHTMLStr=previewGeojsonBtn.getAttribute('data-content');
@@ -1015,7 +1069,6 @@ window.onload=function() {
       routes[routeCounter]["route_instructions"]=routeInstructions;
       routeCounter++;
     }
-
   }
 
   var addressPatterns={
