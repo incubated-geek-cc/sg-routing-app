@@ -156,3 +156,7 @@ router.get("/hereapi/v8/route/json/:origin/:destination/:transportMode", (req, r
     res.json(JSON.parse(body))
   })
 });
+
+router.get("/wake_up", (req, res) => {
+  res.json({"status":"app_is_awake"});
+});
