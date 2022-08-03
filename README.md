@@ -42,5 +42,5 @@ The choice of JavaScript map plugin in this Geospatial web application is <a hre
 ## 📌 Project Status
 
 * Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness
-* Shall publish an in-depth implementation recount sometime soon on [Medium](https://geek-cc.medium.com/) - End of the April 2022 ✍ 
+* ✍ Article at: https://geek-cc.medium.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9
 * Feel free to follow me on 🔗 [Medium](https://geek-cc.medium.com/) if you are interested in this piece of work or are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>
