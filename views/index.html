@@ -29,7 +29,7 @@
   <body>
     <button id='loaderSignal' class='btn btn-sm btn-default p-0' disabled><span class='spinner-border spinner-border-sm m-1'></span><small>Loading..</small></button>
     <nav id='searchbar'>
-      <div class='container-full'>
+      <div style="height: -webkit-fill-available;">
         <div id='navbarTop'>
           <table>
             <tr>
@@ -42,14 +42,20 @@
                 <a class='navbar-brand'></a>
               </td>
               <td>
-                <div class='form-check-inline small'>
-                    <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ&nbsp;</label>
-
-                    <input type='radio' class='form-check-input routeType' name='routeType' value="0" checked /><label class='form-check-label mr-2 ml-0'>🚗</label>
-
-                    <input type='radio' class='form-check-input routeType' name='routeType' value="1" /><label class='form-check-label mr-2 ml-0'>👣</label>
-                    
-                    <input type="radio" class="form-check-input routeType" name='routeType' value="2" /><label class="form-check-label mr-2 ml-0">🚲</label>
+                <div class="form-check-inline small">
+                  <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ&nbsp;</label>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input routeType" id="routeType0" name="routeType" value="0" checked />
+                    <label class="custom-control-label unicode" for="routeType0">🚗</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input routeType" id="routeType1" name="routeType" value="1" />
+                    <label class="custom-control-label unicode" for="routeType1">👣</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input routeType" id="routeType2" name="routeType" value="2" />
+                    <label class="custom-control-label unicode" for="routeType2">🚲</label>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -59,13 +65,19 @@
               </td>
               <td>
                 <div class="form-check-inline small">
-                  <label class="form-check-label mr-1 ml-0 text-dark unicode">ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
-
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="OneMap" checked /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
-                  
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="Graphhopper" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
-                  
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="HERE" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
+                  <label class='form-check-label mr-1 ml-0 text-dark unicode'>ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider0" name="serviceProvider" value="OneMap" checked />
+                    <label class="custom-control-label unicode" for="serviceProvider0"><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider1" name="serviceProvider" value="Graphhopper" />
+                    <label class="custom-control-label unicode" for="serviceProvider1"><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider2" name="serviceProvider" value="HERE" />
+                    <label class="custom-control-label unicode" for="serviceProvider2"><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
+                  </div>
                 </div>
               </td>
             </tr>
