@@ -137,7 +137,7 @@ window.onload=function() {
   }
 
   function resizeSearchbar() {
-    searchbarElement['style']['height']='calc(100vh - 0.125em)';
+    searchbarElement['style']['height']='100vh';
     searchbarElement['style']['width']='320px';
     searchbarElement['style']['top']='0';
     searchbarElement['style']['left']='0';
@@ -148,8 +148,9 @@ window.onload=function() {
 
   function setSearchBarHeight() {
       let calcH=(searchbarElement.clientHeight)-(document.getElementById('navbarTop').clientHeight);
-      // document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
-      if(window.innerWidth < 400) {
+      document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
+
+      if(window.innerWidth < 600) {
         searchbarElement.addEventListener('click', (e1) => makeSearchbarVisible(e1));
         cancelSearchBarBtn.addEventListener('click', (e2) => revertSearchbar(e2));
       } else {
