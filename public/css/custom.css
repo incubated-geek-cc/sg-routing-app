@@ -6,7 +6,6 @@ html,body {
 body {
     width: 100vw;
     height: 100vh;
-    position: relative;
 }
 .autocomplete-suggestions {
     font-family: inherit;
@@ -70,10 +69,8 @@ body {
 }
 
 #map {
-  margin: 0;
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
-  position: absolute;
+  margin:0;
+  position:absolute;
   z-index: 1000;
   background: transparent;
 }
@@ -97,12 +94,7 @@ body {
   border-bottom: 1px solid rgba(0,0,0,.1);
   display: flex;
   min-height: 3.75em;
-  height: fit-content;
-  max-height: calc(70vh - 48px);
-  padding: 0.5rem 0.125rem;
-  overflow: hidden;
-  overflow-x: hidden;
-  overflow-y: auto;
+  padding: 0.5rem 0.25rem;
 }
 .navbar-brand {
   background-image: url("../img/logo.png");
@@ -114,19 +106,14 @@ body {
   background-size: contain;
 }
 #navbarToggler {
-  overflow-x: hidden;
-  overflow-y: auto;
   padding-right: 0;
-  min-height: calc(50vh - 48px);
-  height: fit-content;
-  max-height: calc(70vh - 48px);
 }
+
 #cancelSearchBarBtn {
   visibility: hidden;
 }
 
-/* Left side bar and map shall be adjacent | wider than 720px and taller than 450px */
-@media (min-width: 720px) and (min-height: 500px) {
+@media (min-width: 768px) {
   #map {
     height: 100vh;
     left: 320px;
@@ -140,23 +127,22 @@ body {
     top: 0;
     left: 0;
     right: auto;
+
     overflow-y:hidden;
     transform: none;
-  }
-  
-  #navbarTop {
-    overflow: hidden;
-    overflow-x: hidden;
-    overflow-y: auto;
   }
 
   #cancelSearchBarBtn {
     visibility: hidden;
-  } 
+  }
+
+  #navbarToggler {
+    overflow-x:hidden;
+    overflow-y:auto;
+  }
 }
-  
-/* Left side bar shall be positioned at bottom left corner | narrower than 500px or narrower than 500px  */
-@media (max-width: 320px), (max-height: 450px) {
+
+@media (max-width: 600px) {
   #map {
     position: fixed;
     top: 0;
@@ -172,19 +158,23 @@ body {
     transform: translateY(55%);
     display: flex;
     flex-direction: column;
-    overflow-y: hidden;
-    transition: all 0.3s ease-in-out;
-  }
 
-  #navbarTop {
-    overflow: hidden;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y:auto;
+    transition: all 0.3s ease-in-out;
   }
 
   #cancelSearchBarBtn {
     visibility: hidden;
   }
+  /*#searchbar:hover,
+  #searchbar:focus,
+  #searchbar:active {
+    top: 0px;
+    transform: translateY(0);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+  }*/
 }
 
 li.nav-item.pl-1.pr-1 {
