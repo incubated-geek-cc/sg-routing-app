@@ -6,6 +6,7 @@ html,body {
 body {
     width: 100vw;
     height: 100vh;
+    position: relative;
 }
 .autocomplete-suggestions {
     font-family: inherit;
@@ -69,8 +70,10 @@ body {
 }
 
 #map {
-  margin:0;
-  position:absolute;
+  margin: 0;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  position: absolute;
   z-index: 1000;
   background: transparent;
 }
@@ -94,7 +97,12 @@ body {
   border-bottom: 1px solid rgba(0,0,0,.1);
   display: flex;
   min-height: 3.75em;
+  height: fit-content;
+  max-height: calc(70vh - 48px);
   padding: 0.5rem 0.25rem;
+  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .navbar-brand {
   background-image: url("../img/logo.png");
@@ -106,14 +114,19 @@ body {
   background-size: contain;
 }
 #navbarToggler {
+  overflow-x: hidden;
+  overflow-y: auto;
   padding-right: 0;
+  min-height: calc(50vh - 48px);
+  height: fit-content;
+  max-height: calc(70vh - 48px);
 }
-
 #cancelSearchBarBtn {
   visibility: hidden;
 }
 
-@media (min-width: 768px) {
+/* Left side bar and map shall be adjacent | wider than 720px and taller than 450px */
+@media (min-width: 720px) and (min-height: 500px) {
   #map {
     height: 100vh;
     left: 320px;
@@ -127,22 +140,23 @@ body {
     top: 0;
     left: 0;
     right: auto;
-
     overflow-y:hidden;
     transform: none;
+  }
+  
+  #navbarTop {
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   #cancelSearchBarBtn {
     visibility: hidden;
-  }
-
-  #navbarToggler {
-    overflow-x:hidden;
-    overflow-y:auto;
-  }
+  } 
 }
-
-@media (max-width: 600px) {
+  
+/* Left side bar shall be positioned at bottom left corner | narrower than 500px or narrower than 500px  */
+@media (max-width: 320px), (max-height: 450px) {
   #map {
     position: fixed;
     top: 0;
@@ -158,23 +172,19 @@ body {
     transform: translateY(55%);
     display: flex;
     flex-direction: column;
-
-    overflow-y:auto;
+    overflow-y: hidden;
     transition: all 0.3s ease-in-out;
+  }
+
+  #navbarTop {
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   #cancelSearchBarBtn {
     visibility: hidden;
   }
-  /*#searchbar:hover,
-  #searchbar:focus,
-  #searchbar:active {
-    top: 0px;
-    transform: translateY(0);
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease-in-out;
-  }*/
 }
 
 li.nav-item.pl-1.pr-1 {
@@ -364,3 +374,24 @@ label.form-check-label.mr-2.ml-0 {
 .carousel-item kbd {
   padding: 0.1rem 0.2rem;
 }
+
+
+/*
+:focus{
+  outline:none;
+}
+.radio {
+  -webkit-appearance:button;
+  -moz-appearance:button;
+  appearance:button;
+  border:4px solid #ccc;
+  border-top-color:#bbb;
+  border-left-color:#bbb;
+  background:#fff;
+  width:50px;
+  height:50px;
+  border-radius:50%;
+}
+.radio:checked {
+  border:20px solid #4099ff;
+}*/
