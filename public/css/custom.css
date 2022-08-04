@@ -156,7 +156,7 @@ body {
 }
   
 /* Left side bar shall be positioned at bottom left corner | narrower than 500px or narrower than 500px  */
-@media (max-width: 500px), (max-height: 450px) {
+@media (max-width: 320px), (max-height: 450px) {
   #map {
     position: fixed;
     top: 0;
