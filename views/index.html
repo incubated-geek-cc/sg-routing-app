@@ -102,7 +102,7 @@
                     </div>
                 </form>
                 
-                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light p-1 rounded-circle text-dark border-secondary m-1 small symbol'>&nbsp;⇵&nbsp;</strong>
+                <button type='button' id="switch_origin_destination" class="btn btn-sm btn-primary m-2"><span class='emoji'>↕️</span></button>
 
                 <form onsubmit='return!1' class='pure-form'>
                    <div class="input-group input-group-sm">
@@ -126,14 +126,14 @@
               <table class='w-100'>
                 <tr>
                   <td class='pl-0 pr-1'>
-                    <button id='resetMapBtn' type='button' class='btn btn-sm btn-danger w-100 p-1 m-0 rounded-0 text-center'><span class='symbol'>⟲</span><span class='unicode ml-1'>ʀᴇsᴇᴛ</span></button>
+                    <button type='button' id="resetMapBtn" class="btn btn-sm btn-primary ml-0 mr-1 text-center"><small class='emoji small'>🔄</small><small class='unicode ml-1'>ᴿᵉˢᵉᵗ</small></button>
                   </td>
                   <td class='pl-0 pr-1'>
-                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'><span class='unicode ml-1 mr-1'>ɢᴇᴏᴊsᴏɴ ᴅᴀᴛᴀ</span>[<span class='emoji'>📖</span>]</button>
+                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>[<span class='emoji'>🗨️</span>]<span class='unicode ml-1 mr-1'>ᴘʀᴇᴠɪᴇᴡ ᴅᴀᴛᴀ</span></button>
                   </td>
                   <td class='pl-0 pr-0 text-center symbol'>▷</td>
-                  <td class='pl-0 pr-0'>
-                    <button id="exportBtn" type='button' class="btn btn-sm btn-primary p-1 rounded-0 text-center"><span class='emoji'>💾</span></button>
+                  <td class='pl-1 pr-0'>
+                    <button id="exportBtn" type='button' class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small class='emoji'>💾</small></button>
                   </td>
                 </tr>
                 <tr>
@@ -151,7 +151,7 @@
                 <tr>
                   <td colspan='4'>
                     <hr>
-                    <button id="speakBtn" class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small>🔊</small></button> <span><small class='small pr-1 symbol'>◁ read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="ℹ Route Instructions" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>"><span class='emoji'>ℹ</span><span class='unicode ml-1'>ɪɴsᴛʀᴜᴄᴛɪᴏɴs</span>[<span class='emoji'>📖</span>]</button>
+                    <button id="speakBtn" type='button' class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small class='emoji'>🔊</small></button> <span><small class='small pr-1 symbol'>◁ read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="🧭 Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>">[<span class='emoji'>🗨️</span>]<span class='unicode ml-1'>ʀᴏᴜᴛᴇ ɴᴀᴠɪɢᴀᴛɪᴏɴ</span></button>
                   </td>
                 </tr>
                 <tr>
@@ -164,7 +164,7 @@
               </table>
             </li>
             <li class='nav-item pl-1 pr-1 pb-0 pt-1'>
-               <button type='button' class='btn btn-sm btn-warning p-1 rounded-0 text-left' data-toggle="popover" data-title="🏅 Credits & Attributions" data-dismissible="true" data-placement="right" data-content="
+               <button type='button' class='btn btn-sm btn-warning p-1 rounded-0 text-left' data-toggle="popover" data-title="🏅 Attribution List" data-dismissible="true" data-placement="right" data-content="
                     <small class='text-muted'>
                       <dl>
                         <dt>❶ Routing APIs</dt>
@@ -197,7 +197,7 @@
                         </dd>
                       </dl>
                     </small>"
-                  ><small class='small'>🏅 <span class='unicode'>ᴄʀᴇᴅɪᴛs & ᴀᴛᴛʀɪᴃᴜᴛɪᴏɴs [📖]</span> </small></button><span><small class='small pl-1'><small class='symbol'>◁ view popup</small></small></span>
+                  >[<span class='emoji'>🗨️</span>]<span class='unicode ml-1'>ᴀᴛᴛʀɪᴃᴜᴛɪᴏɴ ʟɪsᴛ</span></button> <span><small class='small pr-1 ml-1 mr-1 symbol'>◁ view list</small></span>
             </li>
           </ul>
           

@@ -88,7 +88,7 @@ body {
   left:0;
   bottom:0;
   transform: translateY(calc(50vh - 50px));
-  
+
   background-color: rgba(255, 255, 255, .15);
   backdrop-filter: blur(12px);
 
@@ -316,4 +316,41 @@ label.form-check-label.mr-2.ml-0 {
 
 .carousel-inner {
   display:contents;
+}
+
+
+.btn-outline-primary {
+  color: #0078d7;
+  border-color: #0078d7;
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #0078d7;
+  border-color: #0078d7;
+}
+
+.btn-outline-primary.focus,.btn-outline-primary:focus {
+  box-shadow: 0 0 0 .2rem rgba(0,120,215,.5);
+}
+
+.btn-outline-primary.disabled,.btn-outline-primary:disabled {
+  color: #0078d7;
+  background-color: transparent;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active,.btn-outline-primary:not(:disabled):not(.disabled):active,.show>.btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #0078d7;
+  border-color: #0078d7;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus,.btn-outline-primary:not(:disabled):not(.disabled):active:focus,.show>.btn-outline-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 .2rem rgba(0,120,215,.5);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #0078d7;
+    border-color: #0078d7;
 }

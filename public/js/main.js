@@ -18,6 +18,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         renderer: L.svg()
     });
 
+    const toCamelCase = (str) => ( (str.toLowerCase()).replace(/\w+/g, ((str) => ( str.charAt(0).toUpperCase()+str.substr(1) ).replace(/\r/g, "")) ) );
     const basemapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
     const attributionStr= "";
 
@@ -71,8 +72,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     var startPoint=initStartPoint;
     var endPoint=initEndPoint;
 
-    geocoder_o.value=initStartAddr;
-    geocoder_d.value=initEndAddr;
+    geocoder_o.value=toCamelCase(initStartAddr);
+    geocoder_d.value=toCamelCase(initEndAddr);
 
 
     var routes=[];
@@ -95,7 +96,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
       previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
     }
-
+// await new Promise((resolve, reject) => setTimeout(resolve, 500));
     function setRouteInstructions(routeInstructions) {
       let route_instructionsDIV=document.createElement('div');
       route_instructionsDIV.route_instructions='geojson';
@@ -105,15 +106,15 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       route_instructions_btn.setAttribute('data-content', route_instructionsDIV.outerHTML);
       route_instructions_hidden.innerHTML=routeInstructions;
 
-      var instructionsRows=document.getElementById('route_instructions_hidden').getElementsByTagName('tr');
+      let instructionsRows=document.getElementById('route_instructions_hidden').getElementsByTagName('tr');
 
-      var carouselIndicatorsHTMLStr='<ol class="carousel-indicators">';
-      var carouselItemsHTMLStr='';
+      let carouselIndicatorsHTMLStr='<ol class="carousel-indicators">';
+      let carouselItemsHTMLStr='';
 
-      var rowIndex=0;
-      for(var instructionsRow of instructionsRows) {
-          var instructionText=instructionsRow.innerText;
-          var instructionIndex=(parseInt(rowIndex)+1);
+      let rowIndex=0;
+      for(let instructionsRow of instructionsRows) {
+          let instructionText=instructionsRow.innerText;
+          let instructionIndex=(parseInt(rowIndex)+1);
 
           instructionText=instructionText.replace( (instructionIndex+''), '' );
           carouselIndicatorsHTMLStr+='<li data-target="#routeIntructionsCarousel" data-slide-to="'+rowIndex+'" '+ (rowIndex==0 ? 'class="active"' : '') +'></li>';
@@ -129,61 +130,59 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
       carouselIndicatorsHTMLStr+='</ol>';
 
-      var carouselHTMLStr=carouselIndicatorsHTMLStr+'<div class="carousel-inner">'+carouselItemsHTMLStr+'</div>'+'<a class="carousel-control-prev" href="#routeIntructionsCarousel" role="button" data-slide="prev">❮</a>'+'<a class="carousel-control-next" href="#routeIntructionsCarousel" role="button" data-slide="next">❯</a>';
+      let carouselHTMLStr=carouselIndicatorsHTMLStr+'<div class="carousel-inner">'+carouselItemsHTMLStr+'</div>'+'<a class="carousel-control-prev" href="#routeIntructionsCarousel" role="button" data-slide="prev">❮</a>'+'<a class="carousel-control-next" href="#routeIntructionsCarousel" role="button" data-slide="next">❯</a>';
       document.getElementById('routeIntructionsCarousel').innerHTML=carouselHTMLStr;
 
-      var routeInstructionsInit = new BSN.Carousel('#routeIntructionsCarousel', {
+      let routeInstructionsInit = new BSN.Carousel('#routeIntructionsCarousel', {
         interval: false,
         pause: false,
         keyboard: false
       });
     }
-    var routeTypes=[
+
+    const routeTypes=[
       { 'OneMap': 'drive', 'Graphhopper': 'car', 'HERE': 'car'},
       { 'OneMap': 'walk', 'Graphhopper': 'foot', 'HERE': 'pedestrian' },
       { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'HERE': 'bicycle'}
     ];
-
     var routeType=0;
 
-    var searchbarElement=document.getElementById('searchbar');
-    var toggleInfoPanel=document.getElementById('toggleInfoPanel');
+    const searchbarElement=document.getElementById('searchbar');
+    const toggleInfoPanel=document.getElementById('toggleInfoPanel');
 
     toggleInfoPanel.addEventListener('click', (evt)=> {
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
-
-        toggleInfoPanel.classList.remove('btn-primary');
-        toggleInfoPanel.classList.add('btn-outline-primary');
         toggleInfoPanel.innerHTML='<span class="emoji">⬆️</span>';
       } else {
         searchbarElement.classList.add('expand');
-
-        toggleInfoPanel.classList.remove('btn-outline-primary');
-        toggleInfoPanel.classList.add('btn-primary');
         toggleInfoPanel.innerHTML='<span class="emoji">⬇️</span>';
       }
     });
-
+    
     function resizeComponents() {
-      if (document.body.clientWidth <= 767) {
-        if(searchbarElement.classList.contains('expand')) {
+      if((document.body.clientWidth <= 767) && (searchbarElement.classList.contains('expand'))) {
           toggleInfoPanel.click();
-        }
+          return Promise.resolve(true);
       } else if(!searchbarElement.classList.contains('expand')) {
-        toggleInfoPanel.click();
+          toggleInfoPanel.click();
+          return Promise.resolve(false);
+      } else {
+          return Promise.resolve(false);
       }
     }
-    window.addEventListener('resize', async(evt) => {
-      resizeComponents();
-      await new Promise((resolve, reject) => setTimeout(resolve, 500));
 
-      // if (document.body.clientWidth >= 767) {
+    window.addEventListener('resize', async(evt) => {
+      const toInvalidateMapSize=await resizeComponents();
+      if(toInvalidateMapSize) {
         map.invalidateSize();
-      // }
+      }
     });
 
-    resizeComponents();
+    const toInvalidateMapSize=await resizeComponents();
+    if(toInvalidateMapSize) {
+      map.invalidateSize();
+    }
 
     exportBtn.addEventListener('click', () => {
       if (!window.Blob) {;
@@ -193,7 +192,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         let tempDIV=document.createElement('div');
         tempDIV.innerHTML=geojsonHTMLStr;
         let geojsonStr=tempDIV.innerText;
-
         let textblob = new Blob([geojsonStr], {
             type: 'application/json'
         });
@@ -204,10 +202,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         }
         dwnlnk.click();
       }
-    }, false);
+    });
 
-    const playSymbol='<small>🔊</small>';
-    const pauseSymbol='<small>🔇</small>';
+    const playSymbol='<small class="emoji">🔊</small>';
+    const pauseSymbol='<small class="emoji">🔇</small>';
 
     speakBtn.addEventListener('click', (evt) => {
       let isPaused=$().articulate('isPaused');
@@ -230,7 +228,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       $().articulate('stop');
     });
 
-    var popoverTargets = document.querySelectorAll('[data-content]');
+    const popoverTargets = document.querySelectorAll('[data-content]');
 
     Array.from(popoverTargets).map(
       popTarget => new BSN.Popover(popTarget, {
@@ -300,8 +298,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       startPoint=initStartPoint;
       endPoint=initEndPoint;
 
-      geocoder_o.value=initStartAddr;
-      geocoder_d.value=initEndAddr;
+      geocoder_o.value=toCamelCase(initStartAddr);
+      geocoder_d.value=toCamelCase(initEndAddr);
 
       serviceProvider='OneMap';
       for(let serviceProviderOption of serviceProviderOptions) {
@@ -533,7 +531,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let response=await fetch(`api/opencage/geocode/json/v1/en/${lat}+${lng}`);
       let responseObj=await response.json();
       loaderSignal['style']['display']='none';
-      return new Promise((resolve) => resolve(responseObj));
+
+      return Promise.resolve(responseObj);
     }
 
     async function execAjax() {
@@ -563,7 +562,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     }
 
     function handleCommand() {
-      // console.log(routes);
       removeAllRoutes();
 
       let routeIndex = parseInt(this.value);
@@ -583,16 +581,16 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       originName=routeObj["start_point"];
       destinationName=routeObj["end_point"];
 
-      geocoder_o.value=originName;
-      geocoder_d.value=destinationName;
+      geocoder_o.value=toCamelCase(originName);
+      geocoder_d.value=toCamelCase(destinationName);
 
       let routeInfo = "";
-      routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
-      routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
+      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
       routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
       routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + routeObj["time_seconds"]%60 + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + name + '</div>';
+      routeInfo+='<div><b>Description:</b> ' + toCamelCase(name) + '</div>';
 
       route_info.innerHTML=routeInfo;
       setRouteInstructions(route_instructions);
@@ -667,16 +665,16 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       routes[routeCounter]["distance_metres"]=distance_metres;
       routeCounter++;
 
-      originName=start_point;
-      destinationName=end_point;
+      originName=toCamelCase(start_point);
+      destinationName=toCamelCase(end_point);
 
       geocoder_o.value=originName;
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
-      routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
+      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
       routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
       routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + time_seconds%60 + ' s</div>';
       routeInfo+='<div><b>Description:</b> ' + description + '</div>';
@@ -711,7 +709,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         
         controlHtmlStr += "<div>";
         controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
-        controlHtmlStr += "<span> " + description + "</span>";
+        controlHtmlStr += "<span> " + toCamelCase(description) + "</span>";
         controlHtmlStr += "</div>";
 
         // console.log(routeCounter);
@@ -754,7 +752,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
         controlHtmlStr += "<div>";
         controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
-        controlHtmlStr += "<span> " + description + "</span>";
+        controlHtmlStr += "<span> " + toCamelCase(description) + "</span>";
         controlHtmlStr += "</div>";
 
         // console.log(routeCounter);
@@ -766,7 +764,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         routes[routeCounter]["distance_metres"]=distance_metres;
         routeCounter++;
       }
-
       route_options.innerHTML=controlHtmlStr;
       
       setGeojsonPreview(geojsonOutput);
@@ -842,7 +839,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let controlHtmlStr = '';
       controlHtmlStr += '<div>';
       controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
-      controlHtmlStr += '<span> ' + description + '</span>';
+      controlHtmlStr += '<span> ' + toCamelCase(description) + '</span>';
       controlHtmlStr += '</div>';
       
       routes[routeCounter]["name"]=name;
@@ -853,19 +850,19 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       routes[routeCounter]["distance_metres"]=distance_metres;
       routeCounter++;
 
-      originName=start_point;
-      destinationName=end_point;
+      originName=toCamelCase(start_point);
+      destinationName=toCamelCase(end_point);
 
       geocoder_o.value=originName;
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
-      routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
+      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
       routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
       routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+      routeInfo+='<div><b>Description:</b> ' + toCamelCase(description) + '</div>';
 
       route_info.innerHTML=routeInfo;
 
@@ -942,7 +939,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let controlHtmlStr = '';
       controlHtmlStr += '<div>';
       controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
-      controlHtmlStr += '<span> ' + description + '</span>';
+      controlHtmlStr += '<span> ' + toCamelCase(description) + '</span>';
       controlHtmlStr += '</div>';
       
       routes[routeCounter]["name"]=name;
@@ -953,19 +950,19 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       routes[routeCounter]["distance_metres"]=distance_metres;
       routeCounter++;
 
-      originName=start_point;
-      destinationName=end_point;
+      originName=toCamelCase(start_point);
+      destinationName=toCamelCase(end_point);
 
       geocoder_o.value=originName;
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + routeTypes[routeType][serviceProvider] + '</div>';
-      routeInfo+='<div><b>From:</b> ' + start_point + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + end_point + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
+      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
       routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
       routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+      routeInfo+='<div><b>Description:</b> ' + toCamelCase(description) + '</div>';
 
       route_info.innerHTML=routeInfo;
       route_options.innerHTML=controlHtmlStr;
@@ -986,7 +983,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
          routeType=parseInt(e.target.value);
           initParams(startPoint, endPoint);
           execAjax();
-      }, false);
+      });
     }
 
     function renderGraphhoperRouteInstructions(responseObj) {
@@ -1087,67 +1084,22 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     }
 
-    const addressPatterns={
-      'Hl':'Hill',
-      'Rd':'Road',
-      'Dr':'Drive',
-      'Jln':'Jalan',
-      'Bt':'Bukit',
-      'Ave':'Avenue',
-      'Upp':'Upper',
-      'Tg':'Tanjong',
-      'St':'Street',
-      'Kg':'Kampong',
-      'Lor':'Lorong',
-      'Blvd':'Boulevard',
-      'Ctrl':'Central',
-      'Cl':'Close',
-      'Cres':'Crescent',
-      'Expy':'Expressway',
-      'Brg':'Bridge',
-      'Mt':'Mount',
-      'Ctr':'Centre',
-      'Pl':'Place',
-      'Pk':'Park',
-      'Stn':'Station',
-      'Sq':'Square',
-      'Ind':'Industrial',
-      'Mt':'Mount',
-      'Road N':'Road North',
-      'Road E':'Road East',
-      'Road S':'Road South',
-      'Road W':'Road West',
-      'Ter':'Terrace',
-      'Twr':'Tower',
-      'Int':'Interchange',
-      'Ln':'Lane',
-      'Hwy':'Highway',
-      "Street George's ":"Saint George's ",
-      "Street Gregory ":"Saint Gregory ",
-      "Street Vincent ":"Saint Vincent ",
-      "Street John ":"Saint John ",
-      "Street Thomas ":"Saint Thomas ", 
-      "Street Bernadette ":"Saint Bernadette ", 
-      "Street Regis ":"Saint Regis ",
-      "Street Michael ":"Saint Michael ",
-      "Street Wilfred ":"Saint Wilfred ", 
-      "Street Wilfrid ":"Saint Wilfrid ", 
-      "Street Francis ":"Saint Francis ", 
-      "Street Stephen ":"Saint Stephen ", 
-      "Street Nicholas ":"Saint Nicholas ", 
-      "Street Luke's ":"Saint Luke's ",
-      "Street Andrew's ":"Saint Andrew's ", 
-      "Street Mary ":"Saint Mary ",
-      "Street Joseph ":"Saint Joseph ", 
-      "Street Anthony ":"Saint Anthony ", 
-      "Street Clare ":"Saint Clare ", 
-      "Street James ":"Saint James ", 
-      "Street Teresa ":"Saint Teresa "
-    };
+    const addressPatterns={" Ably ":" Assembly "," Admin ":" Administration "," Apt ":" Apartment "," Apts ":" Apartments "," Ave ":" Avenue "," Aye ":" Ayer Rajah Expressway "," Bke ":" Bukit Timah Expressway "," Bldg ":" Building "," Blk ":" Block "," Blks ":" Blocks "," Blvd ":" Boulevard "," Bo ":" Branch Office "," Br ":" Branch "," Bt ":" Bukit "," Budd ":" Buddhist "," Cath ":" Cathedral "," Cbd ":" Central Business District "," Cc ":" Community Centre/Club "," Ch ":" Church "," Chbrs ":" Chambers "," Cine ":" Cinema "," Cines ":" Cinemas "," Cl ":" Close "," Clubhse ":" Clubhouse "," Condo ":" Condominium "," Cp ":" Carpark "," Cplx ":" Complex "," Cres ":" Crescent "," Ct ":" Court "," Cte ":" Central Expressway "," Ctr ":" Centre "," Ctr/Apts ":" Centre/Apartments "," Ctrl ":" Central "," C'Wealth ":" Commonwealth "," Dept ":" Department "," Devt ":" Development "," Div ":" Division "," Dr ":" Drive "," Ecp ":" East Coast Expressway "," Edn ":" Education "," Engrg ":" Engineering "," Env ":" Environment "," Erp ":" Electronic Road Pricing "," Est ":" Estate "," E'Way ":" Expressway "," Fb ":" Food Bridge "," Fc ":" Food Centre "," Fty ":" Factory "," Gdn ":" Garden "," Gdns ":" Gardens "," Govt ":" Government "," Gr ":" Grove "," Hosp ":" Hospital "," Hqr ":" Headquarter "," Hqrs ":" Headquarters "," Hs ":" Historic Site "," Hse ":" House "," Hts ":" Heights "," Ind ":" Industrial "," Inst ":" Institute "," Instn ":" Institution "," Intl ":" International "," Jc ":" Junior Colleges "," Jln ":" Jalan "," Jnr ":" Junior "," Kg ":" Kampong "," Kje ":" Kranji Expressway "," Km ":" Kilometre "," Kpe ":" Kallang Paya Lebar Expressway "," Lib ":" Library "," Lk ":" Link "," Lor ":" Lorong "," Mai ":" Maisonette "," Mais ":" Maisonettes "," Man ":" Mansion "," Mans ":" Mansions "," Mce ":" Marina Coastal Expressway "," Met ":" Metropolitan "," Meth ":" Methodist "," Min ":" Ministy "," Mjd ":" Masjid "," Mkt ":" Market "," Mt ":" Mount "," Natl ":" National "," Npc ":" Neighbourhood Police Centres "," Npp ":" Neighbourhood Police Posts "," Nth ":" North "," O/S ":" Open Space "," P ":" Pulau "," P/G ":" Playground "," Pie ":" Pan Island Expressway "," Pk ":" Park "," Pl ":" Place "," Poly ":" Polyclinic "," Presby ":" Presbyterian "," Pri ":" Primary "," Pt ":" Point "," Rd ":" Road "," Redevt ":" Redevelopment "," S ":" Sungei "," Sch ":" School "," Sec ":" Secondary "," Sle ":" Seletar Expressway "," S'Pore ":" Singapore "," Sq ":" Square "," St ":" Street "," St. ":" Saint "," Sth ":" South "," Stn ":" Station "," Tc ":" Town Council "," Tech ":" Technical "," Ter ":" Terrace "," Tg ":" Tanjong "," Townhse ":" Townhouse "," Tpe ":" Tampines Expressway "," U/C ":" Under Construction "," Upp ":" Upper "," Voc ":" Vocational "," Warehse ":" Warehouse "," Hl ":" Hill "," Expy ":" Expressway "," Brg ":" Bridge "," Pk":" Park "," Terr ":" Terrace "," Twr ":" Tower "," Int ":" Interchange "," Ln ":" Lane "," Hwy ":" Highway "," S'Goon ":" Serangoon "," Amk ":" Ang Mo Kio "," Opp ":" Opposite "," Bef ":" Before "," Fac ":" Faculty "," Aft ":" After "," Pr ":" Primary "," Coll ":" College "," Temp ":" Temporary "," Road N ":" Road North "," Road E ":" Road East "," Road S ":" Road South "," Road W ":" Road West "};
 
-    function replaceAllStr(inputStr,searchStr,replaceStr) {
-      let str=inputStr.split(searchStr).join(replaceStr);
-      return str;
+    function transformAbbrToOrig(origText) {
+        let intrText=' '+origText.toLowerCase()+' ';
+        for(let toReplace in addressPatterns) {
+          let replaceWith=addressPatterns[toReplace];
+          intrText=intrText.replaceAll(toReplace, replaceWith);
+
+          intrText=intrText.replaceAll(`/${toReplace.trim()}`, `/${replaceWith.trim()}`);
+          intrText=intrText.replaceAll(`${toReplace.trim()}/`, `${replaceWith.trim()}/`);
+
+          intrText=intrText.replaceAll(`${toReplace.trim()}.`, `${replaceWith.trim()}.`);
+          intrText=intrText.replaceAll(`${toReplace.trim()},`, `${replaceWith.trim()},`);
+        }
+        origText=intrText;
+        return origText;
     }
 
     function renderHERERouteInstructions(responseObj) {
@@ -1171,18 +1123,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         intrText=intrText.replace(pattern, '');
         intrText=`${intrText},`;
 
-        for(let toReplace in addressPatterns) {
-          let replaceWith=addressPatterns[toReplace];
-
-          intrText=replaceAllStr(intrText,  `/${toReplace} `, `/${replaceWith} `);
-          intrText=replaceAllStr(intrText,  ` ${toReplace})`, ` ${replaceWith})`);
-          intrText=replaceAllStr(intrText,  ` ${toReplace}/`, ` ${replaceWith}/`);
-          intrText=replaceAllStr(intrText,  ` ${toReplace}.`, ` ${replaceWith}.`);
-          intrText=replaceAllStr(intrText,  ` ${toReplace},`, ` ${replaceWith},`);
-          intrText=replaceAllStr(intrText,  ` ${toReplace} `, ` ${replaceWith} `);
-        }
-
-        intrText=replaceAllStr(intrText, ".,", ",");
+        intrText=transformAbbrToOrig(intrText);
+        intrText=intrText.replaceAll(".,", ",");
 
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
