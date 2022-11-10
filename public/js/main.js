@@ -153,15 +153,15 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
 
-        toggleInfoPanel.classList.remove('btn-danger');
-        toggleInfoPanel.classList.add('btn-success');
-        toggleInfoPanel.innerHTML='<span class="symbol">⮝</span>';
+        toggleInfoPanel.classList.remove('btn-primary');
+        toggleInfoPanel.classList.add('btn-outline-primary');
+        toggleInfoPanel.innerHTML='<span class="emoji">⬆️</span>';
       } else {
         searchbarElement.classList.add('expand');
 
-        toggleInfoPanel.classList.remove('btn-success');
-        toggleInfoPanel.classList.add('btn-danger');
-        toggleInfoPanel.innerHTML='<span class="symbol">🗙</span>';
+        toggleInfoPanel.classList.remove('btn-outline-primary');
+        toggleInfoPanel.classList.add('btn-primary');
+        toggleInfoPanel.innerHTML='<span class="emoji">⬇️</span>';
       }
     });
 
