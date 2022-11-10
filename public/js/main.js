@@ -161,28 +161,24 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     });
     
     function resizeComponents() {
-      if((document.body.clientWidth <= 767) && (searchbarElement.classList.contains('expand'))) {
+      if (document.body.clientWidth <= 767) {
+        if(searchbarElement.classList.contains('expand')) {
           toggleInfoPanel.click();
-          return Promise.resolve(true);
+          map.invalidateSize();
+        }
       } else if(!searchbarElement.classList.contains('expand')) {
-          toggleInfoPanel.click();
-          return Promise.resolve(false);
-      } else {
-          return Promise.resolve(false);
+        toggleInfoPanel.click();
+        map.invalidateSize();
       }
     }
 
     window.addEventListener('resize', async(evt) => {
-      const toInvalidateMapSize=await resizeComponents();
-      if(toInvalidateMapSize) {
-        map.invalidateSize();
-      }
+      resizeComponents();
+      await new Promise((resolve, reject) => setTimeout(resolve, 500));
+      map.invalidateSize();
     });
 
-    const toInvalidateMapSize=await resizeComponents();
-    if(toInvalidateMapSize) {
-      map.invalidateSize();
-    }
+    resizeComponents();
 
     exportBtn.addEventListener('click', () => {
       if (!window.Blob) {;
