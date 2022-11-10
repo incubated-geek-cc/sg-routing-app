@@ -1,76 +1,67 @@
-const myApp = Object.create(null);
-// ======================= MAP =========================
-var map='';
-var mapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-// const lat = 1.352083;
-// const lng = 103.819836;
-const minZoom=9;
-const maxZoom=18;
-const defaultZoom=11;
-const ne=[1.56073, 104.1147];
-const sw=[1.16, 103.502];
-
-const lat = ( ne[0]+sw[0] )/2; // 1.3603649999999998
-const lng = ( ne[1]+sw[1] )/2; // 103.80834999999999
-
-function initMap() {
-  let position = L.tileLayer(mapUrl, {
-    detectRetina: true,
-    maxZoom: maxZoom,
-    minZoom: minZoom,
-    attribution: ''
-  });
-  let scale = L.control.scale({
-    maxWidth: 100,
-    metric: true,
-    imperial: false,
-    position: 'topright'
-  });
-
-  map = L.map('map', {
-    zoomControl: false,
-    maxZoom: maxZoom,
-    minZoom: minZoom,
-    renderer: L.svg()
-  });
-  
-  if(map !== '') {
-    map.setMaxBounds([ne, sw]);
-    map.setView([lat, lng], defaultZoom);
-    position.addTo(map);
-    L.control.zoom({ position: 'topleft' }).addTo(map);
-    scale.addTo(map);
-    
-    return map;
-  }
-}
-
-
 if (document.readyState === 'complete' || document.readyState !== 'loading' && !document.documentElement.doScroll) {
   callback();
 } else {
   document.addEventListener('DOMContentLoaded', async() => {
     console.log('DOMContentLoaded');
-    myApp.map = initMap();
+    // ======================= MAP =========================
+    const minZoomVal=9;
+    const maxZoomVal=18;
+    const defaultZoom=11;
+    const ne=[1.56073, 104.1147];
+    const sw=[1.16, 103.502];
 
-    var switch_origin_destination=document.getElementById('switch_origin_destination');
-    var previewGeojsonBtn=document.getElementById('previewGeojsonBtn');
-    var exportBtn=document.getElementById('exportBtn');
-    var speakBtn=document.getElementById('speakBtn');
+    const lat = ( ne[0]+sw[0] )/2; // 1.3603649999999998
+    const lng = ( ne[1]+sw[1] )/2; // 103.80834999999999
 
-    var route_options=document.getElementById('route_options');
-    var route_info=document.getElementById('route_info');
-    var route_instructions_btn=document.getElementById('route_instructions_btn');
-    var route_instructions_hidden=document.getElementById('route_instructions_hidden');
-    var routeIntructionsCarousel=document.getElementById('routeIntructionsCarousel');
+    var map = L.map("map", {
+        zoomControl: false,
+        renderer: L.svg()
+    });
 
-    var geocoder_o=document.getElementById('geocoder_o');
-    var geocoder_d=document.getElementById('geocoder_d');
+    const basemapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
+    const attributionStr= "";
+
+    let basemapLayer = L.tileLayer(basemapUrl, {
+      detectRetina: true,
+      attribution: attributionStr,
+      minZoom: minZoomVal,
+      maxZoom: maxZoomVal,
+      errorTileUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAAQMAAADOtka5AAAAA1BMVEX28eS888QlAAAANklEQVR4nO3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8G4IAAAHSeInwAAAAAElFTkSuQmCC"
+    }).addTo(map);
+
+    let scale = L.control.scale({
+      maxWidth: 100,
+      metric: true,
+      imperial: false,
+      position: 'topright'
+    }).addTo(map);
+
+
+    // L.control.zoom({ position: 'topleft' }).addTo(map);
+    const switch_origin_destination=document.getElementById('switch_origin_destination');
+    const previewGeojsonBtn=document.getElementById('previewGeojsonBtn');
+    const exportBtn=document.getElementById('exportBtn');
+    const speakBtn=document.getElementById('speakBtn');
+
+    const route_options=document.getElementById('route_options');
+    const route_info=document.getElementById('route_info');
+    const route_instructions_btn=document.getElementById('route_instructions_btn');
+    const route_instructions_hidden=document.getElementById('route_instructions_hidden');
+    const routeIntructionsCarousel=document.getElementById('routeIntructionsCarousel');
+
+    const geocoder_o=document.getElementById('geocoder_o');
+    const geocoder_d=document.getElementById('geocoder_d');
     
     const loaderSignalCSS='block';
-    var loaderSignal=document.getElementById('loaderSignal');
+    const loaderSignal=document.getElementById('loaderSignal');
     loaderSignal['style']['display']='none';
 
+    await new Promise((resolve, reject) => setTimeout(resolve, 500));
+    
+    map.fitBounds([ne, sw]);
+    map.setView([lat, lng], defaultZoom);
+
+    // ================================= MAP INIT DONE ========================================
     var initStartPoint='1.30607515954354,103.831003321455';
     var initEndPoint='1.3249477928719,103.805704361472';
 
@@ -82,6 +73,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     geocoder_o.value=initStartAddr;
     geocoder_d.value=initEndAddr;
+
 
     var routes=[];
 
@@ -155,68 +147,43 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     var routeType=0;
 
     var searchbarElement=document.getElementById('searchbar');
-    var cancelSearchBarBtn=document.getElementById('cancelSearchBarBtn');
+    var toggleInfoPanel=document.getElementById('toggleInfoPanel');
 
-    function makeSearchbarVisible(evt) {
-      // evt.preventDefault();
-    
-      searchbarElement['style']['top']='0px';
-      searchbarElement['style']['transform']='translateY(0)';
-      searchbarElement['style']['display']='flex';
-      searchbarElement['style']['flex-direction']='column';
-      searchbarElement['style']['transition']='all 0.3s ease-in-out';
+    toggleInfoPanel.addEventListener('click', (evt)=> {
+      if(searchbarElement.classList.contains('expand')) {
+        searchbarElement.classList.remove('expand');
 
-      if(window.innerWidth < 600) {
-        cancelSearchBarBtn['style']['visibility']='visible';
+        toggleInfoPanel.classList.remove('btn-danger');
+        toggleInfoPanel.classList.add('btn-success');
+        toggleInfoPanel.innerHTML='<span class="symbol">⮝</span>';
       } else {
-        cancelSearchBarBtn['style']['visibility']='hidden';
+        searchbarElement.classList.add('expand');
+
+        toggleInfoPanel.classList.remove('btn-success');
+        toggleInfoPanel.classList.add('btn-danger');
+        toggleInfoPanel.innerHTML='<span class="symbol">🗙</span>';
       }
-      searchbarElement.removeEventListener('click', makeSearchbarVisible);
-    }
+    });
 
-
-    function revertSearchbar(evt) {
-      evt.stopPropagation();
-      // let clickEvent = new MouseEvent('click', { view: window, bubbles: false, cancelable: false });
-      // inputVideoClipFile.dispatchEvent(clickEvent);
-      searchbarElement['style']['top']='-60px';
-      searchbarElement['style']['height']='100%';
-      searchbarElement['style']['bottom']='0;';
-      searchbarElement['style']['transform']='translateY(55%)';
-      searchbarElement['style']['display']='flex';
-      searchbarElement['style']['flex-direction']='column';
-      searchbarElement['style']['overflow-y']='auto';
-      searchbarElement['style']['transition']='all 0.3s ease-in-out';
-
-      cancelSearchBarBtn['style']['visibility']='hidden';
-    }
-
-    function resizeSearchbar() {
-      searchbarElement['style']['height']='100vh';
-      searchbarElement['style']['width']='320px';
-      searchbarElement['style']['top']='0';
-      searchbarElement['style']['left']='0';
-      searchbarElement['style']['right']='auto';
-      searchbarElement['style']['overflow-y']='hidden';
-      searchbarElement['style']['transform']='none';
-    }
-
-    function setSearchBarHeight() {
-      let calcH=(searchbarElement.clientHeight)-(document.getElementById('navbarTop').clientHeight);
-      document.getElementById('navbarToggler')['style']['height']=`${calcH-16}px`;
-
-      if(window.innerWidth < 600) {
-        searchbarElement.addEventListener('click', (e1) => makeSearchbarVisible(e1));
-        cancelSearchBarBtn.addEventListener('click', (e2) => revertSearchbar(e2));
-      } else {
-        resizeSearchbar();
+    function resizeComponents() {
+      if (document.body.clientWidth <= 767) {
+        if(searchbarElement.classList.contains('expand')) {
+          toggleInfoPanel.click();
+        }
+      } else if(!searchbarElement.classList.contains('expand')) {
+        toggleInfoPanel.click();
       }
     }
-    setSearchBarHeight();
+    window.addEventListener('resize', async(evt) => {
+      resizeComponents();
+      await new Promise((resolve, reject) => setTimeout(resolve, 500));
 
-    window.addEventListener('resize', (evt) => {
-      setSearchBarHeight();
-    }, false);
+      // if (document.body.clientWidth >= 767) {
+        map.invalidateSize();
+      // }
+    });
+
+    resizeComponents();
 
     exportBtn.addEventListener('click', () => {
       if (!window.Blob) {;
@@ -256,12 +223,12 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         $().articulate('resume');
         evt.currentTarget.innerHTML=pauseSymbol;
       }
-    }, false);
+    });
 
     window.addEventListener('utteranceHasEnded', (e) => {
       speakBtn.innerHTML=playSymbol;
       $().articulate('stop');
-    }, false);
+    });
 
     var popoverTargets = document.querySelectorAll('[data-content]');
 
@@ -282,23 +249,23 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       initParams(startPoint, endPoint);
       execAjax();
-    }, false);
+    });
 
-    var resetMapBtn=document.getElementById('resetMapBtn');
-    var serviceProviderOptions=document.getElementsByClassName('serviceProvider');
+    const resetMapBtn=document.getElementById('resetMapBtn');
+    const serviceProviderOptions=document.getElementsByClassName('serviceProvider');
 
-    for(var serviceProviderOption of serviceProviderOptions) {
+    for(let serviceProviderOption of serviceProviderOptions) {
       serviceProviderOption.addEventListener('change', (e) => {
         serviceProvider=e.target.value;
         initParams(startPoint, endPoint);
         execAjax();
-      }, false);
+      });
     }
 
     function removeAllRoutes() {
       if(routes.length>0) { 
-        for(var r in routes) {
-          var path=routes[r]["path"];
+        for(let r in routes) {
+          let path=routes[r]["path"];
           map.removeLayer(path);
         }
       }
@@ -328,7 +295,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     resetMapBtn.addEventListener('click', (evt) => {
       resetMap();
-
       loaderSignal['style']['display']='none';
 
       startPoint=initStartPoint;
@@ -338,7 +304,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=initEndAddr;
 
       serviceProvider='OneMap';
-      for(var serviceProviderOption of serviceProviderOptions) {
+      for(let serviceProviderOption of serviceProviderOptions) {
         if(serviceProviderOption.value==serviceProvider) {
           serviceProviderOption.click();
           break;
@@ -346,7 +312,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
       initParams(startPoint, endPoint);
       execAjax();
-    }, false);
+    });
 
     function initParams(start, end) {
       resetMap();
@@ -390,14 +356,14 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     }
 
-    var o_geocoder=new autoComplete({
+    const o_geocoder=new autoComplete({
       selector:'#geocoder_o',
       minChars:2,
       source: function(term, suggest){
         term = term.toLowerCase();
-        var choices = Object.keys(geocoders);
-        var suggestions = [];
-        for (var i=0;i<choices.length;i++) {
+        let choices = Object.keys(geocoders);
+        let suggestions = [];
+        for (let i=0;i<choices.length;i++) {
             if (~choices[i].toLowerCase().indexOf(term)) {
               suggestions.push(choices[i]);
             }
@@ -412,14 +378,14 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     });
 
-    var d_geocoder=new autoComplete({
+    const d_geocoder=new autoComplete({
       selector:'#geocoder_d',
       minChars:2,
       source: function(term, suggest){
         term = term.toLowerCase();
-        var choices = Object.keys(geocoders);
-        var suggestions = [];
-        for (var i=0;i<choices.length;i++) {
+        let choices = Object.keys(geocoders);
+        let suggestions = [];
+        for (let i=0;i<choices.length;i++) {
             if (~choices[i].toLowerCase().indexOf(term)) {
               suggestions.push(choices[i]);
             }
@@ -434,7 +400,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     });
     
-    var antpathSettings={
+    const antpathSettings={
       'delay': 400,
       'dashArray': [10, 20],
       'weight': 5,
@@ -450,7 +416,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let polyline=sections['polyline'];
       let latlngs_1 = decodeFlexiPolyline(polyline).polyline;
       
-      map.fitBounds(L.latLngBounds(latlngs_1));
+      map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
         icon: L.icon({      
           iconUrl: 'img/origin.png',
@@ -479,7 +445,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     function renderOneMapRoutesOnMap(responseObj) {
       let latlngs_1 = polyline.decode(responseObj['route_geometry']);
-      map.fitBounds(L.latLngBounds(latlngs_1));
+      map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
           icon: L.icon({      
               iconUrl: 'img/origin.png',
@@ -535,7 +501,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let paths=responseObj["paths"][0];
       let latlngs_1 = polyline.decode(points);
       
-      map.fitBounds(L.latLngBounds(latlngs_1));
+      map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
           icon: L.icon({      
               iconUrl: 'img/origin.png',
@@ -1121,7 +1087,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     }
 
-    var addressPatterns={
+    const addressPatterns={
       'Hl':'Hill',
       'Rd':'Road',
       'Dr':'Drive',

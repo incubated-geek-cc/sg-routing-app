@@ -28,81 +28,71 @@
   </head>
   <body>
     <button id='loaderSignal' class='btn btn-sm btn-default p-0' disabled><span class='spinner-border spinner-border-sm m-1'></span><small>Loading..</small></button>
-    <nav id='searchbar'>
-      <div style="height: -webkit-fill-available;">
-        <div id='navbarTop'>
-          <table>
+
+    <nav id='searchbar' class='p-1 rounded-sm'>
+      <div class="w-100 h-100" style="overflow-y: auto;overflow-x: clip">
+
+        <button id="toggleInfoPanel" type="button" class="btn btn-sm btn-success rounded-circle pt-1 pb-1 pl-2 pr-2 m-2 float-right"><span class="unicode">⮝</span></button>
+
+
+        <div id='navbarTop' class='w-100 p-2 m-0'>
+          
+          <table class='table border-0 w-100 mb-1'>
             <tr>
-              <td colspan='2' class='text-right'>
-                <button id='cancelSearchBarBtn' type='button' class='btn btn-sm btn-light border-danger text-danger rounded-circle'><small class='unicode'>❌</small></button>
+              <td rowspan='2' class='text-center border-0 p-0'>
+                <a class='navbar-brand m-0 p-0'></a>
+                <div class='small'><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></div>
+              </td>
+              <td class="text-right text-dark border-0 p-0">
+                <div class='small pr-1'><span class='unicode'>ᴛʀᴀɴsᴘᴏʀᴛ ᴍᴏᴅᴇ</span></div>
+              </td>
+              <td class="text-left border-0 p-0">
+                  <div class="custom-control custom-radio custom-control-inline m-0">
+                    <input type="radio" class="custom-control-input routeType" id="routeType0" name="routeType" value="0" checked />
+                    <label class="custom-control-label emoji" for="routeType0">🚗</label>
+                  </div>
+              </td>
+              <td class="text-left border-0 p-0">
+                  <div class="custom-control custom-radio custom-control-inline m-0">
+                    <input type="radio" class="custom-control-input routeType" id="routeType1" name="routeType" value="1" />
+                    <label class="custom-control-label emoji" for="routeType1">👣</label>
+                  </div>
+              </td>
+              <td class="text-left border-0 p-0">
+                  <div class="custom-control custom-radio custom-control-inline m-0">
+                    <input type="radio" class="custom-control-input routeType" id="routeType2" name="routeType" value="2" />
+                    <label class="custom-control-label emoji" for="routeType2">🚲</label>
+                  </div>
               </td>
             </tr>
+
             <tr>
-              <td class='text-center'>
-                <a class='navbar-brand'></a>
+              <td class="text-right text-dark border-0 p-0">
+                <div class='small pr-1'><span class='unicode'>ʀᴏᴜᴛᴇ sᴇʀᴠɪᴄᴇ</span></div>
               </td>
-              <td>
-             <!--    <div class='form-check-inline small'>
-                    <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ&nbsp;</label>
-
-                    <input type='radio' class='form-check-input routeType' name='routeType' value="0" checked /><label class='form-check-label mr-2 ml-0'>🚗</label>
-
-                    <input type='radio' class='form-check-input routeType' name='routeType' value="1" /><label class='form-check-label mr-2 ml-0'>👣</label>
-                    
-                    <input type="radio" class="form-check-input routeType" name='routeType' value="2" /><label class="form-check-label mr-2 ml-0">🚲</label>
-                </div> -->
-
-
-                <div class="form-check-inline small">
-                  <label class='form-check-label mr-1 ml-0 text-dark unicode'>ᴛʀᴀɴsᴘᴏʀᴛ&nbsp;ᴍᴏᴅᴇ&nbsp;</label>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input routeType" id="routeType0" name="routeType" value="0" checked />
-                    <label class="custom-control-label unicode" for="routeType0">🚗</label>
-                  </div>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input routeType" id="routeType1" name="routeType" value="1" />
-                    <label class="custom-control-label unicode" for="routeType1">👣</label>
-                  </div>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input routeType" id="routeType2" name="routeType" value="2" />
-                    <label class="custom-control-label unicode" for="routeType2">🚲</label>
-                  </div>
+              <td class="text-left border-0 p-0">
+                <div class="custom-control custom-radio custom-control-inline m-0">
+                  <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider0" name="serviceProvider" value="OneMap" checked />
+                  <label class="custom-control-label unicode" for="serviceProvider0"><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
                 </div>
               </td>
-            </tr>
-            <tr>
-              <td class='text-center'>
-                <small><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></small>
-              </td>
-              <td>
-                <!-- <div class="form-check-inline small">
-                  <label class="form-check-label mr-1 ml-0 text-dark unicode">ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
-
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="OneMap" checked /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
-                  
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="Graphhopper" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
-                  
-                  <input type="radio" class="form-check-input serviceProvider" name="serviceProvider" value="HERE" /><label class="form-check-label mr-2 ml-0">&nbsp;<svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
-                </div> -->
-                <div class="form-check-inline small">
-                  <label class='form-check-label mr-1 ml-0 text-dark unicode'>ʀᴏᴜᴛᴇ&nbsp;sᴇʀᴠɪᴄᴇ&nbsp;</label>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider0" name="serviceProvider" value="OneMap" checked />
-                    <label class="custom-control-label unicode" for="serviceProvider0"><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
-                  </div>
-                  <div class="custom-control custom-radio custom-control-inline">
+              <td class="text-left border-0 p-0">
+                 <div class="custom-control custom-radio custom-control-inline m-0">
                     <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider1" name="serviceProvider" value="Graphhopper" />
                     <label class="custom-control-label unicode" for="serviceProvider1"><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
                   </div>
-                  <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider2" name="serviceProvider" value="HERE" />
-                    <label class="custom-control-label unicode" for="serviceProvider2"><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
-                  </div>
+              </td>
+              <td class="text-left border-0 p-0">
+                <div class="custom-control custom-radio custom-control-inline m-0">
+                  <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider2" name="serviceProvider" value="HERE" />
+                  <label class="custom-control-label unicode" for="serviceProvider2"><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
                 </div>
               </td>
             </tr>
+
             <tr>
-              <td colspan='2' class='text-center'>
+              <td colspan='5' class='text-center  border-0 pl-0 pr-0 pt-1 pb-1'>
+
                 <form onsubmit='return!1' class='pure-form'>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
@@ -111,8 +101,8 @@
                         <input id='geocoder_o' type='text' class='form-control rounded-0' name='geocoder_o' placeholder='Search Origin...' />
                     </div>
                 </form>
-              
-                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light pt-1 pb-1 pr-2 pl-2 rounded-circle text-dark border-secondary m-1'><small>&nbsp;⇵&nbsp;</small></strong>
+                
+                <strong id='switch_origin_destination' class='btn btn-sm btn-outline-light p-1 rounded-circle text-dark border-secondary m-1 small symbol'>&nbsp;⇵&nbsp;</strong>
 
                 <form onsubmit='return!1' class='pure-form'>
                    <div class="input-group input-group-sm">
@@ -125,31 +115,30 @@
 
               </td>
             </tr>
+
           </table>
+
         </div>
-        <div id='navbarToggler'>
-          <ul class='navbar-nav me-auto'>
+        <div id='navbarToggler' class="w-100 pl-2 pr-2 pt-0 pb-0 m-0">
+          <ul class='navbar-nav'>
             
-            <li class='nav-item pl-1 pr-1 pb-2 pt-2'>
-              <table class='small w-100'>
+            <li class='nav-item pl-1 pr-1 pb-0 pt-0'>
+              <table class='w-100'>
                 <tr>
-                  <td class='pl-0 pr-2'>
-                    <button id='resetMapBtn' class='btn btn-sm btn-danger w-100 p-1 rounded-0 text-center'><small class='small'>⟲ <span class='unicode'>ʀᴇsᴇᴛ</span></small></button>
+                  <td class='pl-0 pr-1'>
+                    <button id='resetMapBtn' type='button' class='btn btn-sm btn-danger w-100 p-1 m-0 rounded-0 text-center'><span class='symbol'>⟲</span><span class='unicode ml-1'>ʀᴇsᴇᴛ</span></button>
                   </td>
-                  <td class='pl-0 pr-0'>
-                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>
-                      <small class='small'>❮⁄❯ <span class='unicode'>ᴘʀᴇᴠɪᴇᴡ ɢᴇᴏᴊsᴏɴ [📖]</span> </small>
-                    </button>
+                  <td class='pl-0 pr-1'>
+                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'><span class='unicode ml-1 mr-1'>ɢᴇᴏᴊsᴏɴ ᴅᴀᴛᴀ</span>[<span class='emoji'>📖</span>]</button>
                   </td>
-                  <td class='pl-0 pr-0 text-center'>▷</td>
+                  <td class='pl-0 pr-0 text-center symbol'>▷</td>
                   <td class='pl-0 pr-0'>
-                    <button id="exportBtn" class="btn btn-sm btn-primary p-1 rounded-0 text-center"><small class='small'>💾 <span class='unicode'>sᴀᴠᴇ ᴅᴀᴛᴀ</span></small></button>
+                    <button id="exportBtn" type='button' class="btn btn-sm btn-primary p-1 rounded-0 text-center"><span class='emoji'>💾</span></button>
                   </td>
                 </tr>
                 <tr>
                   <td colspan='4'>
-                    <hr class='border-0'>
-                    <strong class='small'>📍&nbsp;&nbsp;&nbsp;<b>Route Options</b></strong>
+                    <strong class='small'>📍<b class='pl-2'>Route Options</b></strong>
                     <div id='route_options' class='small'></div>
                   </td>
                 </tr>
@@ -162,19 +151,19 @@
                 <tr>
                   <td colspan='4'>
                     <hr>
-                    <button id="speakBtn" class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small>🔊</small></button> <span><small class='small pr-1'>◁ select to read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="ℹ Route Instructions" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>"><small class='small'>ℹ <span class='unicode'>ɪɴsᴛʀᴜᴄᴛɪᴏɴs [📖]</span> </small></button>
+                    <button id="speakBtn" class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small>🔊</small></button> <span><small class='small pr-1 symbol'>◁ read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-info p-1 rounded-0 text-left' data-toggle="popover" data-title="ℹ Route Instructions" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>"><span class='emoji'>ℹ</span><span class='unicode ml-1'>ɪɴsᴛʀᴜᴄᴛɪᴏɴs</span>[<span class='emoji'>📖</span>]</button>
                   </td>
                 </tr>
                 <tr>
                   <td colspan='4'>
                     <div id='route_instructions_hidden'></div>
                     <hr class='border-0'>
-                    <div id="routeIntructionsCarousel" class="carousel slide" data-ride="carousel" data-interval="5000" data-touch="true"></div>
+                    <div id="routeIntructionsCarousel" class="carousel slide small" data-ride="carousel" data-interval="5000" data-touch="true"></div>
                   </td>
                 </tr>
               </table>
             </li>
-            <li class='nav-item pl-1 pr-1 pb-2 pt-2'>
+            <li class='nav-item pl-1 pr-1 pb-0 pt-1'>
                <button type='button' class='btn btn-sm btn-warning p-1 rounded-0 text-left' data-toggle="popover" data-title="🏅 Credits & Attributions" data-dismissible="true" data-placement="right" data-content="
                     <small class='text-muted'>
                       <dl>
@@ -208,7 +197,7 @@
                         </dd>
                       </dl>
                     </small>"
-                  ><small class='small'>🏅 <span class='unicode'>ᴄʀᴇᴅɪᴛs & ᴀᴛᴛʀɪᴃᴜᴛɪᴏɴs [📖]</span> </small></button><span><small class='small pl-1'><small>◁ select to view popup</small></small></span>
+                  ><small class='small'>🏅 <span class='unicode'>ᴄʀᴇᴅɪᴛs & ᴀᴛᴛʀɪᴃᴜᴛɪᴏɴs [📖]</span> </small></button><span><small class='small pl-1'><small class='symbol'>◁ view popup</small></small></span>
             </li>
           </ul>
           

@@ -1,11 +1,11 @@
 html,body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 body {
-    width: 100vw;
-    height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 .autocomplete-suggestions {
     font-family: inherit;
@@ -25,31 +25,31 @@ body {
     box-sizing: border-box;
 }
 .autocomplete-suggestion {
-    position: relative;
-    padding: .6em;
-    line-height: 23px;
-    white-space: nowrap;
-    overflow: hidden;
-    font-family: inherit;
-    font-size: x-small;
-    color: #333
+  position: relative;
+  padding: .6em;
+  line-height: 23px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: inherit;
+  font-size: x-small;
+  color: #333
 }
 
 .autocomplete-suggestion b {
-    font-weight: 400;
-    color: #1f8dd6
+  font-weight: 400;
+  color: #1f8dd6
 }
 
 .autocomplete-suggestion.selected {
-    background: #f0f0f0
+  background: #f0f0f0
 }
 
 .pure-form {
-    background: 0 0;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    width: 100%
+  background: 0 0;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  width: 100%
 }
 .icon {
   display: inline-block;
@@ -59,43 +59,52 @@ body {
   stroke: currentColor;
   fill: currentColor;
 }
-.route {
-  color: #000000;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 5;
-  stroke-opacity: 0.75;
-}
 
+/* ------------------------------------------------- */
 #map {
-  margin:0;
-  position:absolute;
-  z-index: 1000;
+  height: 100vh;
+  width: 100vw;
   background: transparent;
+  /*transition: width .3s ease-in-out;*/
+
+  position: absolute;
+  z-index: 1000;
+
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: 0;
 }
 
 #searchbar {
-  background: linear-gradient(to bottom right,#f9f5ed 30%,#e0eed1,#ade1f5);
-  border-radius: 0;
-  box-shadow: 1px 0 rgb(0 0 0 / 15%);
-  -webkit-backdrop-filter: blur(10px) saturate(3);
-  backdrop-filter: blur(10px) saturate(3);
-  background-color: hsla(0,0%,100%,.7);
+  height: calc(100vh - 100px);
+  flex-direction: column;
+  transition: all .3s ease-in-out;
+  display: flex;
+
   position:absolute;
   z-index: 1005;
-  padding: 0.5rem 0.25rem;
-  padding-right: 0;
-  display: flex;
-  flex-direction: column;
+
+  left:0;
+  bottom:0;
+  transform: translateY(calc(50vh - 50px));
+  
+  background-color: rgba(255, 255, 255, .15);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 1px 0 rgb(0 0 0 / 15%);
+  width:320px;
+  max-width: 320px;
+  overflow:hidden;
 }
 
-#navbarTop {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  display: flex;
-  min-height: 3.75em;
-  padding: 0.5rem 0.25rem;
+#searchbar.expand {
+    transform: translateY(calc(50vh - 50px));
+    position: absolute;
+    z-index: 1005;
+    bottom: calc(50vh - 50px);
 }
+
 .navbar-brand {
   background-image: url("../img/logo.png");
   background-color: #ffffff;
@@ -105,77 +114,7 @@ body {
   background-repeat: no-repeat;
   background-size: contain;
 }
-#navbarToggler {
-  padding-right: 0;
-}
-
-#cancelSearchBarBtn {
-  visibility: hidden;
-}
-
-@media (min-width: 768px) {
-  #map {
-    height: 100vh;
-    left: 320px;
-    right: 0;
-    width: auto;
-  }
-
-  #searchbar {
-    height: 100vh;
-    width: 320px;
-    top: 0;
-    left: 0;
-    right: auto;
-
-    overflow-y:hidden;
-    transform: none;
-  }
-
-  #cancelSearchBarBtn {
-    visibility: hidden;
-  }
-
-  #navbarToggler {
-    overflow-x:hidden;
-    overflow-y:auto;
-  }
-}
-
-@media (max-width: 600px) {
-  #map {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    transition: filter 0.3s ease-in-out;
-  }
-
-  #searchbar {
-    top: -60px;
-    height: 100%;
-    bottom: 0;
-    transform: translateY(55%);
-    display: flex;
-    flex-direction: column;
-
-    overflow-y:auto;
-    transition: all 0.3s ease-in-out;
-  }
-
-  #cancelSearchBarBtn {
-    visibility: hidden;
-  }
-  /*#searchbar:hover,
-  #searchbar:focus,
-  #searchbar:active {
-    top: 0px;
-    transform: translateY(0);
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease-in-out;
-  }*/
-}
+/* ------------------------------------------------- */
 
 li.nav-item.pl-1.pr-1 {
   align-items: center;
@@ -302,6 +241,12 @@ label.form-check-label.mr-2.ml-0 {
 .unicode {
   font-family:Cambria;
 }
+.symbol {
+  font-family:Segoe UI Symbol;
+}
+.emoji {
+  font-family:Segoe UI Emoji;
+}
 
 .carousel-indicators li {
   box-sizing: content-box;
@@ -365,11 +310,10 @@ label.form-check-label.mr-2.ml-0 {
   padding: 0.1rem 0.2rem;
 }
 
-
-#navbarTop form.pure-form div.input-group.input-group-sm {
-  width: calc(100% - 1.5rem);
-}
-
 .input-group-prepend {
   margin-right: -1px - 0.125rem;
+}
+
+.carousel-inner {
+  display:contents;
 }
