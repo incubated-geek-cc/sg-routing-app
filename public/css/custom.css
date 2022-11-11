@@ -6,6 +6,7 @@ html,body {
 body {
   width: 100vw;
   height: 100vh;
+  padding-top: 10px;
 }
 .autocomplete-suggestions {
     font-family: inherit;
