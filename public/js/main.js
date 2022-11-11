@@ -57,7 +57,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     const loaderSignal=document.getElementById('loaderSignal');
     loaderSignal['style']['display']='none';
 
-    await new Promise((resolve, reject) => setTimeout(resolve, 500));
+    await new Promise((resolve, reject) => setTimeout(resolve, 150));
     
     map.fitBounds([ne, sw]);
     map.setView([lat, lng], defaultZoom);
@@ -96,7 +96,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
       previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
     }
-// await new Promise((resolve, reject) => setTimeout(resolve, 500));
+// await new Promise((resolve, reject) => setTimeout(resolve, 150));
     function setRouteInstructions(routeInstructions) {
       let route_instructionsDIV=document.createElement('div');
       route_instructionsDIV.route_instructions='geojson';
@@ -174,7 +174,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     window.addEventListener('resize', async(evt) => {
       resizeComponents();
-      await new Promise((resolve, reject) => setTimeout(resolve, 500));
+      await new Promise((resolve, reject) => setTimeout(resolve, 150));
       map.invalidateSize();
     });
 
@@ -350,6 +350,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     }
 
+    const maxSuggestion=15; // minus one
     const o_geocoder=new autoComplete({
       selector:'#geocoder_o',
       minChars:3,
@@ -362,13 +363,15 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
               suggestions.push(choices[i]);
             }
         }
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+        suggestions=suggestions.slice(0,maxSuggestion);
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
 
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
         if(!searchbarElement.classList.contains('expand')) {
           toggleInfoPanel.click();
           map.invalidateSize();
         }
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        await new Promise((resolve, reject) => setTimeout(resolve, 150));
         
         suggest(suggestions);
       },
@@ -392,13 +395,15 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
               suggestions.push(choices[i]);
             }
         }
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+        suggestions=suggestions.slice(0,maxSuggestion);
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
 
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
         if(!searchbarElement.classList.contains('expand')) {
           toggleInfoPanel.click();
           map.invalidateSize();
         }
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        await new Promise((resolve, reject) => setTimeout(resolve, 150));
 
         suggest(suggestions);
       },
