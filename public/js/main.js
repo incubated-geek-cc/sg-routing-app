@@ -93,6 +93,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     function setGeojsonPreview(geojsonOutput) {
       let geojsonDIV=document.createElement('div');
       geojsonDIV.id='geojson';
+      geojsonDIV.classList.add('user-select-none');       
       geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
       previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
     }
@@ -101,6 +102,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let route_instructionsDIV=document.createElement('div');
       route_instructionsDIV.route_instructions='geojson';
       route_instructionsDIV.classList.add('small');
+      route_instructionsDIV.classList.add('user-select-none');
       route_instructionsDIV.id='route_instructions';
       route_instructionsDIV.innerHTML=routeInstructions;
       route_instructions_btn.setAttribute('data-content', route_instructionsDIV.outerHTML);
@@ -283,8 +285,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       route_info.innerHTML='';
       route_instructions_hidden.innerHTML='';
 
-      route_instructions_btn.setAttribute('data-content','<div id="route_instructions" class="small"></div>');
-      previewGeojsonBtn.setAttribute('data-content','<div id="geojson"></div>');
+      route_instructions_btn.setAttribute('data-content','<div id="route_instructions" class="small user-select-none"></div>');
+      previewGeojsonBtn.setAttribute('data-content','<div id="geojson" class=" user-select-none"></div>');
     }
 
     resetMapBtn.addEventListener('click', (evt) => {

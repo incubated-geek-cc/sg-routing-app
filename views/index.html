@@ -38,7 +38,7 @@
         <div id='navbarTop' class='w-100 p-2 m-0'>
           
           <table class='table border-0 w-100 mb-1'>
-            <tr>
+            <tr class='user-select-none'>
               <td rowspan='2' class='text-center border-0 p-0'>
                 <a class='navbar-brand m-0 p-0'></a>
                 <div class='small'><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></div>
@@ -66,7 +66,7 @@
               </td>
             </tr>
 
-            <tr>
+            <tr class='user-select-none'>
               <td class="text-right text-dark border-0 p-0">
                 <div class='small pr-1'><span class='unicode'>ʀᴏᴜᴛᴇ sᴇʀᴠɪᴄᴇ</span></div>
               </td>
@@ -119,7 +119,7 @@
           </table>
 
         </div>
-        <div id='navbarToggler' class="w-100 pl-2 pr-2 pt-0 pb-0 m-0">
+        <div id='navbarToggler' class="w-100 pl-2 pr-2 pt-0 pb-0 m-0 user-select-none">
           <ul class='navbar-nav'>
             
             <li class='nav-item pl-1 pr-1 pb-0 pt-0'>
@@ -129,7 +129,7 @@
                     <button type='button' id="resetMapBtn" class="btn btn-sm btn-outline-primary ml-0 mr-1 text-center"><small class='emoji small'>🔄</small><small class='unicode ml-1'>ᴿᵉˢᵉᵗ</small></button>
                   </td>
                   <td class='pl-0 pr-1'>
-                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-outline-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson"></div>'>[<span class='emoji'>🗨️</span>]<span class='unicode ml-1 mr-1'>ᴾʳᵉᵛⁱᵉʷ ᴰᵃᵗᵃ</span></button>
+                    <button id='previewGeojsonBtn' type='button' class='btn btn-sm btn-outline-info w-100 p-1 rounded-0 text-center' data-toggle='popover' data-title='❮⁄❯ Preview GeoJSON' data-dismissible='true' data-placement='right' data-content='<div id="geojson" class="user-select-none"></div>'>[<span class='emoji'>🗨️</span>]<span class='unicode ml-1 mr-1'>ᴾʳᵉᵛⁱᵉʷ ᴰᵃᵗᵃ</span></button>
                   </td>
                   <td class='pl-0 pr-0 text-center symbol'>▷</td>
                   <td class='pl-1 pr-0'>
@@ -151,7 +151,7 @@
                 <tr>
                   <td colspan='4'>
                     <hr>
-                    <button id="speakBtn" type='button' class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small class='emoji'>🔊</small></button> <span><small class='small pr-1 symbol'>◁ read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-outline-info p-1 rounded-0 text-left' data-toggle="popover" data-title="🧭 Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small'></div>">[<span class='emoji'>🗨️</span>]<span class='unicode ml-1'>ᴿᵒᵘᵗᵉ ᴺᵃᵛⁱᵍᵃᵗⁱᵒⁿ</span></button>
+                    <button id="speakBtn" type='button' class="btn btn-sm btn-outline-light pr-2 pl-2 rounded-circle border-secondary"><small class='emoji'>🔊</small></button> <span><small class='small pr-1 symbol'>◁ read aloud</small></span> <button id='route_instructions_btn' type='button' class='btn btn-sm btn-outline-info p-1 rounded-0 text-left' data-toggle="popover" data-title="🧭 Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small user-select-none'></div>">[<span class='emoji'>🗨️</span>]<span class='unicode ml-1'>ᴿᵒᵘᵗᵉ ᴺᵃᵛⁱᵍᵃᵗⁱᵒⁿ</span></button>
                   </td>
                 </tr>
                 <tr>
@@ -165,7 +165,7 @@
             </li>
             <li class='nav-item pl-1 pr-1 pb-0 pt-1'>
                <button type='button' class='btn btn-sm btn-outline-info p-1 rounded-0 text-left' data-toggle="popover" data-title="🏅 Attribution List" data-dismissible="true" data-placement="right" data-content="
-                    <small class='text-muted'>
+                    <small class='text-muted user-select-none'>
                       <dl>
                         <dt>❶ Routing APIs</dt>
                         <dd class='pl-3'>
