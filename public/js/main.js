@@ -122,7 +122,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
           carouselItemsHTMLStr+='<div class="carousel-item'+ (rowIndex==0 ? ' active' : '') +'">';
           carouselItemsHTMLStr+='<h1 class="text-right text-muted pr-2 pl-2">🧭</h1>';
           carouselItemsHTMLStr+='<div class="carousel-caption text-left">';
-          carouselItemsHTMLStr+='<kbd class="rounded-0"><small>'+instructionIndex+'. '+instructionText+'</small></kbd>';
+          carouselItemsHTMLStr+='<kbd class="rounded-0"><small>'+toCamelCase(instructionIndex+'. '+instructionText)+'</small></kbd>';
           carouselItemsHTMLStr+='</div>';
           carouselItemsHTMLStr+='</div>';
           
@@ -291,11 +291,11 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       resetMap();
       loaderSignal['style']['display']='none';
 
-      startPoint=initStartPoint;
-      endPoint=initEndPoint;
+      startPoint=toCamelCase(initStartPoint);
+      endPoint=toCamelCase(initEndPoint);
 
-      geocoder_o.value=toCamelCase(initStartAddr);
-      geocoder_d.value=toCamelCase(initEndAddr);
+      geocoder_o.value=initStartAddr;
+      geocoder_d.value=initEndAddr;
 
       serviceProvider='OneMap';
       for(let serviceProviderOption of serviceProviderOptions) {
@@ -352,8 +352,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     const o_geocoder=new autoComplete({
       selector:'#geocoder_o',
-      minChars:2,
-      source: function(term, suggest){
+      minChars:3,
+      source: async function(term, suggest){
         term = term.toLowerCase();
         let choices = Object.keys(geocoders);
         let suggestions = [];
@@ -362,6 +362,14 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
               suggestions.push(choices[i]);
             }
         }
+
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        if(!searchbarElement.classList.contains('expand')) {
+          toggleInfoPanel.click();
+          map.invalidateSize();
+        }
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        
         suggest(suggestions);
       },
       onSelect: function(e, term, item) {
@@ -374,8 +382,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     const d_geocoder=new autoComplete({
       selector:'#geocoder_d',
-      minChars:2,
-      source: function(term, suggest){
+      minChars:3,
+      source: async function(term, suggest){
         term = term.toLowerCase();
         let choices = Object.keys(geocoders);
         let suggestions = [];
@@ -384,6 +392,14 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
               suggestions.push(choices[i]);
             }
         }
+
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        if(!searchbarElement.classList.contains('expand')) {
+          toggleInfoPanel.click();
+          map.invalidateSize();
+        }
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+
         suggest(suggestions);
       },
       onSelect: function(e, term, item) {
@@ -574,11 +590,11 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       map.addLayer(path);
 
-      originName=routeObj["start_point"];
-      destinationName=routeObj["end_point"];
+      originName=toCamelCase(routeObj["start_point"]);
+      destinationName=toCamelCase(routeObj["end_point"]);
 
-      geocoder_o.value=toCamelCase(originName);
-      geocoder_d.value=toCamelCase(destinationName);
+      geocoder_o.value=originName;
+      geocoder_d.value=destinationName;
 
       let routeInfo = "";
       routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
@@ -996,7 +1012,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= `${route['text']}, at ${distance_metres} metres, for ${routeSeconds} seconds.`;
+        routeInstructions+= toCamelCase(`${route['text']}, at ${distance_metres} metres, for ${routeSeconds} seconds.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }
@@ -1020,7 +1036,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+        routeInstructions+= toCamelCase(`${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }
@@ -1125,7 +1141,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= `${intrText} at ${distance_metres} metres, for ${routeSeconds} seconds.`;
+        routeInstructions+= toCamelCase(`${intrText} at ${distance_metres} metres, for ${routeSeconds} seconds.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }

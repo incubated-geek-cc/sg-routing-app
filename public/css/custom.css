@@ -76,6 +76,11 @@ body {
   margin: 0;
 }
 
+#sidebar-wrapper {
+  overflow-y: auto;
+  overflow-x: clip;
+}
+
 #searchbar {
   height: calc(100vh - 100px);
   flex-direction: column;
@@ -99,10 +104,10 @@ body {
 }
 
 #searchbar.expand {
-    transform: translateY(calc(50vh - 50px));
-    position: absolute;
-    z-index: 1005;
-    bottom: calc(50vh - 50px);
+  transform: translateY(calc(50vh - 50px));
+  position: absolute;
+  z-index: 1005;
+  bottom: calc(50vh - 50px);
 }
 
 .navbar-brand {
