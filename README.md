@@ -9,6 +9,12 @@
 
 🧰 Web application was built with <strong>HTML5</strong> and <strong>NodeJS</strong>. Rationale of development was for self-exploration. From a macro-perspective this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers.
 
+## 📌 Project Status
+
+* <del>Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness</del> (Implemented ✔️ as of Nov 2022)
+* ✍ Article at: https://geek-cc.medium.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9
+* Feel free to follow me on 🔗 [Medium](https://geek-cc.medium.com/) if you are interested in this piece of work or are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>
+
 ## ℹ Implementation Overview
 
 ### ❶ Routing APIs
@@ -40,9 +46,8 @@ The choice of JavaScript map plugin in this Geospatial web application is <a hre
 🗺 Choice of basemap implemented is Voyager. Credits to <a href="https://carto.com/attributions" target="_blank"> CARTO</a>, by <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>
 
 ---
-
-## 📌 Project Status
-
-* Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness
-* ✍ Article at: https://geek-cc.medium.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9
-* Feel free to follow me on 🔗 [Medium](https://geek-cc.medium.com/) if you are interested in this piece of work or are interested in <strong>Data Analytics</strong> (including Tableau Dashboarding), 🌐 <strong>Geospatial Intelligence & GIS</strong> or <strong>other web-related content</strong>
+### Preview of Latest UI:
+#### 📱 Mobile View:
+<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" width="250px" />
+#### 💻 🖥️ On Larger Screens:
+<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
