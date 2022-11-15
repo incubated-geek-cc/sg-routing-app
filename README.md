@@ -31,7 +31,7 @@
 <ol>
 	<li>© <a href="https://www.onemap.sg/legal/termsofuse.html" target="_blank">OneMap, by <a href="http://SLA.gov.sg" target="_blank"><abbr title="Singapore Land Authority">SLA</abbr></a></a>
 	<li>© Graphhopper | <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a></li>
-	<li>© HERE | <a href="https://legal.here.com/en-gb/terms/acceptable-use-policy" target="_blank"></li>
+	<li>© <a href="https://legal.here.com/en-gb/terms/acceptable-use-policy" target="_blank">HERE</a></li>
 	<li>© Credits to <a href="https://carto.com/attributions" target="_blank"> CARTO</a>, by <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a></li>
 </ol>
 
