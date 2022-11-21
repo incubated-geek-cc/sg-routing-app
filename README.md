@@ -21,13 +21,12 @@
 ## Features and Screenshots
 
 <p><strong>📱 Mobile View</strong></p>
-<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" width="250px" />
+<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" width="250px" />
 
 <p><strong>💻 🖥️ On Larger Screens</strong></p>
-<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
+<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
 
 <p><strong>📱 Mobile View for all Route Services displayed</strong></p>
----
 <table>
 	<thead>
 		<tr>
@@ -47,8 +46,8 @@
 		</tr>
 	</tbody>
 </table>
----
-<p><strong>📱 Mobile View for Other General Features</strong></p>
+
+<p><strong>📱 Mobile View: Other General Features</strong></p>
 <table>
 	<thead>
 		<tr>
@@ -61,7 +60,7 @@
 	<tbody>
 		<tr>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /></td> 
-			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details" width="250px" /></td>
+			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details.jpg" width="250px" /></td>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" width="250px" /></td> 
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /></td>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" width="250px" /></td>
