@@ -27,24 +27,27 @@
 <br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
 
 <p><strong>📱 Mobile View for all Route Services displayed</strong></p>
+---
 <table>
 	<thead>
-		<tr><th align='center' colspan='2'>OneMap</th><th align='center' colspan='2'>Graphhopper</th><th  align='center' colspan='2'>Here</th></tr>
+		<tr>
+			<th align='center' colspan='2'>OneMap</th>
+			<th align='center' colspan='2'>Graphhopper</th>
+			<th align='center' colspan='2'>Here</th>
+		</tr>
 	</thead>
 	<tbody>
 		<tr>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRoute.jpg" width="250px" /></td> 
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRouteDetails.jpg" width="250px" /></td> 
-
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRoute.jpg" width="250px" /></td> 
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRouteDetails.jpg" width="250px" /></td> 
-
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRoute.jpg" width="250px" /></td>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRouteDetails.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
 </table>
-
+---
 <p><strong>📱 Mobile View for Other General Features</strong></p>
 <table>
 	<thead>
@@ -58,12 +61,9 @@
 	<tbody>
 		<tr>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /></td> 
-			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details" width="250px" /></td> 
-
+			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details" width="250px" /></td>
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" width="250px" /></td> 
-
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /></td>
-
 			<td align='center'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
