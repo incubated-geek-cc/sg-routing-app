@@ -75,7 +75,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     geocoder_o.value=toCamelCase(initStartAddr);
     geocoder_d.value=toCamelCase(initEndAddr);
 
-
     var routes=[];
 
     const iconSize=[25, 25];
@@ -250,9 +249,19 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     const resetMapBtn=document.getElementById('resetMapBtn');
     const serviceProviderOptions=document.getElementsByClassName('serviceProvider');
 
+    function deselectAllServiceProviders() {
+      for(let serviceProviderOption of serviceProviderOptions) {
+        if(serviceProviderOption.classList.contains('active')) {
+            serviceProviderOption.classList.remove('active');
+        }
+      }
+    }
     for(let serviceProviderOption of serviceProviderOptions) {
-      serviceProviderOption.addEventListener('change', (e) => {
-        serviceProvider=e.target.value;
+      serviceProviderOption.addEventListener('click', async(e) => {
+        deselectAllServiceProviders();
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+        serviceProviderOption.classList.add('active');
+        serviceProvider=serviceProviderOption.value;
         initParams(startPoint, endPoint);
         execAjax();
       });
@@ -996,14 +1005,26 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     } // renderHEREGeojson
 
+
     var routeTypeOptions=document.getElementsByClassName('routeType');
-    for(var routeTypeOption of routeTypeOptions) {
-      routeTypeOption.addEventListener('change', (e) => {
-         routeType=parseInt(e.target.value);
-          initParams(startPoint, endPoint);
-          execAjax();
+    function deselectAllRouteTypes() {
+      for(let routeTypeOption of routeTypeOptions) {
+        if(routeTypeOption.classList.contains('active')) {
+            routeTypeOption.classList.remove('active');
+        }
+      }
+    }
+    for(let routeTypeOption of routeTypeOptions) {
+      routeTypeOption.addEventListener('click', async(e) => {
+        deselectAllRouteTypes();
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+        routeTypeOption.classList.add('active');
+        routeType=parseInt(routeTypeOption.value);
+        initParams(startPoint, endPoint);
+        execAjax();
       });
     }
+
 
     function renderGraphhoperRouteInstructions(responseObj) {
       let routeCounter=0;

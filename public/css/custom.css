@@ -137,15 +137,20 @@ li.nav-item.pl-1.pr-1:last-child {
   border-bottom-color: transparent;
 }
 
-#geocoder_o,
-#geocoder_d { 
-  font-size: smaller; 
+#geocoder_o, #geocoder_d {
   font-size: .875rem;
+  border-left: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  border: 1px solid #d2d2d2;
+  color:#444444;
 }
 #switch_origin_destination {
-  cursor:pointer;
-  margin: 0 auto;
+  cursor: pointer;
+  color: #2e2e2e;
+  vertical-align: -webkit-baseline-middle;
 }
+
 .leaflet-right .leaflet-control {
     margin-right: 0;
 }
@@ -165,11 +170,20 @@ div.leaflet-control-layers.leaflet-control.leaflet-control-layers-expanded {
   font-size: smaller;
 }
 .selection-side-icon {
-  height: 17px;
+  height: 15px;
 }
 div.card-body.tab-content {
   padding: 0.55rem;
 }
+
+button.btn.btn-outline-primary.rounded-pill.serviceProvider.active,
+button.btn.btn-outline-primary.rounded-pill.serviceProvider:hover,
+button.btn.btn-outline-primary.rounded-pill.routeType.active,
+button.btn.btn-outline-primary.rounded-pill.routeType:hover {
+  background:rgb(235 252 255 / 95%);
+  color:#007bff;
+}
+
 #route_instructions,
 #geojson {
   overflow-x: hidden;
@@ -318,8 +332,14 @@ label.form-check-label.mr-2.ml-0 {
   padding: 0.1rem 0.2rem;
 }
 
-.input-group-prepend {
+/*.input-group-prepend {
   margin-right: -1px - 0.125rem;
+}*/
+
+form.pure-form div.input-group div.input-group-prepend span.input-group-text {
+    background-color: transparent;
+    border-radius: 0;
+    border: 1px solid transparent;
 }
 
 .carousel-inner {
@@ -333,4 +353,8 @@ label.form-check-label.mr-2.ml-0 {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.text-no-break-space {
+  white-space: nowrap;
 }

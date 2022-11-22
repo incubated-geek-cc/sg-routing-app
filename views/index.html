@@ -40,94 +40,85 @@
     <nav id='searchbar' class='p-1 rounded-sm'>
       <div id='sidebar-wrapper' class="w-100 h-100">
 
-        <button id="toggleInfoPanel" type="button" class="btn btn-sm m-2 float-right btn-outline-primary"><span class="emoji">🔼</span></button>
+        <div class='m-1 text-center float-left'>
+          <a class='navbar-brand m-0 p-0'></a>
+          <p class='mb-0 p-0'><small class='unicode'>sɢᴿᵒᵘᵗᵉʳ</small></p>
+        </div>
 
+        <button id="toggleInfoPanel" type="button" class="btn btn-lg m-1 p-0 float-right btn-outline-light border border-0"><span class="emoji">🔼</span></button>
 
-        <div id='navbarTop' class='w-100 p-2 m-0'>
-          
+        <div id='navbarTop' class='w-100 p-1 m-0'>
           <table class='table border-0 w-100 mb-1'>
-            <tr class='user-select-none'>
-              <td rowspan='2' class='text-center border-0 p-0'>
+              <!-- <td class='text-center p-0'>
                 <a class='navbar-brand m-0 p-0'></a>
                 <div class='small'><span class='unicode'>sɢᴿᵒᵘᵗᵉʳ</span></div>
-              </td>
-              <td class="text-right text-dark border-0 p-0">
-                <div class='small pr-1'><span class='unicode'>ᴛʀᴀɴsᴘᴏʀᴛ ᴍᴏᴅᴇ</span></div>
-              </td>
-              <td class="text-left border-0 p-0">
-                  <div class="custom-control custom-radio custom-control-inline m-0">
-                    <input type="radio" class="custom-control-input routeType" id="routeType0" name="routeType" value="0" checked />
-                    <label class="custom-control-label emoji" for="routeType0">🚗</label>
-                  </div>
-              </td>
-              <td class="text-left border-0 p-0">
-                  <div class="custom-control custom-radio custom-control-inline m-0">
-                    <input type="radio" class="custom-control-input routeType" id="routeType1" name="routeType" value="1" />
-                    <label class="custom-control-label emoji" for="routeType1">👣</label>
-                  </div>
-              </td>
-              <td class="text-left border-0 p-0">
-                  <div class="custom-control custom-radio custom-control-inline m-0">
-                    <input type="radio" class="custom-control-input routeType" id="routeType2" name="routeType" value="2" />
-                    <label class="custom-control-label emoji" for="routeType2">🚲</label>
-                  </div>
-              </td>
-            </tr>
+              </td> -->
+              <!--    <td class="text-right text-dark p-0">
+                <div class='small pr-1'><span class='unicode text-no-break-space'>ʀᴏᴜᴛᴇ sᴇʀᴠɪᴄᴇ</span></div>
+              </td> -->
+              <!-- <td class="text-right text-dark border-0 p-0">
+                <div class='small pr-1'><span class='unicode text-no-break-space'>ᴛʀᴀɴsᴘᴏʀᴛ ᴍᴏᴅᴇ</span></div>
+              </td> -->
+               <tr>
+                <td colspan='2' class='text-center border-0 p-0'>
+                  <form onsubmit='return!1' class='pure-form mb-1 mt-1'>
+                      <div class="input-group input-group-sm">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text"><img src='img/origin.png' alt='origin marker' style='height: 1rem' /></span>
+                          </div>
+                          <input id='geocoder_o' type='text' class='form-control' name='geocoder_o' placeholder='Search Origin...' />
+                      </div>
+                  </form>
+                  
+                  <form onsubmit='return!1' class='pure-form mb-1 mt-1'>
+                     <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"><img src='img/destination.png' alt='destination marker' style='height: 1rem' /></span>
+                        </div>
+                        <input id='geocoder_d' type='text' class='form-control' name='geocoder_d' placeholder='Search Destination...' />
+                    </div>
+                  </form>
+                </td>
+                <th class='text-center border-0 pl-0 pr-0'>
+                  <button type='button' id="switch_origin_destination" class="btn btn-sm btn-light border m-0"><span class='symbol'>⇵</span></button>
+                </th>
+              </tr>
 
-            <tr class='user-select-none'>
-              <td class="text-right text-dark border-0 p-0">
-                <div class='small pr-1'><span class='unicode'>ʀᴏᴜᴛᴇ sᴇʀᴠɪᴄᴇ</span></div>
-              </td>
-              <td class="text-left border-0 p-0">
-                <div class="custom-control custom-radio custom-control-inline m-0">
-                  <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider0" name="serviceProvider" value="OneMap" checked />
-                  <label class="custom-control-label unicode" for="serviceProvider0"><svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg></label>
-                </div>
-              </td>
-              <td class="text-left border-0 p-0">
-                 <div class="custom-control custom-radio custom-control-inline m-0">
-                    <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider1" name="serviceProvider" value="Graphhopper" />
-                    <label class="custom-control-label unicode" for="serviceProvider1"><svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg></label>
+              <tr class='user-select-none'>
+                <td colspan='3' class="text-center border-0 p-0">
+                  <div class='row no-gutters'>
+                    <div class='col-4 pl-1 pr-1'>
+                      <button type="button" id="serviceProvider0" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 serviceProvider w-100 active" name="serviceProvider" value="OneMap"><svg class="selection-side-icon icon icon-onemap"><use xlink:href="symbol-defs.svg#icon-onemap"></use></svg> <span class="text-no-break-space small"><small class='symbol'>One Map</small></span></button>
+                    </div>
+                    <div class='col-4 pl-1 pr-1'>
+                      <button type="button" id="serviceProvider1" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 serviceProvider w-100" name="serviceProvider" value="Graphhopper"><svg class="selection-side-icon icon icon-graphhoper"><use xlink:href="symbol-defs.svg#icon-graphhoper"></use></svg> <span class="text-no-break-space small"><small class='symbol'>Graphhoper</small></span></button>
+                    </div>
+                    <div class='col-4 pl-1 pr-1'>
+                      <button type="button" id="serviceProvider2" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 serviceProvider w-100" name="serviceProvider" value="HERE"><svg class="selection-side-icon icon icon-here"><use xlink:href="symbol-defs.svg#icon-here"></use></svg> <span class="text-no-break-space small"><small class='symbol'>HERE</small></span></button>
+                    </div>
                   </div>
-              </td>
-              <td class="text-left border-0 p-0">
-                <div class="custom-control custom-radio custom-control-inline m-0">
-                  <input type="radio" class="custom-control-input serviceProvider" id="serviceProvider2" name="serviceProvider" value="HERE" />
-                  <label class="custom-control-label unicode" for="serviceProvider2"><svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg></label>
-                </div>
-              </td>
+                </td>
             </tr>
 
             <tr>
-              <td colspan='5' class='text-center  border-0 pl-0 pr-0 pt-1 pb-1'>
-
-                <form onsubmit='return!1' class='pure-form'>
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text rounded-0"><img src='img/origin.png' alt='origin marker' style='height: 1rem' /></span>
-                        </div>
-                        <input id='geocoder_o' type='text' class='form-control rounded-0' name='geocoder_o' placeholder='Search Origin...' />
-                    </div>
-                </form>
-                
-                <button type='button' id="switch_origin_destination" class="btn btn-sm btn-outline-primary m-2"><span class='emoji'>🔃</span></button>
-
-                <form onsubmit='return!1' class='pure-form'>
-                   <div class="input-group input-group-sm">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text rounded-0"><img src='img/destination.png' alt='destination marker' style='height: 1rem' /></span>
-                      </div>
-                      <input id='geocoder_d' type='text' class='form-control rounded-0' name='geocoder_d' placeholder='Search Destination...' />
-                  </div>
-                </form>
-
+              <td colspan='3' class="text-center border-0 p-0">
+                <div class='row no-gutters'>
+                    <div class='col-4 pl-1 pr-1'>
+                      <button type="button" id="routeType0" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 routeType w-100 active" name="routeType" value="0"><svg class="selection-side-icon icon icon-car"><use xlink:href="symbol-defs.svg#icon-car"></use></svg> <span class="text-no-break-space small"><small class='symbol'>Drive</small></span></button>
+                    </div>  
+                  <div class='col-4 pl-1 pr-1'>
+                    <button type="button" id="routeType1" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 routeType w-100" name="routeType" value="1"><svg class="selection-side-icon icon icon-walk"><use xlink:href="symbol-defs.svg#icon-walk"></use></svg> <span class="text-no-break-space small"><small class='symbol'>Walk</small></span></button>
+                  </div>  
+                  <div class='col-4 pl-1 pr-1'>
+                    <button type="button" id="routeType2" class="btn btn-sm btn-outline-primary rounded-pill pt-0 pb-0 pr-2 pl-2 routeType w-100" name="routeType" value="2"><svg class="selection-side-icon icon icon-bicycle"><use xlink:href="symbol-defs.svg#icon-bicycle"></use></svg> <span class="text-no-break-space small"><small class='symbol'>Cycle</small></span></button>
+                  </div>  
+                </div>  
               </td>
             </tr>
-
           </table>
 
         </div>
-        <div id='navbarToggler' class="w-100 pl-2 pr-2 pt-0 pb-0 m-0 user-select-none">
+        <div id='navbarToggler' class="w-100 pl-1 pr-1 pt-0 pb-0 m-0 user-select-none">
           <ul class='navbar-nav'>
             
             <li class='nav-item pl-1 pr-1 pb-0 pt-0'>
@@ -146,7 +137,7 @@
                 </tr>
                 <tr>
                   <td colspan='4'>
-                    <strong class='small'>📍<b class='pl-2'>Route Options</b></strong>
+                    <strong class='small'><u>Route Option(s)</u></strong>
                     <div id='route_options' class='small'></div>
                   </td>
                 </tr>
