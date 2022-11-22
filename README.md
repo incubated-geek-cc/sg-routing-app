@@ -21,7 +21,7 @@
 ## Features and Screenshots
 
 <p><strong>📱 Mobile View</strong></p>
-<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" height='800px'/>
+<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" width="250px" />
 
 <p><strong>💻 🖥️ On Larger Screens</strong></p>
 <img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
@@ -37,12 +37,12 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRoute.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRouteDetails.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRoute.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRouteDetails.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRoute.jpg" height='800px'/></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRouteDetails.jpg" height='800px'/></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRoute.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRouteDetails.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRoute.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRouteDetails.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRoute.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRouteDetails.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
 </table>
@@ -59,11 +59,11 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details.jpg" height='800px'/></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" height='800px'/></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" height='800px'/></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" height='800px'/></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /> 🔃 </td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /> 💾 </td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
 </table>
