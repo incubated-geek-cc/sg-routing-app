@@ -51,18 +51,18 @@
 <table>
 	<thead>
 		<tr>
-			<th align='center' colspan='2'>Reverse Route Toggle/Display</th>
+			<th align='center' colspan='2'>Reverse Route Toggle/Display 🔃 </th>
 			<th align='center'>Display Full Route Instructions</th>
-			<th align='center'>Export GeoJSON of Routes</th>
+			<th align='center'>Export GeoJSON of Routes 💾 </th>
 			<th align='center'>View Attribution list</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /> 🔃 </td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /></td> 
 			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details.jpg" width="250px" /></td>
 			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /> 💾 </td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /></td>
 			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
