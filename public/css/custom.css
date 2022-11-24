@@ -184,8 +184,7 @@ button.btn.btn-outline-primary.rounded-pill.routeType:hover {
   color:#007bff;
 }
 
-#route_instructions,
-#geojson {
+#route_instructions {
   overflow-x: hidden;
   overflow-y: auto;
   height:35vh;
@@ -198,24 +197,6 @@ hr {
 pre {
   padding: 2.5px;
   margin: 5px;
-}
-#geojson pre {
-  white-space: pre-wrap;
-}
-#geojson pre .string { 
-  color: green; 
-}
-#geojson pre .number { 
-  color: darkorange; 
-}
-#geojson pre .boolean { 
-  color: blue; 
-}
-#geojson pre .null { 
-  color: magenta; 
-}
-#geojson pre .key { 
-  color: red; 
 }
 
 #loaderSignal {

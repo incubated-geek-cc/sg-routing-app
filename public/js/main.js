@@ -40,7 +40,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     // L.control.zoom({ position: 'topleft' }).addTo(map);
     const switch_origin_destination=document.getElementById('switch_origin_destination');
-    const previewGeojsonBtn=document.getElementById('previewGeojsonBtn');
     const exportBtn=document.getElementById('exportBtn');
     const speakBtn=document.getElementById('speakBtn');
 
@@ -84,19 +83,12 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     var originName=null;
     var destinationName=null;
 
+    var geojsonOutputStr='';
     var serviceProvider='OneMap';
     var url = '';
     var apiCall = '';
     var params = {};
 
-    function setGeojsonPreview(geojsonOutput) {
-      let geojsonDIV=document.createElement('div');
-      geojsonDIV.id='geojson';
-      geojsonDIV.classList.add('user-select-none');       
-      geojsonDIV.appendChild(document.createElement("pre")).innerHTML = syntaxHighlight(JSON.stringify(geojsonOutput, undefined, 2));
-      previewGeojsonBtn.setAttribute('data-content', geojsonDIV.outerHTML);
-    }
-// await new Promise((resolve, reject) => setTimeout(resolve, 150));
     function setRouteInstructions(routeInstructions) {
       let route_instructionsDIV=document.createElement('div');
       route_instructionsDIV.route_instructions='geojson';
@@ -154,10 +146,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     toggleInfoPanel.addEventListener('click', (evt)=> {
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
-        toggleInfoPanel.innerHTML='<span class="emoji">🔼</span>';
+        toggleInfoPanel.innerHTML='△';
       } else {
         searchbarElement.classList.add('expand');
-        toggleInfoPanel.innerHTML='<span class="emoji">🔽</span>';
+        toggleInfoPanel.innerHTML='▽';
       }
     });
     
@@ -178,18 +170,13 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       await new Promise((resolve, reject) => setTimeout(resolve, 150));
       map.invalidateSize();
     });
-
     resizeComponents();
 
     exportBtn.addEventListener('click', () => {
       if (!window.Blob) {;
         alert('Your browser does not support HTML5 "Blob" function required to save a file.');
       } else {
-        let geojsonHTMLStr=previewGeojsonBtn.getAttribute('data-content');
-        let tempDIV=document.createElement('div');
-        tempDIV.innerHTML=geojsonHTMLStr;
-        let geojsonStr=tempDIV.innerText;
-        let textblob = new Blob([geojsonStr], {
+        let textblob = new Blob([geojsonOutputStr], {
             type: 'application/json'
         });
         let dwnlnk = document.createElement('a');
@@ -201,8 +188,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     });
 
-    const playSymbol='<small class="emoji">🔊</small>';
-    const pauseSymbol='<small class="emoji">🔇</small>';
+    const playSymbol='🕪';
+    const pauseSymbol='🔇';
 
     speakBtn.addEventListener('click', (evt) => {
       let isPaused=$().articulate('isPaused');
@@ -226,7 +213,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     });
 
     const popoverTargets = document.querySelectorAll('[data-content]');
-
     Array.from(popoverTargets).map(
       popTarget => new BSN.Popover(popTarget, {
         placement: 'right',
@@ -295,7 +281,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       route_instructions_hidden.innerHTML='';
 
       route_instructions_btn.setAttribute('data-content','<div id="route_instructions" class="small user-select-none"></div>');
-      previewGeojsonBtn.setAttribute('data-content','<div id="geojson" class=" user-select-none"></div>');
+      geojsonOutputStr='';
     }
 
     resetMapBtn.addEventListener('click', (evt) => {
@@ -427,7 +413,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     });
     
     const antpathSettings={
-      'delay': 400,
+      'delay': 600,
       'dashArray': [10, 20],
       'weight': 5,
       'color': '#0000FF',
@@ -794,7 +780,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
       route_options.innerHTML=controlHtmlStr;
       
-      setGeojsonPreview(geojsonOutput);
+      geojsonOutputStr=JSON.stringify(geojsonOutput);
 
       let commands = document.getElementsByClassName("leaflet-control-layers-selector");
       for(let c in commands) {
@@ -895,7 +881,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       route_info.innerHTML=routeInfo;
 
       route_options.innerHTML=controlHtmlStr;
-      setGeojsonPreview(geojsonOutput);
+      geojsonOutputStr=JSON.stringify(geojsonOutput);
 
       let commands = document.getElementsByClassName("leaflet-control-layers-selector");
       for(let c in commands) {
@@ -994,7 +980,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       route_info.innerHTML=routeInfo;
       route_options.innerHTML=controlHtmlStr;
-      setGeojsonPreview(geojsonOutput);
+      geojsonOutputStr=JSON.stringify(geojsonOutput);
 
       let commands = document.getElementsByClassName("leaflet-control-layers-selector");
       for(let c in commands) {
@@ -1124,7 +1110,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     }
 
-    const addressPatterns={" Ably ":" Assembly "," Admin ":" Administration "," Apt ":" Apartment "," Apts ":" Apartments "," Ave ":" Avenue "," Aye ":" Ayer Rajah Expressway "," Bke ":" Bukit Timah Expressway "," Bldg ":" Building "," Blk ":" Block "," Blks ":" Blocks "," Blvd ":" Boulevard "," Bo ":" Branch Office "," Br ":" Branch "," Bt ":" Bukit "," Budd ":" Buddhist "," Cath ":" Cathedral "," Cbd ":" Central Business District "," Cc ":" Community Centre/Club "," Ch ":" Church "," Chbrs ":" Chambers "," Cine ":" Cinema "," Cines ":" Cinemas "," Cl ":" Close "," Clubhse ":" Clubhouse "," Condo ":" Condominium "," Cp ":" Carpark "," Cplx ":" Complex "," Cres ":" Crescent "," Ct ":" Court "," Cte ":" Central Expressway "," Ctr ":" Centre "," Ctr/Apts ":" Centre/Apartments "," Ctrl ":" Central "," C'Wealth ":" Commonwealth "," Dept ":" Department "," Devt ":" Development "," Div ":" Division "," Dr ":" Drive "," Ecp ":" East Coast Expressway "," Edn ":" Education "," Engrg ":" Engineering "," Env ":" Environment "," Erp ":" Electronic Road Pricing "," Est ":" Estate "," E'Way ":" Expressway "," Fb ":" Food Bridge "," Fc ":" Food Centre "," Fty ":" Factory "," Gdn ":" Garden "," Gdns ":" Gardens "," Govt ":" Government "," Gr ":" Grove "," Hosp ":" Hospital "," Hqr ":" Headquarter "," Hqrs ":" Headquarters "," Hs ":" Historic Site "," Hse ":" House "," Hts ":" Heights "," Ind ":" Industrial "," Inst ":" Institute "," Instn ":" Institution "," Intl ":" International "," Jc ":" Junior Colleges "," Jln ":" Jalan "," Jnr ":" Junior "," Kg ":" Kampong "," Kje ":" Kranji Expressway "," Km ":" Kilometre "," Kpe ":" Kallang Paya Lebar Expressway "," Lib ":" Library "," Lk ":" Link "," Lor ":" Lorong "," Mai ":" Maisonette "," Mais ":" Maisonettes "," Man ":" Mansion "," Mans ":" Mansions "," Mce ":" Marina Coastal Expressway "," Met ":" Metropolitan "," Meth ":" Methodist "," Min ":" Ministy "," Mjd ":" Masjid "," Mkt ":" Market "," Mt ":" Mount "," Natl ":" National "," Npc ":" Neighbourhood Police Centres "," Npp ":" Neighbourhood Police Posts "," Nth ":" North "," O/S ":" Open Space "," P ":" Pulau "," P/G ":" Playground "," Pie ":" Pan Island Expressway "," Pk ":" Park "," Pl ":" Place "," Poly ":" Polyclinic "," Presby ":" Presbyterian "," Pri ":" Primary "," Pt ":" Point "," Rd ":" Road "," Redevt ":" Redevelopment "," S ":" Sungei "," Sch ":" School "," Sec ":" Secondary "," Sle ":" Seletar Expressway "," S'Pore ":" Singapore "," Sq ":" Square "," St ":" Street "," St. ":" Saint "," Sth ":" South "," Stn ":" Station "," Tc ":" Town Council "," Tech ":" Technical "," Ter ":" Terrace "," Tg ":" Tanjong "," Townhse ":" Townhouse "," Tpe ":" Tampines Expressway "," U/C ":" Under Construction "," Upp ":" Upper "," Voc ":" Vocational "," Warehse ":" Warehouse "," Hl ":" Hill "," Expy ":" Expressway "," Brg ":" Bridge "," Pk":" Park "," Terr ":" Terrace "," Twr ":" Tower "," Int ":" Interchange "," Ln ":" Lane "," Hwy ":" Highway "," S'Goon ":" Serangoon "," Amk ":" Ang Mo Kio "," Opp ":" Opposite "," Bef ":" Before "," Fac ":" Faculty "," Aft ":" After "," Pr ":" Primary "," Coll ":" College "," Temp ":" Temporary "," Road N ":" Road North "," Road E ":" Road East "," Road S ":" Road South "," Road W ":" Road West "};
+    const addressPatterns={" Ably ":" Assembly "," Admin ":" Administration "," Apt ":" Apartment "," Apts ":" Apartments "," Ave ":" Avenue "," Aye ":" Ayer Rajah Expressway "," Bke ":" Bukit Timah Expressway "," Bldg ":" Building "," Blk ":" Block "," Blks ":" Blocks "," Blvd ":" Boulevard "," Bo ":" Branch Office "," Br ":" Branch "," Bt ":" Bukit "," Budd ":" Buddhist "," Cath ":" Cathedral "," Cbd ":" Central Business District "," Cc ":" Community Centre/Club "," Ch ":" Church "," Chbrs ":" Chambers "," Cine ":" Cinema "," Cines ":" Cinemas "," Cl ":" Close "," Clubhse ":" Clubhouse "," Condo ":" Condominium "," Cp ":" Carpark "," Cplx ":" Complex "," Cres ":" Crescent "," Ct ":" Court "," Cte ":" Central Expressway "," Ctr ":" Centre "," Ctr/Apts ":" Centre/Apartments "," Ctrl ":" Central "," C'Wealth ":" Commonwealth "," Dept ":" Department "," Devt ":" Development "," Div ":" Division "," Dr ":" Drive "," Ecp ":" East Coast Expressway "," Edn ":" Education "," Engrg ":" Engineering "," Env ":" Environment "," Erp ":" Electronic Road Pricing "," Est ":" Estate "," E'Way ":" Expressway "," Fb ":" Food Bridge "," Fc ":" Food Centre "," Fty ":" Factory "," Gdn ":" Garden "," Gdns ":" Gardens "," Govt ":" Government "," Gr ":" Grove "," Hosp ":" Hospital "," Hqr ":" Headquarter "," Hqrs ":" Headquarters "," Hs ":" Historic Site "," Hse ":" House "," Hts ":" Heights "," Ind ":" Industrial "," Inst ":" Institute "," Instn ":" Institution "," Intl ":" International "," Jc ":" Junior Colleges "," Jln ":" Jalan "," Jnr ":" Junior "," Kg ":" Kampong "," Kje ":" Kranji Expressway "," Km ":" Kilometre "," Kpe ":" Kallang Paya Lebar Expressway "," Lib ":" Library "," Lk ":" Link "," Lor ":" Lorong "," Mai ":" Maisonette "," Mais ":" Maisonettes "," Man ":" Mansion "," Mans ":" Mansions "," Mce ":" Marina Coastal Expressway "," Met ":" Metropolitan "," Meth ":" Methodist "," Min ":" Ministy "," Mjd ":" Masjid "," Mkt ":" Market "," Mt ":" Mount "," Natl ":" National "," Npc ":" Neighbourhood Police Centres "," Npp ":" Neighbourhood Police Posts "," Nth ":" North "," O/S ":" Open Space "," P ":" Pulau "," P/G ":" Playground "," Pie ":" Pan Island Expressway "," Pk ":" Park "," Pl ":" Place "," Poly ":" Polyclinic "," Presby ":" Presbyterian "," Pri ":" Primary "," Pt ":" Point "," Rd ":" Road "," Redevt ":" Redevelopment "," S ":" Sungei "," Sch ":" School "," Sec ":" Secondary "," Sle ":" Seletar Expressway "," S'Pore ":" Singapore "," Sq ":" Square "," St ":" Street "," St. ":" Saint "," Sth ":" South "," Stn ":" Station "," Tc ":" Town Council "," Tech ":" Technical "," Ter ":" Terrace "," Tg ":" Tanjong "," Townhse ":" Townhouse "," Tpe ":" Tampines Expressway "," U/C ":" Under Construction "," Upp ":" Upper "," Voc ":" Vocational "," Warehse ":" Warehouse "," Hl ":" Hill "," Expy ":" Expressway "," Brg ":" Bridge "," Pk":" Park "," Terr ":" Terrace "," Twr ":" Tower "," Int ":" Interchange "," Ln ":" Lane "," Hwy ":" Highway "," S'Goon ":" Serangoon "," Amk ":" Ang Mo Kio "," Opp ":" Opposite "," Bef ":" Before "," Fac ":" Faculty "," Aft ":" After "," Pr ":" Primary "," Coll ":" College "," Temp ":" Temporary "," Road N ":" Road North "," Road E ":" Road East "," Road S ":" Road South "," Road W ":" Road West "," Rd ":" Road "};
 
     function transformAbbrToOrig(origText) {
         let intrText=' '+origText.toLowerCase()+' ';
