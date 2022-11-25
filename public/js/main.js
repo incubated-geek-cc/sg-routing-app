@@ -20,7 +20,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     const toCamelCase = (str) => ( (str.toLowerCase()).replace(/\w+/g, ((str) => ( str.charAt(0).toUpperCase()+str.substr(1) ).replace(/\r/g, "")) ) );
     const basemapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-    const attributionStr= "";
+    const attributionStr= "<span class='p-2'>© Powered by <a href='https://leafletjs.com/SlavaUkraini/reference.html' target='_blank'><svg class='selection-side-icon icon icon-leaflet'><use xlink:href='symbol-defs.svg#icon-leaflet'></use></svg> Leaflet</a> | © <a href='https://carto.com/attributions' target='_blank'> CARTO</a> by <a href='http://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a></span>";
 
     let basemapLayer = L.tileLayer(basemapUrl, {
       detectRetina: true,
@@ -133,12 +133,13 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       });
     }
 
+    var routeType=0;
     const routeTypes=[
       { 'OneMap': 'drive', 'Graphhopper': 'car', 'HERE': 'car'},
       { 'OneMap': 'walk', 'Graphhopper': 'foot', 'HERE': 'pedestrian' },
       { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'HERE': 'bicycle'}
     ];
-    var routeType=0;
+    const routeIcon=["<svg class='selection-side-icon icon icon-driving'><use xlink:href='symbol-defs.svg#icon-driving'></use></svg>","<svg class='selection-side-icon icon icon-walking'><use xlink:href='symbol-defs.svg#icon-walking'></use></svg>","<svg class='selection-side-icon icon icon-cycling'><use xlink:href='symbol-defs.svg#icon-cycling'></use></svg>"];
 
     const searchbarElement=document.getElementById('searchbar');
     const toggleInfoPanel=document.getElementById('toggleInfoPanel');
@@ -599,12 +600,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=destinationName;
 
       let routeInfo = "";
-      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
-      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
-      routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + routeObj["time_seconds"]%60 + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + toCamelCase(name) + '</div>';
+
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+
+      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
 
       route_info.innerHTML=routeInfo;
       setRouteInstructions(route_instructions);
@@ -686,12 +685,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
-      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
-      routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + time_seconds%60 + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + description + '</div>';
+
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+       
+      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
 
       route_info.innerHTML=routeInfo;
       
@@ -871,12 +868,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
-      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
-      routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + toCamelCase(description) + '</div>';
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+       
+      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
+
 
       route_info.innerHTML=routeInfo;
 
@@ -971,12 +966,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div><b>Route Type:</b> ' + toCamelCase(routeTypes[routeType][serviceProvider]) + '</div>';
-      routeInfo+='<div><b>From:</b> ' + toCamelCase(start_point) + ' <img src="img/origin.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>To:</b> ' + toCamelCase(end_point) + ' <img src="img/destination.png" class="selection-side-icon" /></div>';
-      routeInfo+='<div><b>Total Distance:</b> ' + parseFloat(distance_metres/1000).toFixed(2) + ' km</div>';
-      routeInfo+='<div><b>Total Time:</b> ' + parseInt(time_seconds/60) + ' min ' + parseInt(time_seconds%60) + ' s</div>';
-      routeInfo+='<div><b>Description:</b> ' + toCamelCase(description) + '</div>';
+
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+       
+      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
 
       route_info.innerHTML=routeInfo;
       route_options.innerHTML=controlHtmlStr;

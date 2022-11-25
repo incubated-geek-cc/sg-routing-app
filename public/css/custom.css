@@ -313,6 +313,16 @@ label.form-check-label.mr-2.ml-0 {
   padding: 0.1rem 0.2rem;
 }
 
+#route_info > div.col-6 {
+    font-variant-numeric: proportional-nums;
+    font-family: sans-serif;
+}
+
+#route_info span.text-dark, 
+#route_options {
+  font-family: sans-serif;
+  font-stretch: semi-condensed;
+}
 /*.input-group-prepend {
   margin-right: -1px - 0.125rem;
 }*/
@@ -338,4 +348,9 @@ form.pure-form div.input-group div.input-group-prepend span.input-group-text {
 
 .text-no-break-space {
   white-space: nowrap;
+}
+ 
+#navbarTop,
+#creditsSegment {
+  background: rgb(247 249 250 / 40%);
 }
