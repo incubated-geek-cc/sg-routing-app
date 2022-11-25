@@ -147,10 +147,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     toggleInfoPanel.addEventListener('click', (evt)=> {
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
-        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⯅&nbsp;&nbsp; ';
+        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;◭&nbsp;&nbsp; ';
       } else {
         searchbarElement.classList.add('expand');
-        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⯆&nbsp;&nbsp; ';
+        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⧩&nbsp;&nbsp; ';
       }
     });
     
