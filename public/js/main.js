@@ -189,8 +189,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     });
 
-    const playSymbol=' 🔊 ';
-    const pauseSymbol=' 🔇 ';
+    const playSymbol='🔊';
+    const pauseSymbol='🔇';
 
     speakBtn.addEventListener('click', (evt) => {
       let isPaused=$().articulate('isPaused');
