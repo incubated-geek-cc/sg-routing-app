@@ -95,10 +95,10 @@ body {
   bottom:0;
   transform: translateY(calc(50vh - 50px));
 
-  background-color: rgba(255, 255, 255, .15);
+  background-color: rgba(255, 255, 255, 0);
   backdrop-filter: blur(12px);
 
-  box-shadow: 1px 0 rgb(0 0 0 / 15%);
+  /*box-shadow: 1px 0 rgb(0 0 0 / 15%);*/
   width:320px;
   max-width: 320px;
   overflow:hidden;
@@ -351,6 +351,11 @@ form.pure-form div.input-group div.input-group-prepend span.input-group-text {
 }
  
 #navbarTop,
+#navbarToggler {
+  background: rgb(247 249 250 / 0%);
+  box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+}
+
 #creditsSegment {
-  background: rgb(247 249 250 / 40%);
+  background: rgb(247 249 250 / 0%);
 }

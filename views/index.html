@@ -52,16 +52,16 @@
         <p class='mb-0 p-0'><small class='unicode text-dark'>ᴱˣᵖᵒʳᵗ</small></p>
       </div>
       <div class='m-1 text-center float-left'>
-        <button id="speakBtn" type='button' class="btn btn-sm btn-outline-info rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-left symbol">🕪</button>
+        <button id="speakBtn" type='button' class="btn btn-sm btn-outline-info rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-left symbol"> 🔊 </button>
         <p class='mb-0 p-0'><small class='unicode text-info'>ⱽᵒⁱᶜᵉ</small></p>
       </div>
       <div class='m-1 text-center float-right'>
-        <button id="toggleInfoPanel" type='button' class="btn btn-sm btn-outline-primary rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-right symbol">△</button>
+        <button id="toggleInfoPanel" type="button" class="btn btn-sm btn-outline-primary rounded-circle m-1 pt-1 pb-1 pl-0 pr-0 text-center float-right symbol"> &nbsp;&nbsp;⯅&nbsp;&nbsp; </button>
         <p class='mb-0 p-0'><small class='unicode text-primary'>ᵀᵒᵍᵍˡᵉ</small></p>
       </div>
     </div>
     <div id='sidebar-wrapper' class="w-100 h-100">
-        <div id='navbarTop' class='w-100 p-1 m-0 border' style='box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;'>
+        <div id='navbarTop' class='w-100 p-1 m-0 border'>
           <table class='table border-0 w-100 mb-1 mt-0'>
               <tr class='user-select-none'><td colspan='3' class="text-center border-0 pl-0 pr-0 pt-0 pb-1"></td></tr>
             <tr>
@@ -101,7 +101,7 @@
                 </form>
               </td>
               <th class='text-center border-0 pl-0 pr-0'>
-                <button type='button' id="switch_origin_destination" class="btn btn-sm btn-light border m-0"><span class='symbol'>⇵</span></button>
+                <button type='button' id="switch_origin_destination" class="text-center btn btn-sm btn-light border pt-1 pb-1 pl-1 pr-1 m-0">&nbsp;<span class='symbol'>⇵</span>&nbsp;</button>
               </th>
             </tr>
             <tr class='user-select-none'><td colspan='3' class="text-center border-0 pl-0 pr-0 pt-0 pb-1"></td></tr> 
@@ -125,9 +125,9 @@
           </table>
         </div>
 
-        <div id='navbarToggler' class="w-100 pl-1 pr-1 pt-0 pb-0 m-0 user-select-none border" style='box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;'>
+        <div id='navbarToggler' class="w-100 p-1 m-0 user-select-none">
           <ul class='navbar-nav'>
-            <li class='nav-item pl-1 pr-1 pb-0 pt-0'>
+            <li class='nav-item pl-1 pr-1 pb-1 pt-1'>
               <table class='w-100'>
                 <tr>
                   <td colspan='4'>
@@ -142,7 +142,7 @@
                 <tr>
                   <td colspan='4'>
                     <div id='route_instructions_hidden'></div>
-                    <button id='route_instructions_btn' type='button' class="btn btn-sm bg-light text-black border border-secondary rounded-0 pt-0 pb-0 pr-1 pl-1 text-left w-100" data-toggle="popover" data-title="Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small user-select-none'></div>"><small class='unicode ml-1'><span class='emoji'>👆</span> Select to view all navigation instructions.</small></button>
+                    <button id='route_instructions_btn' type='button' class="btn btn-sm btn-light rounded-pill text-black border pt-1 pb-1 pr-2 pl-2 text-left w-100" data-toggle="popover" data-title="Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small user-select-none'></div>"><small class='unicode ml-1'><span class='emoji'>👆</span> <span class='symbol'>Select to view all navigation instructions.</span></small></button>
                     <hr class='border-0'>
                     <hr class='border-0'>
                     <div id="routeIntructionsCarousel" class="carousel slide small" data-ride="carousel" data-interval="5000" data-touch="true"></div>
@@ -151,8 +151,8 @@
               </table>
             </li>
             <li class='nav-item pl-0 pr-0 pb-0 pt-0'>
-              <div id='creditsSegment' class="alert alert-light small user-select-none w-100 pl-1 pr-1 pt-0 pb-0 m-0 user-select-none" role="alert">
-                <p class="alert-heading mb-1 mt-2"><span class="emoji">❤️</span> <strong class="text-dark">Credits & Acknowledgements</strong></p>
+              <div id='creditsSegment' class="alert alert-light small user-select-none w-100 pl-1 pr-1 pt-0 pb-0 m-0 user-select-none rounded-0 border-0 h-100" role="alert">
+                <p class="alert-heading mb-0 mt-0 pt-1 pb-1"><span class="emoji">❤️</span> <strong class="text-dark">Credits & Acknowledgements</strong></p>
                 <div class='dark'><strong><span class='unicode text-no-break-space'>Ⅰ</span></strong> <small>Routing APIs</small></div>
                 <div class='row no-gutters'>
                   <div class='col-4 text-center'>
@@ -176,7 +176,10 @@
                   </div>
                 </div>
                 <hr>
-                <p class='mb-1 mt-1 small'><span class='symbol mr-1'>─</span>Created by <a href='https://geek-cc.medium.com/' target='_blank'>the Girl with a ribbon</a><span class='ml-1 mr-1 text-no-break-space'><span class='symbol'>ξ(</span><span class='emoji'>🎀</span><span class='symbol'>˶❛◡❛)</span></span></p>
+                <div class='row no-gutters'>
+                  <div class='col-12 small'>
+                    <span class='symbol mr-1'>─</span>Created by <a href='https://geek-cc.medium.com/' target='_blank'>the Girl with a ribbon</a><span class='ml-1 mr-1 text-no-break-space'><span class='symbol'>ξ(</span><span class='emoji'>🎀</span><span class='symbol'>˶❛◡❛)</span>
+                  </div>
               </div>
         </div><!-- navbarToggler -->
       </div> <!--  container-fluid -->

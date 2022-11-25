@@ -147,10 +147,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     toggleInfoPanel.addEventListener('click', (evt)=> {
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
-        toggleInfoPanel.innerHTML='△';
+        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⯅&nbsp;&nbsp; ';
       } else {
         searchbarElement.classList.add('expand');
-        toggleInfoPanel.innerHTML='▽';
+        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⯆&nbsp;&nbsp; ';
       }
     });
     
@@ -189,8 +189,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       }
     });
 
-    const playSymbol='🕪';
-    const pauseSymbol='🔇';
+    const playSymbol=' 🔊 ';
+    const pauseSymbol=' 🔇 ';
 
     speakBtn.addEventListener('click', (evt) => {
       let isPaused=$().articulate('isPaused');
