@@ -1,5 +1,5 @@
 <div align="center">
-  <img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/logo.png' width='96' height='96' alt='logo' />
+  <img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/logo.png' width='96' height='96' alt='logo' />
   <div>sɢᴿᵒᵘᵗᵉʳ</div>
   <h1 dir="auto">SG Routing App</h1>
 
@@ -21,10 +21,10 @@
 ## Features and Screenshots
 
 <p><strong>📱 Mobile View</strong></p>
-<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/mobile_ui.jpg" width="250px" />
+<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/mobile_ui.jpg" width="250px" />
 
 <p><strong>💻 🖥️ On Larger Screens</strong></p>
-<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/non_mobile_ui.jpg" width="800px" />
+<img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/non_mobile_ui.jpg" width="800px" />
 
 <p><strong>📱 Mobile View for all Route Services displayed</strong></p>
 <table>
@@ -37,12 +37,12 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRoute.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/OneMapRouteDetails.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRoute.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/GraphhopperRouteDetails.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRoute.jpg" width="250px" /></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/HereRouteDetails.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/OneMapRoute.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/OneMapRouteDetails.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/GraphhopperRoute.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/GraphhopperRouteDetails.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/HereRoute.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/HereRouteDetails.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
 </table>
@@ -59,17 +59,25 @@
 	</thead>
 	<tbody>
 		<tr>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Direction_Route.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/Reverse_Route_Details.jpg" width="250px" /></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/RouteInstructions.jpg" width="250px" /></td> 
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/ExportGeoJSONData.jpg" width="250px" /></td>
-			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/AttributionList.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/Reverse_Direction_Route.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/Reverse_Route_Details.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/RouteInstructions.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/ExportGeoJSONData.jpg" width="250px" /></td>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/AttributionList.jpg" width="250px" /></td>
 		</tr>
 	</tbody>
 </table>
 
-## 📜 License & Credits
+---
+## ⚠️ Important Note: As of Nov 2022, UI layout has been revamped with all existing functionalities still in place.
 
+📱 Mobile View
+<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_mobile_ui.jpg" width="250px" />
+
+📱 Mobile View (sidebar expanded)
+<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_expanded_mobile_ui.jpg" width="800px" />
+
+## 📜 License & Credits
 <ol>
 	<li>© <a href="https://www.onemap.sg/legal/termsofuse.html" target="_blank">OneMap, by <a href="http://SLA.gov.sg" target="_blank"><abbr title="Singapore Land Authority">SLA</abbr></a></a>
 	<li>© Graphhopper | <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/2.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike 2.0 Generic License</a></li>
