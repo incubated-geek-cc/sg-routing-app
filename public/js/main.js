@@ -20,7 +20,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     const toCamelCase = (str) => ( (str.toLowerCase()).replace(/\w+/g, ((str) => ( str.charAt(0).toUpperCase()+str.substr(1) ).replace(/\r/g, "")) ) );
     const basemapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
-    const attributionStr= "<span class='p-2'>© Powered by <a href='https://leafletjs.com/SlavaUkraini/reference.html' target='_blank'><svg class='selection-side-icon icon icon-leaflet'><use xlink:href='symbol-defs.svg#icon-leaflet'></use></svg> Leaflet</a> | © <a href='https://carto.com/attributions' target='_blank'> CARTO</a> by <a href='http://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap</a></span>";
+    const attributionStr= "";
 
     let basemapLayer = L.tileLayer(basemapUrl, {
       detectRetina: true,
