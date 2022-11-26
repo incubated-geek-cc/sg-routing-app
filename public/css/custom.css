@@ -53,7 +53,7 @@ body {
   width: 100%
 }
 .icon {
-  display: inline-block;
+  display: inline;
   width: 1em;
   height: 1em;
   stroke-width: 0;
@@ -318,8 +318,7 @@ label.form-check-label.mr-2.ml-0 {
     font-family: sans-serif;
 }
 
-#route_info span.text-dark, 
-#route_options {
+.midCaption {
   font-family: sans-serif;
   font-stretch: semi-condensed;
 }
@@ -358,4 +357,15 @@ form.pure-form div.input-group div.input-group-prepend span.input-group-text {
 
 #creditsSegment {
   background: rgb(247 249 250 / 0%);
+}
+
+.navBtn {
+  width:32px;
+  height:32px;
+}
+
+#creditsTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.2rem 0;
 }

@@ -36,30 +36,30 @@
   <body>
     <button id='loaderSignal' class='btn btn-sm btn-default p-0' disabled><span class='spinner-border spinner-border-sm m-1'></span><small>Loading…</small></button>
 
-    <nav id='searchbar' class='p-1 rounded-sm'>
-      
-    <div>
+  <nav id='searchbar' class='p-1 rounded-sm'>
+    <div style='box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;'>
       <div class='ml-1 mr-1 mb-1 mt-2 text-center float-left'>
         <a class='navbar-brand m-0 p-0'></a>
         <p class='mb-0 p-0'><small class='unicode'>sɢᴿᵒᵘᵗᵉʳ</small></p>
       </div>
       <div class='m-1 text-center float-left'>
-        <button id='resetMapBtn' type='button' class='btn btn-sm btn-outline-danger rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-left symbol'>↺</button>
+        <button id='resetMapBtn' type='button' class='btn btn-sm btn-outline-danger rounded-circle m-1 navBtn text-center symbol'>↺</button>
         <p class='mb-0 p-0'><small class='unicode text-danger'>ᴿᵉˢᵉᵗ</small></p>
       </div>
       <div class='m-1 text-center float-left'>
-        <button id="exportBtn" type='button' class="btn btn-sm btn-outline-dark rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-left symbol">💾</button>
+        <button id="exportBtn" type='button' class="btn btn-sm btn-outline-dark rounded-circle m-1 navBtn text-center symbol">💾</button>
         <p class='mb-0 p-0'><small class='unicode text-dark'>ᴱˣᵖᵒʳᵗ</small></p>
       </div>
       <div class='m-1 text-center float-left'>
-        <button id="speakBtn" type='button' class="btn btn-sm btn-outline-info rounded-circle m-1 pt-1 pb-1 pl-2 pr-2 float-left symbol">🔊</button>
+        <button id="speakBtn" type='button' class="btn btn-sm btn-outline-info rounded-circle m-1 navBtn text-center symbol">🔊</button>
         <p class='mb-0 p-0'><small class='unicode text-info'>ⱽᵒⁱᶜᵉ</small></p>
       </div>
       <div class='m-1 text-center float-right'>
-        <button id="toggleInfoPanel" type="button" class="btn btn-sm btn-outline-primary rounded-circle m-1 pt-1 pb-1 pl-0 pr-0 text-center float-right symbol"> &nbsp;&nbsp;◭&nbsp;&nbsp; </button>
+        <button id="toggleInfoPanel" type="button" class="btn btn-sm btn-outline-primary rounded-circle m-1 navBtn text-center symbol">◭</button>
         <p class='mb-0 p-0'><small class='unicode text-primary'>ᵀᵒᵍᵍˡᵉ</small></p>
       </div>
     </div>
+
     <div id='sidebar-wrapper' class="w-100 h-100">
         <div id='navbarTop' class='w-100 p-1 m-0 border'>
           <table class='table border-0 w-100 mb-1 mt-0'>
@@ -101,7 +101,7 @@
                 </form>
               </td>
               <th class='text-center border-0 pl-0 pr-0'>
-                <button type='button' id="switch_origin_destination" class="text-center btn btn-sm btn-light border pt-1 pb-1 pl-1 pr-1 m-0">&nbsp;<span class='symbol'>⇵</span>&nbsp;</button>
+                <button type='button' id="switch_origin_destination" class="btn btn-sm btn-dark text-light rounded-circle m-1 navBtn text-center symbol">⇵</button>
               </th>
             </tr>
             <tr class='user-select-none'><td colspan='3' class="text-center border-0 pl-0 pr-0 pt-0 pb-1"></td></tr> 
@@ -123,7 +123,7 @@
 
 
           </table>
-        </div>
+        </div><!--//navbarTop-->
 
         <div id='navbarToggler' class="w-100 p-1 m-0 user-select-none">
           <ul class='navbar-nav'>
@@ -135,43 +135,48 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan='4'>
+                  <td>
+                    <button id='route_instructions_btn' type='button' class="btn btn-sm btn-light rounded-circle m-1 navBtn text-center emoji" data-toggle="popover" data-title="Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small user-select-none'></div>">🚧</button>
+                  </td>
+                  <td colspan='3'>
                     <div id='route_info' class='small'></div>
                   </td>
                 </tr>
                 <tr>
                   <td colspan='4'>
                     <div id='route_instructions_hidden'></div>
-                    <button id='route_instructions_btn' type='button' class="btn btn-sm btn-light rounded-pill text-black border pt-1 pb-1 pr-2 pl-2 text-left w-100" data-toggle="popover" data-title="Route Navigation" data-dismissible="true" data-placement="right" data-content="<div id='route_instructions' class='small user-select-none'></div>"><small class='unicode ml-1'><span class='emoji'>👆</span> <span class='symbol'>Select to view all navigation instructions.</span></small></button>
-                    <hr class='border-0'>
+                    <p class='midCaption text-no-break-space text-left text-dark symbol mb-0 small'><span class='emoji'>🚦</span> Navigation Route</p>
                     <hr class='border-0'>
                     <div id="routeIntructionsCarousel" class="carousel slide small" data-ride="carousel" data-interval="5000" data-touch="true"></div>
                   </td>
                 </tr>
               </table>
             </li>
-            <li class='nav-item pl-0 pr-0 pb-0 pt-0'>
-              <div id='creditsSegment' class="alert alert-light small user-select-none w-100 pl-1 pr-1 pt-0 pb-0 m-0 user-select-none rounded-0 border-0 h-100" role="alert">
-                <p class="alert-heading mb-0 mt-0 pt-1 pb-1"><span class="emoji">❤️</span> <strong class="text-dark">Credits & Acknowledgements</strong></p>
-                <div class='dark'><strong><span class='unicode text-no-break-space'>Ⅰ</span></strong> <small>Routing APIs</small></div>
+            <li class='nav-item pl-1 pr-1 pb-1 pt-1'>
+              
+
+              <div id='creditsSegment' class="user-select-none w-100 rounded-0 border-0">
+                <p id='creditsTitle' class='text-no-break-space text-left text-dark symbol mb-0'><span class="emoji">❤️</span> <span class='pl-1'>Credits & Acknowledgements</span></p>
+
+                <p class='midCaption text-no-break-space text-left text-dark symbol mb-0 small'>▷ Routing APIs</p>
                 <div class='row no-gutters'>
-                  <div class='col-4 text-center'>
+                  <div class='col-4 text-center text-no-break-space small'>
                     <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg><span class='small'> <a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap</a></span>
                   </div>
-                  <div class='col-4 text-center'>
+                  <div class='col-4 text-center text-no-break-space small'>
                     <svg class='selection-side-icon icon icon-graphhoper'><use xlink:href='symbol-defs.svg#icon-graphhoper'></use></svg> <span class='small'><a href='https://graphhopper.com/maps/' target='_blank'>Graphhopper</a></span>
                   </div>
-                  <div class='col-4 text-center'>
+                  <div class='col-4 text-center text-no-break-space small'>
                     <svg class='selection-side-icon icon icon-here'><use xlink:href='symbol-defs.svg#icon-here'></use></svg> <span class='small'><a href='https://www.here.com/platform/routing' target='_blank'>HERE</a></span>
                   </div>
                 </div>
                 <hr>
-                <div class='dark'><strong><span class='unicode text-no-break-space'>Ⅱ</span> </strong> <small>Geocoding Services</small></div>
+                <p class='midCaption text-no-break-space text-left text-dark symbol mb-0 small'>▷ Geocoding Services</p>
                 <div class='row no-gutters'>
-                  <div class='col-6 text-center'>
+                  <div class='col-6 text-center text-no-break-space small'>
                     <svg class='selection-side-icon icon icon-opencage'><use xlink:href='symbol-defs.svg#icon-opencage'></use></svg> <span class='small'><a href='https://opencagedata.com/credits' target='_blank'>OpenCage</a></span>
                   </div>
-                  <div class='col-6 text-center'>
+                  <div class='col-6 text-center text-no-break-space small'>
                     <svg class='selection-side-icon icon icon-onemap'><use xlink:href='symbol-defs.svg#icon-onemap'></use></svg> <span class='small'><a href='https://www.onemap.gov.sg/docs/#onemap-rest-apis' target='_blank'>OneMap </a>by <a href='http://SLA.gov.sg' target='_blank'><abbr title='Singapore Land Authority'>SLA</abbr></a></span>
                   </div>
                 </div>
@@ -180,10 +185,13 @@
                   <div class='col-12 small'>
                     <span class='symbol mr-1'>─</span>Created by <a href='https://geek-cc.medium.com/' target='_blank'>the Girl with a ribbon</a><span class='ml-1 mr-1 text-no-break-space'><span class='symbol'>ξ(</span><span class='emoji'>🎀</span><span class='symbol'>˶❛◡❛)</span>
                   </div>
-              </div>
-        </div><!-- navbarToggler -->
-      </div> <!--  container-fluid -->
+                </div>
+              </div><!-- creditsSegment -->
+
+            </li>
+        </div><!-- // searchbar wrapper -->
     </nav>
+
     <div id='map'></div>
     <script type='text/javascript' src='js/autocomplete.js'></script>
     <script type='text/javascript' src='js/geocoders.js'></script>

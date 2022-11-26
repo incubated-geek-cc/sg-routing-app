@@ -147,10 +147,10 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     toggleInfoPanel.addEventListener('click', (evt)=> {
       if(searchbarElement.classList.contains('expand')) {
         searchbarElement.classList.remove('expand');
-        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;◭&nbsp;&nbsp; ';
+        toggleInfoPanel.innerHTML='◭';
       } else {
         searchbarElement.classList.add('expand');
-        toggleInfoPanel.innerHTML=' &nbsp;&nbsp;⧩&nbsp;&nbsp; ';
+        toggleInfoPanel.innerHTML='⧩';
       }
     });
     
@@ -601,9 +601,9 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       let routeInfo = "";
 
-      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark midCaption">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark midCaption">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
 
-      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
+      routeInfo+='<div class="row no-gutters w-100"><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-route"><use xlink:href="symbol-defs.svg#icon-route"></use></svg> '+parseFloat(distance_metres/1000).toFixed(2)+' km<span class="symbol">]</span></div><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s<span class="symbol">]</span></div></div>';
 
       route_info.innerHTML=routeInfo;
       setRouteInstructions(route_instructions);
@@ -666,7 +666,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let controlHtmlStr = '';
       controlHtmlStr += '<div>';
       controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
-      controlHtmlStr += '<span> ' + description + '</span>';
+      controlHtmlStr += '<span class="midCaption"> ' + description + '</span>';
       controlHtmlStr += '</div>';
       
       // console.log(routeCounter);
@@ -686,9 +686,9 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       let routeInfo = '';
 
-      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark midCaption">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark midCaption">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
        
-      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
+      routeInfo+='<div class="row no-gutters w-100"><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-route"><use xlink:href="symbol-defs.svg#icon-route"></use></svg> '+parseFloat(distance_metres/1000).toFixed(2)+' km<span class="symbol">]</span></div><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s<span class="symbol">]</span></div></div>';
 
       route_info.innerHTML=routeInfo;
       
@@ -720,7 +720,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         
         controlHtmlStr += "<div>";
         controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
-        controlHtmlStr += "<span> " + toCamelCase(description) + "</span>";
+        controlHtmlStr += "<span class='midCaption'> " + toCamelCase(description) + "</span>";
         controlHtmlStr += "</div>";
 
         // console.log(routeCounter);
@@ -763,7 +763,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
         controlHtmlStr += "<div>";
         controlHtmlStr += "<input id='" + name + "' type='radio' class='leaflet-control-layers-selector' name='routes' value='"+(routeCounter)+"' />";
-        controlHtmlStr += "<span> " + toCamelCase(description) + "</span>";
+        controlHtmlStr += "<span class='midCaption'> " + toCamelCase(description) + "</span>";
         controlHtmlStr += "</div>";
 
         // console.log(routeCounter);
@@ -850,7 +850,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let controlHtmlStr = '';
       controlHtmlStr += '<div>';
       controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
-      controlHtmlStr += '<span> ' + toCamelCase(description) + '</span>';
+      controlHtmlStr += '<span class="midCaption"> ' + toCamelCase(description) + '</span>';
       controlHtmlStr += '</div>';
       
       routes[routeCounter]["name"]=name;
@@ -868,9 +868,9 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_d.value=destinationName;
 
       let routeInfo = '';
-      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark midCaption">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark midCaption">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
        
-      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
+      routeInfo+='<div class="row no-gutters w-100"><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-route"><use xlink:href="symbol-defs.svg#icon-route"></use></svg> '+parseFloat(distance_metres/1000).toFixed(2)+' km<span class="symbol">]</span></div><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s<span class="symbol">]</span></div></div>';
 
 
       route_info.innerHTML=routeInfo;
@@ -948,7 +948,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let controlHtmlStr = '';
       controlHtmlStr += '<div>';
       controlHtmlStr += '<input id="' + name + '" type="radio" class="leaflet-control-layers-selector" name="routes" checked="checked" value="'+routeCounter+'" />';
-      controlHtmlStr += '<span> ' + toCamelCase(description) + '</span>';
+      controlHtmlStr += '<span class="midCaption"> ' + toCamelCase(description) + '</span>';
       controlHtmlStr += '</div>';
       
       routes[routeCounter]["name"]=name;
@@ -967,9 +967,9 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       let routeInfo = '';
 
-      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
+      routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark midCaption">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark midCaption">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
        
-      routeInfo+='<div class="row no-gutters text-center border border-dark border-top border-bottom-0 border-left-0 border-right-0"><div class="col-6 text-secondary mt-1 mb-0">' + "<svg class='selection-side-icon icon icon-route'><use xlink:href='symbol-defs.svg#icon-route'></use></svg> "+parseFloat(distance_metres/1000).toFixed(2) + ' km</div><div class="col-6 text-secondary mt-1 mb-0"><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s</div></div>';
+      routeInfo+='<div class="row no-gutters w-100"><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-route"><use xlink:href="symbol-defs.svg#icon-route"></use></svg> '+parseFloat(distance_metres/1000).toFixed(2)+' km<span class="symbol">]</span></div><div class="col-6 text-dark mt-1 mb-1"><span class="symbol">[</span><svg class="selection-side-icon icon icon-time-check"><use xlink:href="symbol-defs.svg#icon-time-check"></use></svg> ' + parseInt(time_seconds/60) + ' min ' + parseInt((time_seconds%60)) + ' s<span class="symbol">]</span></div></div>';
 
       route_info.innerHTML=routeInfo;
       route_options.innerHTML=controlHtmlStr;
