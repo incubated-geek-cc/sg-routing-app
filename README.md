@@ -75,7 +75,7 @@
 <br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_mobile_ui.jpg" width="250px" />
 
 📱 Mobile View (sidebar expanded)
-<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_expanded_mobile_ui.jpg" width="800px" />
+<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_expanded_mobile_ui.jpg" width="250px" />
 
 ## 📜 License & Credits
 <ol>
