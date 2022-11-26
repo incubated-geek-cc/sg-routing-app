@@ -1,5 +1,5 @@
 <div align="center">
-  <img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/logo.png' width='96' height='96' alt='logo' />
+  <img src='https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/logo.png' width='96' height='96' alt='logo' />
   <div>sɢᴿᵒᵘᵗᵉʳ</div>
   <h1 dir="auto">SG Routing App</h1>
 
@@ -71,11 +71,20 @@
 ---
 ## ⚠️ Important Note: As of Nov 2022, UI layout has been revamped with all existing functionalities still in place.
 
-📱 Mobile View
-<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_mobile_ui.jpg" width="250px" />
-
-📱 Mobile View (sidebar expanded)
-<br/><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_expanded_mobile_ui.jpg" width="250px" />
+<table>
+	<thead>
+		<tr>
+			<th align='center' width='50%'>📱 Mobile View</th>
+			<th align='center' width='50%'>📱 Mobile View (sidebar expanded)</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_mobile_ui.jpg" width="250px" /></td> 
+			<td align='center' valign='bottom'><img src="https://github.com/incubated-geek-cc/sg-routing-app/raw/main/public/img/preview/20221126_sidebar_expanded_mobile_ui.jpg" width="250px" /></td>
+		</tr>
+	</tbody>
+</table>
 
 ## 📜 License & Credits
 <ol>
