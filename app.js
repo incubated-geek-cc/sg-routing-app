@@ -16,6 +16,7 @@ const path = require("path");
 const request = require("request");
 const favicon = require("serve-favicon");
 const engine = require("consolidate");
+const compression = require('compression');
 
 // set up router
 var router = express.Router();
@@ -31,6 +32,8 @@ router.use((req, res, next) => { // router middleware
 });
 
 const app = express();
+// Compress all HTTP responses
+app.use(compression());
 // REGISTER ALL ROUTES -------------------------------
 app.use("/api", router); // all of the routes will be prefixed with /api
 
