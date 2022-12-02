@@ -224,7 +224,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       })
     );
 
-    switch_origin_destination.addEventListener('click', (e) => {
+    switch_origin_destination.addEventListener('click', async(e) => {
       let tempPoint=endPoint;
       endPoint=startPoint;
       startPoint=tempPoint;
@@ -249,6 +249,11 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         await new Promise((resolve, reject) => setTimeout(resolve, 50));
         serviceProviderOption.classList.add('active');
         serviceProvider=serviceProviderOption.value;
+        if(serviceProvider==='HERE') {
+          document.getElementById('routeType2').disabled=true;
+        } else {
+          document.getElementById('routeType2').disabled=false;
+        }
         initParams(startPoint, endPoint);
         execAjax();
       });
@@ -289,11 +294,11 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       resetMap();
       loaderSignal['style']['display']='none';
 
-      startPoint=toCamelCase(initStartPoint);
-      endPoint=toCamelCase(initEndPoint);
+      startPoint=initStartPoint;
+      endPoint=initEndPoint;
 
-      geocoder_o.value=initStartAddr;
-      geocoder_d.value=initEndAddr;
+      geocoder_o.value=toCamelCase(initStartAddr);
+      geocoder_d.value=toCamelCase(initEndAddr);
 
       serviceProvider='OneMap';
       for(let serviceProviderOption of serviceProviderOptions) {
@@ -351,7 +356,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     const maxSuggestion=15; // minus one
     const o_geocoder=new autoComplete({
       selector:'#geocoder_o',
-      minChars:3,
+      minChars:2,
       source: async function(term, suggest){
         term = term.toLowerCase();
         let choices = Object.keys(geocoders);
@@ -369,7 +374,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
           toggleInfoPanel.click();
           map.invalidateSize();
         }
-        await new Promise((resolve, reject) => setTimeout(resolve, 150));
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
         
         suggest(suggestions);
       },
@@ -383,7 +388,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     const d_geocoder=new autoComplete({
       selector:'#geocoder_d',
-      minChars:3,
+      minChars:2,
       source: async function(term, suggest){
         term = term.toLowerCase();
         let choices = Object.keys(geocoders);
@@ -401,7 +406,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
           toggleInfoPanel.click();
           map.invalidateSize();
         }
-        await new Promise((resolve, reject) => setTimeout(resolve, 150));
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
 
         suggest(suggestions);
       },
@@ -417,7 +422,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       'delay': 600,
       'dashArray': [10, 20],
       'weight': 5,
-      'color': '#0000FF',
+      'color': '#000066',
       'pulseColor': '#FFFFFF',
       'paused': false,
       'reverse': false,
@@ -428,7 +433,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let sections=responseObj['routes'][0]['sections'][0];
       let polyline=sections['polyline'];
       let latlngs_1 = decodeFlexiPolyline(polyline).polyline;
-      
+
       map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
         icon: L.icon({      
@@ -445,8 +450,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         })
       });
       map.addLayer(destinationMarker);
-
-      antpathSettings['color']=generateRandomColor();
       let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
       map.addLayer(path_1);
 
@@ -474,8 +477,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
           })
       });
       map.addLayer(destinationMarker);
-
-      antpathSettings['color']=generateRandomColor();
       let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
       map.addLayer(path_1);
 
@@ -487,7 +488,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       let phyroute=responseObj['phyroute'];
       if(typeof phyroute !== 'undefined') {
         let latlngs_2 = polyline.decode(phyroute['route_geometry']);
-        antpathSettings['color']=generateRandomColor();
         let path_2 = L.polyline.antPath(latlngs_2, antpathSettings);
 
         let route_2 = { path: path_2 };
@@ -498,7 +498,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       if(typeof alternativeroute !== 'undefined') {
         alternativeroute=alternativeroute[0];
         let latlngs_3 = polyline.decode(alternativeroute['route_geometry']);
-        antpathSettings['color']=generateRandomColor();
         let path_3 = L.polyline.antPath(latlngs_3, antpathSettings);
 
         let route_3 = {
@@ -530,8 +529,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
           })
       });
       map.addLayer(destinationMarker);
-
-      antpathSettings['color']=generateRandomColor();
       let path_1 = L.polyline.antPath(latlngs_1, antpathSettings);
       map.addLayer(path_1);
 
@@ -593,11 +590,11 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       map.addLayer(path);
 
-      originName=toCamelCase(routeObj["start_point"]);
-      destinationName=toCamelCase(routeObj["end_point"]);
+      originName=toCamelCase(start_point);
+      destinationName=toCamelCase(end_point);
 
-      geocoder_o.value=originName;
-      geocoder_d.value=destinationName;
+      geocoder_o.value=toCamelCase(start_point);
+      geocoder_d.value=toCamelCase(end_point);
 
       let routeInfo = "";
 
@@ -681,8 +678,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       originName=toCamelCase(start_point);
       destinationName=toCamelCase(end_point);
 
-      geocoder_o.value=originName;
-      geocoder_d.value=destinationName;
+      geocoder_o.value=toCamelCase(start_point);
+      geocoder_d.value=toCamelCase(end_point);
 
       let routeInfo = '';
 
@@ -864,8 +861,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       originName=toCamelCase(start_point);
       destinationName=toCamelCase(end_point);
 
-      geocoder_o.value=originName;
-      geocoder_d.value=destinationName;
+      geocoder_o.value=toCamelCase(start_point);
+      geocoder_d.value=toCamelCase(end_point);
 
       let routeInfo = '';
       routeInfo+='<div class="w-100 text-center mt-1 mb-1 pt-1 pb-1"><img src="img/origin.png" class="selection-side-icon" /> <span class="text-dark midCaption">' + toCamelCase(start_point) + '</span><span class="symbol ml-1 mr-1">⇢'+routeIcon[routeType]+'⇢</span><span class="text-dark midCaption">' +toCamelCase(end_point) + '</span> <img src="img/destination.png" class="selection-side-icon" /></div>';
@@ -889,8 +886,16 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     async function renderHEREGeojson(responseObj) {
       let sections=responseObj['routes'][0]['sections'][0];
+
+      // let arrival = ['arrival']['place']['location'];
+      // let arrivalLatLng = [arrival['lat'],arrival['lng']];
+
+      // let departure = ['departure']['place']['location'];
+      // let departureLatLng = [departure['lat'],departure['lng']];
+
       let polyline=sections['polyline'];
       let latlngs = decodeFlexiPolyline(polyline).polyline;
+      // console.log(latlngs);
 
       let routeCounter=0;
       let geojsonOutput={
@@ -962,8 +967,8 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       originName=toCamelCase(start_point);
       destinationName=toCamelCase(end_point);
 
-      geocoder_o.value=originName;
-      geocoder_d.value=destinationName;
+      geocoder_o.value=toCamelCase(start_point);
+      geocoder_d.value=toCamelCase(end_point);
 
       let routeInfo = '';
 
@@ -995,10 +1000,16 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     }
     for(let routeTypeOption of routeTypeOptions) {
       routeTypeOption.addEventListener('click', async(e) => {
+        routeType=parseInt(routeTypeOption.value);
+        // if(routeType===2) {
+        //   document.getElementById('serviceProvider2').disabled=true;
+        // } else {
+        //   document.getElementById('serviceProvider2').disabled=false;
+        // }
         deselectAllRouteTypes();
         await new Promise((resolve, reject) => setTimeout(resolve, 50));
         routeTypeOption.classList.add('active');
-        routeType=parseInt(routeTypeOption.value);
+        
         initParams(startPoint, endPoint);
         execAjax();
       });
@@ -1162,8 +1173,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     initParams(startPoint, endPoint);
     execAjax();
-
-
   });
 }
 
