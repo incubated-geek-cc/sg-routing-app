@@ -249,11 +249,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
         await new Promise((resolve, reject) => setTimeout(resolve, 50));
         serviceProviderOption.classList.add('active');
         serviceProvider=serviceProviderOption.value;
-        if(serviceProvider==='HERE') {
-          document.getElementById('routeType2').disabled=true;
-        } else {
-          document.getElementById('routeType2').disabled=false;
-        }
         initParams(startPoint, endPoint);
         execAjax();
       });
@@ -1001,11 +996,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     for(let routeTypeOption of routeTypeOptions) {
       routeTypeOption.addEventListener('click', async(e) => {
         routeType=parseInt(routeTypeOption.value);
-        // if(routeType===2) {
-        //   document.getElementById('serviceProvider2').disabled=true;
-        // } else {
-        //   document.getElementById('serviceProvider2').disabled=false;
-        // }
         deselectAllRouteTypes();
         await new Promise((resolve, reject) => setTimeout(resolve, 50));
         routeTypeOption.classList.add('active');
@@ -1167,7 +1157,6 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
       routes[routeCounter]['route_instructions']=routeInstructions;
       routeCounter++;
-
       setRouteInstructions(routeInstructions);
     }
 
