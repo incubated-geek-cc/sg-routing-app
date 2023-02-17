@@ -3,11 +3,10 @@
   <div>sɢᴿᵒᵘᵗᵉʳ</div>
   <h1 dir="auto">SG Routing App</h1>
 
-**Rationale of development was for self-exploration. From a macro-perspective, this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers. ✍ Article at:**
+**Rationale to create this pet project is to further explore aspects of routing such as choice of navigation and factors for consideration when duration of journey is derived. From a macro-perspective, this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers. **
 <div align="left">
-	<ol>
-		<li><a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a></li>
-	</ol>
+	✍ Check out the article post for this project!<br>
+	<a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
 </div>
 </div>
 
@@ -85,6 +84,11 @@
 		</tr>
 	</tbody>
 </table>
+<p>— <b>Join me on 📝 <b>Medium</b> at <a href='https://medium.com/@geek-cc' target='_blank'>~ ξ(🎀˶❛◡❛) @geek-cc</a></b></p>
+
+---
+
+#### 🌮 Please buy me a <a href='https://www.buymeacoffee.com/geekcc' target='_blank'>Taco</a>! 😋
 
 ## 📜 License & Credits
 <ol>
