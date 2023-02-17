@@ -3,11 +3,16 @@
   <div>sɢᴿᵒᵘᵗᵉʳ</div>
   <h1 dir="auto">SG Routing App</h1>
 
-**Rationale to create this pet project is to further explore aspects of routing such as choice of navigation and factors for consideration when duration of journey is derived. From a macro-perspective, this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers. **
+**Rationale to create this pet project is to further explore aspects of routing such as choice of navigation and factors for consideration when duration of journey is derived. From a macro-perspective, this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers.**
+
 <div align="left">
-	✍ Check out the article post for this project!<br>
-	<a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
+
+	✍ **Check out article post for this project!**<br>
+	
+	🗦💡🗧<a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
+
 </div>
+<br>
 </div>
 
 📌 Project Status
