@@ -11,9 +11,12 @@
 
 <div align="left">
 
-	**✍Check out this article post for the project!**
+	**✍ Check out this article post for the project!**
 
-	<div><a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a></div>
+</div>
+<div align="left">
+
+<a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
 
 </div>
 </div>
