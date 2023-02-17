@@ -9,20 +9,14 @@
 
 **From a macro-perspective, this serves as a proof-of-concept for showcasing the optimal routes suggested by different map service providers.**
 
-<div align="left">
-
-	**✍ Check out this article post for the project!**
-
 </div>
-<div align="left">
 
-<a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
+✍ Article post for the project
+<br><a href='https://towardsdatascience.com/data-visualisation-of-travel-routes-by-multiple-service-providers-on-web-app-built-with-leafletjs-dee2117647e9' target='_blank'>Data Visualisation of Travel Routes by Multiple Service Providers on Web App— Built with LeafletJS + NodeJS</a>
 
-</div>
-</div>
 
 📌 Project Status
-* <del>Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness</del> (Implemented ✔️ as of Nov 2022)
+<br><del>Currently still WIP. Would eventually finetune its layout for 📱 mobile responsiveness</del> (Implemented ✔️ as of Nov 2022)
 
 🧰  Integrates multiple routing APIs for custom selection and visualisation.
 
