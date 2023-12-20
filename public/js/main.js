@@ -1,7 +1,4 @@
-if (document.readyState === 'complete' || document.readyState !== 'loading' && !document.documentElement.doScroll) {
-  callback();
-} else {
-  document.addEventListener('DOMContentLoaded', async() => {
+document.addEventListener('DOMContentLoaded', async() => {
     console.log('DOMContentLoaded');
     // ======================= MAP =========================
     const minZoomVal=9;
@@ -84,7 +81,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
     var destinationName=null;
 
     var geojsonOutputStr='';
-    var serviceProvider='OneMap';
+    var serviceProvider='Graphhopper'; //'OneMap';
     var url = '';
     var apiCall = '';
     var params = {};
@@ -295,7 +292,7 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
       geocoder_o.value=toCamelCase(initStartAddr);
       geocoder_d.value=toCamelCase(initEndAddr);
 
-      serviceProvider='OneMap';
+      serviceProvider='Graphhopper';//'OneMap';
       for(let serviceProviderOption of serviceProviderOptions) {
         if(serviceProviderOption.value==serviceProvider) {
           serviceProviderOption.click();
@@ -1162,7 +1159,4 @@ if (document.readyState === 'complete' || document.readyState !== 'loading' && !
 
     initParams(startPoint, endPoint);
     execAjax();
-  });
-}
-
-  
+});
