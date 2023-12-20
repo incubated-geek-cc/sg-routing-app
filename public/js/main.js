@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     var destinationName=null;
 
     var geojsonOutputStr='';
-    var serviceProvider='Graphhopper'; //'OneMap';
+    var serviceProvider='OneMap'; //'Graphhopper';
     var url = '';
     var apiCall = '';
     var params = {};
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', async() => {
       geocoder_o.value=toCamelCase(initStartAddr);
       geocoder_d.value=toCamelCase(initEndAddr);
 
-      serviceProvider='Graphhopper';//'OneMap';
+      serviceProvider='OneMap';//'Graphhopper';
       for(let serviceProviderOption of serviceProviderOptions) {
         if(serviceProviderOption.value==serviceProvider) {
           serviceProviderOption.click();
