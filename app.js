@@ -11,7 +11,7 @@ const ONEMAP_PASSWORD = process.env.ONEMAP_PASSWORD;
 
 const GRAPHHOPPER_API_KEY=process.env.GRAPHHOPPER_API_KEY;
 const HERE_API_KEY=process.env.HERE_API_KEY;
-const HERE_API_KEY_BACKUP=process.env.HERE_API_KEY;
+const HERE_API_KEY_BACKUP=process.env.HERE_API_KEY_BACKUP;
 
 const path = require("path");
 const request = require("request");
