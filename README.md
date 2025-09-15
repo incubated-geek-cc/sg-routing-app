@@ -20,7 +20,7 @@
 
 🧰  Integrates multiple routing APIs for custom selection and visualisation.
 
-[**Web App :: Link**](https://sg-routing-app.glitch.me/) &nbsp;&nbsp;&nbsp; [**Web App :: Backup Link**](https://sg-routing-app.onrender.com/) 
+[**Web App :: Link**](https://sg-routing-app.onrender.com/) 
 
 ## Features and Screenshots
 
@@ -36,7 +36,7 @@
 		<tr>
 			<th align='center' colspan='2'>OneMap</th>
 			<th align='center' colspan='2'>Graphhopper</th>
-			<th align='center' colspan='2'>Here</th>
+			<th align='center' colspan='2'>TravelTime</th>
 		</tr>
 	</thead>
 	<tbody>

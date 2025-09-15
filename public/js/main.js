@@ -132,9 +132,9 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     var routeType=0;
     const routeTypes=[
-      { 'OneMap': 'drive', 'Graphhopper': 'car', 'HERE': 'car'},
-      { 'OneMap': 'walk', 'Graphhopper': 'foot', 'HERE': 'pedestrian' },
-      { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'HERE': 'bicycle'}
+      { 'OneMap': 'drive', 'Graphhopper': 'car', 'TravelTime': 'driving' },
+      { 'OneMap': 'walk', 'Graphhopper': 'foot', 'TravelTime': 'walking' },
+      { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'TravelTime': 'cycling'}
     ];
     const routeIcon=["<svg class='selection-side-icon icon icon-driving'><use xlink:href='symbol-defs.svg#icon-driving'></use></svg>","<svg class='selection-side-icon icon icon-walking'><use xlink:href='symbol-defs.svg#icon-walking'></use></svg>","<svg class='selection-side-icon icon icon-cycling'><use xlink:href='symbol-defs.svg#icon-cycling'></use></svg>"];
 
@@ -329,12 +329,16 @@ document.addEventListener('DOMContentLoaded', async() => {
             'profile':routeTypes[routeType][serviceProvider]
           };
           break;
-        case 'HERE':
-          url='api/hereapi/v8/route/json/';
+        case 'TravelTime':
+          url='api/traveltimeapp/v4/route/json/';
+          start=start.split(',');
+          end=end.split(',');
           params = {
-            'origin': start,
-            'destination':end,
-            'routeType':routeTypes[routeType][serviceProvider]
+            'origin_lat': parseFloat(start[0]).toFixed(4),
+            'origin_lng': parseFloat(start[1]).toFixed(4),
+            'destination_lat':parseFloat(end[0]).toFixed(4),
+            'destination_lng':parseFloat(end[1]).toFixed(4),
+            'type':routeTypes[routeType][serviceProvider]
           };
           break;
       }
@@ -421,10 +425,27 @@ document.addEventListener('DOMContentLoaded', async() => {
       'hardwareAccelerated': true
     };
 
-    function renderHERERoutesOnMap(responseObj) {
-      let sections=responseObj['routes'][0]['sections'][0];
-      let polyline=sections['polyline'];
-      let latlngs_1 = decodeFlexiPolyline(polyline).polyline;
+    function dedupeConsecutive(coords, precision = 7) {
+      if (!coords.length) return [];
+
+      const result = [coords[0]]; // always keep first
+      for (let i = 1; i < coords.length; i++) {
+        const [prevLat, prevLng] = result[result.length - 1];
+        const [lat, lng] = coords[i];
+
+        const same = prevLat.toFixed(precision) === lat.toFixed(precision) && prevLng.toFixed(precision) === lng.toFixed(precision);
+
+        if (!same) {
+          result.push(coords[i]);
+        }
+      }
+      return result;
+    }
+
+    function renderTravelTimeRoutesOnMap(responseObj) {
+      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
+      let polyline=sections.flatMap(segment => segment.coords.map(c => [c.lat, c.lng]));
+      let latlngs_1 = dedupeConsecutive(polyline);
 
       map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
@@ -532,7 +553,8 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     async function geocodeLatlng(lat,lng) {
       loaderSignal['style']['display']=loaderSignalCSS;
-      let response=await fetch(`api/opencage/geocode/json/v1/en/${lat}+${lng}`);
+      // /traveltimeapp/geocode/json/v4/:lat/:lng
+      let response=await fetch(`api/traveltimeapp/geocode/json/v4/${lat}/${lng}`);
       let responseObj=await response.json();
       loaderSignal['style']['display']='none';
 
@@ -557,10 +579,10 @@ document.addEventListener('DOMContentLoaded', async() => {
           renderGraphhoperGeojson(responseObj);
           renderGraphhoperRouteInstructions(responseObj);
           break;
-        case 'HERE':
-          renderHERERoutesOnMap(responseObj);
-          renderHEREGeojson(responseObj);
-          renderHERERouteInstructions(responseObj);
+        case 'TravelTime':
+          renderTravelTimeRoutesOnMap(responseObj);
+          renderTravelTimeGeojson(responseObj);
+          renderTravelTimeRouteInstructions(responseObj);
           break;
       }
     }
@@ -619,14 +641,14 @@ document.addEventListener('DOMContentLoaded', async() => {
       if(start_point.length===0) {
         let start_point_arr=startLatLng.split(',');
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['results'][0]['formatted'];
+        start_point=obj['features'][0]['properties']['street'];;
       }
 
       let endLatLng=route_instructions[route_instructions.length-1][3];
       if(end_point.length===0) {
         let end_point_arr=endLatLng.split(',');
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['results'][0]['formatted'];
+        end_point=obj['features'][0]['properties']['street'];;
       }
 
       if(routeType==2) { // cycle
@@ -797,14 +819,14 @@ document.addEventListener('DOMContentLoaded', async() => {
       if(start_point.length===0) {
         let start_point_arr=startLatLng;
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['results'][0]['components']['road'];
+        start_point=obj['features'][0]['properties']['street'];
       }
 
       let endLatLng=latlngs[latlngs.length-1];
       if(end_point.length===0) {
         let end_point_arr=endLatLng;
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['results'][0]['components']['road'];
+        end_point=obj['features'][0]['properties']['street'];
       }
 
       let name = start_point + " through " + end_point;
@@ -876,18 +898,28 @@ document.addEventListener('DOMContentLoaded', async() => {
       }
     } // renderGraphhoperGeojson
 
-    async function renderHEREGeojson(responseObj) {
-      let sections=responseObj['routes'][0]['sections'][0];
 
-      // let arrival = ['arrival']['place']['location'];
-      // let arrivalLatLng = [arrival['lat'],arrival['lng']];
 
-      // let departure = ['departure']['place']['location'];
-      // let departureLatLng = [departure['lat'],departure['lng']];
+   
+    function sumStats(responseObj) {
+      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
+      let total = { distance: 0, travel_time: 0 };
+      let routeCounter=0;
+      let route_instructions=sections;
 
-      let polyline=sections['polyline'];
-      let latlngs = decodeFlexiPolyline(polyline).polyline;
-      // console.log(latlngs);
+      for(let s in sections) {
+        let section = sections[s];
+        total['travel_time']=total['travel_time']+parseInt(section['travel_time']);
+        total['distance']=total['distance']+parseInt(section['distance']);
+      }
+      return total;
+    }
+
+   
+    async function renderTravelTimeGeojson(responseObj) {
+      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
+      let polyline = sections.flatMap(segment => segment.coords.map(c => [c.lat, c.lng]));
+      let latlngs = dedupeConsecutive(polyline);
 
       let routeCounter=0;
       let geojsonOutput={
@@ -896,21 +928,21 @@ document.addEventListener('DOMContentLoaded', async() => {
       };
       let start_point = '';
       let end_point = '';
-      let time_seconds = (sections["travelSummary"]["duration"]);
-      let distance_metres = (sections["travelSummary"]["length"]);
+      let time_seconds = (sumStats(responseObj)['travel_time']);
+      let distance_metres = (sumStats(responseObj)['distance']);
 
       let startLatLng=latlngs[0];
       if(start_point.length===0) {
         let start_point_arr=startLatLng;
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['results'][0]['components']['road'];
+        start_point=obj['features'][0]['properties']['street'];
       }
 
       let endLatLng=latlngs[latlngs.length-1];
       if(end_point.length===0) {
         let end_point_arr=endLatLng;
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['results'][0]['components']['road'];
+        end_point=obj['features'][0]['properties']['street'];
       }
 
       let name = start_point + " through " + end_point;
@@ -979,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', async() => {
           cmd.addEventListener("change", handleCommand, false);
         }
       }
-    } // renderHEREGeojson
+    } // renderTravelTimeGeojson
 
 
     var routeTypeOptions=document.getElementsByClassName('routeType');
@@ -1101,7 +1133,8 @@ document.addEventListener('DOMContentLoaded', async() => {
       }
     }
 
-    const addressPatterns={" Ably ":" Assembly "," Admin ":" Administration "," Apt ":" Apartment "," Apts ":" Apartments "," Ave ":" Avenue "," Aye ":" Ayer Rajah Expressway "," Bke ":" Bukit Timah Expressway "," Bldg ":" Building "," Blk ":" Block "," Blks ":" Blocks "," Blvd ":" Boulevard "," Bo ":" Branch Office "," Br ":" Branch "," Bt ":" Bukit "," Budd ":" Buddhist "," Cath ":" Cathedral "," Cbd ":" Central Business District "," Cc ":" Community Centre/Club "," Ch ":" Church "," Chbrs ":" Chambers "," Cine ":" Cinema "," Cines ":" Cinemas "," Cl ":" Close "," Clubhse ":" Clubhouse "," Condo ":" Condominium "," Cp ":" Carpark "," Cplx ":" Complex "," Cres ":" Crescent "," Ct ":" Court "," Cte ":" Central Expressway "," Ctr ":" Centre "," Ctr/Apts ":" Centre/Apartments "," Ctrl ":" Central "," C'Wealth ":" Commonwealth "," Dept ":" Department "," Devt ":" Development "," Div ":" Division "," Dr ":" Drive "," Ecp ":" East Coast Expressway "," Edn ":" Education "," Engrg ":" Engineering "," Env ":" Environment "," Erp ":" Electronic Road Pricing "," Est ":" Estate "," E'Way ":" Expressway "," Fb ":" Food Bridge "," Fc ":" Food Centre "," Fty ":" Factory "," Gdn ":" Garden "," Gdns ":" Gardens "," Govt ":" Government "," Gr ":" Grove "," Hosp ":" Hospital "," Hqr ":" Headquarter "," Hqrs ":" Headquarters "," Hs ":" Historic Site "," Hse ":" House "," Hts ":" Heights "," Ind ":" Industrial "," Inst ":" Institute "," Instn ":" Institution "," Intl ":" International "," Jc ":" Junior Colleges "," Jln ":" Jalan "," Jnr ":" Junior "," Kg ":" Kampong "," Kje ":" Kranji Expressway "," Km ":" Kilometre "," Kpe ":" Kallang Paya Lebar Expressway "," Lib ":" Library "," Lk ":" Link "," Lor ":" Lorong "," Mai ":" Maisonette "," Mais ":" Maisonettes "," Man ":" Mansion "," Mans ":" Mansions "," Mce ":" Marina Coastal Expressway "," Met ":" Metropolitan "," Meth ":" Methodist "," Min ":" Ministy "," Mjd ":" Masjid "," Mkt ":" Market "," Mt ":" Mount "," Natl ":" National "," Npc ":" Neighbourhood Police Centres "," Npp ":" Neighbourhood Police Posts "," Nth ":" North "," O/S ":" Open Space "," P ":" Pulau "," P/G ":" Playground "," Pie ":" Pan Island Expressway "," Pk ":" Park "," Pl ":" Place "," Poly ":" Polyclinic "," Presby ":" Presbyterian "," Pri ":" Primary "," Pt ":" Point "," Rd ":" Road "," Redevt ":" Redevelopment "," S ":" Sungei "," Sch ":" School "," Sec ":" Secondary "," Sle ":" Seletar Expressway "," S'Pore ":" Singapore "," Sq ":" Square "," St ":" Street "," St. ":" Saint "," Sth ":" South "," Stn ":" Station "," Tc ":" Town Council "," Tech ":" Technical "," Ter ":" Terrace "," Tg ":" Tanjong "," Townhse ":" Townhouse "," Tpe ":" Tampines Expressway "," U/C ":" Under Construction "," Upp ":" Upper "," Voc ":" Vocational "," Warehse ":" Warehouse "," Hl ":" Hill "," Expy ":" Expressway "," Brg ":" Bridge "," Pk":" Park "," Terr ":" Terrace "," Twr ":" Tower "," Int ":" Interchange "," Ln ":" Lane "," Hwy ":" Highway "," S'Goon ":" Serangoon "," Amk ":" Ang Mo Kio "," Opp ":" Opposite "," Bef ":" Before "," Fac ":" Faculty "," Aft ":" After "," Pr ":" Primary "," Coll ":" College "," Temp ":" Temporary "," Road N ":" Road North "," Road E ":" Road East "," Road S ":" Road South "," Road W ":" Road West "," Rd ":" Road "};
+    const addressPatterns={
+      " Ably ":" Assembly "," Admin ":" Administration "," Apt ":" Apartment "," Apts ":" Apartments "," Ave ":" Avenue "," Aye ":" Ayer Rajah Expressway "," Bke ":" Bukit Timah Expressway "," Bldg ":" Building "," Blk ":" Block "," Blks ":" Blocks "," Blvd ":" Boulevard "," Bo ":" Branch Office "," Br ":" Branch "," Bt ":" Bukit "," Budd ":" Buddhist "," Cath ":" Cathedral "," Cbd ":" Central Business District "," Cc ":" Community Centre/Club "," Ch ":" Church "," Chbrs ":" Chambers "," Cine ":" Cinema "," Cines ":" Cinemas "," Cl ":" Close "," Clubhse ":" Clubhouse "," Condo ":" Condominium "," Cp ":" Carpark "," Cplx ":" Complex "," Cres ":" Crescent "," Ct ":" Court "," Cte ":" Central Expressway "," Ctr ":" Centre "," Ctr/Apts ":" Centre/Apartments "," Ctrl ":" Central "," C'Wealth ":" Commonwealth "," Dept ":" Department "," Devt ":" Development "," Div ":" Division "," Dr ":" Drive "," Ecp ":" East Coast Expressway "," Edn ":" Education "," Engrg ":" Engineering "," Env ":" Environment "," Erp ":" Electronic Road Pricing "," Est ":" Estate "," E'Way ":" Expressway "," Fb ":" Food Bridge "," Fc ":" Food Centre "," Fty ":" Factory "," Gdn ":" Garden "," Gdns ":" Gardens "," Govt ":" Government "," Gr ":" Grove "," Hosp ":" Hospital "," Hqr ":" Headquarter "," Hqrs ":" Headquarters "," Hs ":" Historic Site "," Hse ":" House "," Hts ":" Heights "," Ind ":" Industrial "," Inst ":" Institute "," Instn ":" Institution "," Intl ":" International "," Jc ":" Junior Colleges "," Jln ":" Jalan "," Jnr ":" Junior "," Kg ":" Kampong "," Kje ":" Kranji Expressway "," Km ":" Kilometre "," Kpe ":" Kallang Paya Lebar Expressway "," Lib ":" Library "," Lk ":" Link "," Lor ":" Lorong "," Mai ":" Maisonette "," Mais ":" Maisonettes "," Man ":" Mansion "," Mans ":" Mansions "," Mce ":" Marina Coastal Expressway "," Met ":" Metropolitan "," Meth ":" Methodist "," Min ":" Ministy "," Mjd ":" Masjid "," Mkt ":" Market "," Mt ":" Mount "," Natl ":" National "," Npc ":" Neighbourhood Police Centres "," Npp ":" Neighbourhood Police Posts "," Nth ":" North "," O/S ":" Open Space "," P ":" Pulau "," P/G ":" Playground "," Pie ":" Pan Island Expressway "," Pk ":" Park "," Pl ":" Place "," Poly ":" Polyclinic "," Presby ":" Presbyterian "," Pri ":" Primary "," Pt ":" Point "," Rd ":" Road "," Redevt ":" Redevelopment "," S ":" Sungei "," Sch ":" School "," Sec ":" Secondary "," Sle ":" Seletar Expressway "," S'Pore ":" Singapore "," Sq ":" Square "," St ":" Street "," St. ":" Saint "," Sth ":" South "," Stn ":" Station "," Tc ":" Town Council "," Tech ":" Technical "," Ter ":" Terrace "," Tg ":" Tanjong "," Townhse ":" Townhouse "," Tpe ":" Tampines Expressway "," U/C ":" Under Construction "," Upp ":" Upper "," Voc ":" Vocational "," Warehse ":" Warehouse "," Hl ":" Hill "," Expy ":" Expressway "," Brg ":" Bridge "," Pk":" Park "," Terr ":" Terrace "," Twr ":" Tower "," Int ":" Interchange "," Ln ":" Lane "," Hwy ":" Highway "," S'Goon ":" Serangoon "," Amk ":" Ang Mo Kio "," Opp ":" Opposite "," Bef ":" Before "," Fac ":" Faculty "," Aft ":" After "," Pr ":" Primary "," Coll ":" College "," Temp ":" Temporary "," Road N ":" Road North "," Road E ":" Road East "," Road S ":" Road South "," Road W ":" Road West "," Rd ":" Road "};
 
     function transformAbbrToOrig(origText) {
         let intrText=' '+origText.toLowerCase()+' ';
@@ -1119,34 +1152,26 @@ document.addEventListener('DOMContentLoaded', async() => {
         return origText;
     }
 
-    function renderHERERouteInstructions(responseObj) {
-      let sections=responseObj['routes'][0]['sections'][0];
+    function renderTravelTimeRouteInstructions(responseObj) {
+      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
 
       let routeCounter=0;
       let routeInstructions = '';
       routeInstructions += '<table>';
-      let route_instructions=sections['actions'];
+      let route_instructions=sections;
 
       for(let r in route_instructions) {
         let route = route_instructions[r];
-        let routeSeconds=parseInt(route['duration']);
-        let distance_metres=parseInt(route['length']);
+        let routeSeconds=parseInt(route['travel_time']);
+        let distance_metres=parseInt(route['distance']);
 
-        let intrText=route['instruction'];
-
-        let pattern = new RegExp(`. Go for ${distance_metres} m.`, 'g');
-        intrText=intrText.replace(pattern, '');
-        pattern = new RegExp(`. Go for ${(distance_metres/1000).toFixed(1)} km.`, 'g');
-        intrText=intrText.replace(pattern, '');
-        intrText=`${intrText},`;
-
+        let intrText=route['directions'];
         intrText=transformAbbrToOrig(intrText);
-        intrText=intrText.replaceAll(".,", ",");
 
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= toCamelCase(`${intrText} at ${distance_metres} metres, for ${routeSeconds} seconds.`);
+        routeInstructions+= toCamelCase(`${intrText}.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }

@@ -10,8 +10,8 @@ const ONEMAP_EMAIL = process.env.ONEMAP_EMAIL;
 const ONEMAP_PASSWORD = process.env.ONEMAP_PASSWORD;
 
 const GRAPHHOPPER_API_KEY=process.env.GRAPHHOPPER_API_KEY;
-const HERE_API_KEY=process.env.HERE_API_KEY;
-const HERE_API_KEY_BACKUP=process.env.HERE_API_KEY_BACKUP;
+const TRAVEL_TIME_APP_ID=process.env.TRAVEL_TIME_APP_ID;
+const TRAVEL_TIME_API_KEY=process.env.TRAVEL_TIME_API_KEY;
 
 const path = require("path");
 const request = require("request");
@@ -94,6 +94,36 @@ router.get("/opencage/geocode/json/v1/:language/:q", (req, res) => {
   })
 });
 
+
+
+
+// traveltimeapp Geocoding
+router.get("/traveltimeapp/geocode/json/v4/:lat/:lng", (req, res) => {
+  let baseUrl="https://api.traveltimeapp.com/v4/geocoding/reverse?";  // https://api.traveltimeapp.com/v4/geocoding/reverse?lat=1.3066998&lng=103.8314
+  let params=req.params;
+  let fullUrl=concatParams(baseUrl,params);
+  request({ 
+    "url": fullUrl,
+    "method": "GET",
+    "json": true,
+    "headers": {
+      "Accept": "application/json",
+      "Accept-Language": "en-US",
+      "X-Application-Id": TRAVEL_TIME_APP_ID,
+      "X-Api-Key": TRAVEL_TIME_API_KEY
+    }
+  }, (err, response, body) => {
+    if (err || response.statusCode !== 200) {
+      return res.status(500).json({
+        type: "error", 
+        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from TravelTimeApp's Geocoding API."
+      });
+    }
+    res.json(body)
+  })
+});
+
+
 // Onemap Routing API
 router.get("/onemap/directions/json/:routeType/:start/:end", (req, res) => {   
   let baseUrl="https://www.onemap.gov.sg/api/public/routingsvc/route?"; // call onemap routing api via a proxy
@@ -150,21 +180,37 @@ router.get("/graphhopper/route/json/:locale/:point_o/:point_d/:elevation/:profil
 
 
 // https://router.hereapi.com/v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5264,13.3686&return=summary&apikey={YOUR_API_KEY}
-router.get("/hereapi/v8/route/json/:origin/:destination/:transportMode", (req, res) => {
-  let baseUrl="https://router.hereapi.com/v8/routes?";
+// traveltimeapp routing
+router.get("/traveltimeapp/v4/route/json/:origin_lat/:origin_lng/:destination_lat/:destination_lng/:type", (req, res) => {
+  let baseUrl="https://api.traveltimeapp.com/v4/routes?";  
   let params=req.params;
-  params["return"]="polyline,actions,instructions,travelSummary";
-  params["apikey"]=HERE_API_KEY_BACKUP;
+  const DateNow=new Date();
+  const datePart=DateNow.getFullYear();
+  
+  params["departure_time"]=new Date().toJSON();
+  params["app_id"]=TRAVEL_TIME_APP_ID;
+  params["api_key"]=TRAVEL_TIME_API_KEY;
 
   let fullUrl=concatParams(baseUrl,params);
-
-  request({ url: fullUrl }, (err, response, body) => {
+  // console.log(fullUrl);
+  request({ 
+    "url": fullUrl,
+    "method": "GET",
+    "json": true,
+    "headers": {
+      "Accept": "application/json",
+      "Accept-Language": "en-US",
+      "X-Application-Id": TRAVEL_TIME_APP_ID,
+      "X-Api-Key": TRAVEL_TIME_API_KEY
+    }
+  }, (err, response, body) => {
+    // console.log(JSON.stringify(body));
     if (err || response.statusCode !== 200) {
-      return res.status(500).json({ 
+      return res.status(500).json({
         type: "error", 
-        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from HERE's Routing v8 API."
+        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from TravelTimeApp's Routing API."
       });
     }
-    res.json(JSON.parse(body))
+    res.json(body);
   })
 });
