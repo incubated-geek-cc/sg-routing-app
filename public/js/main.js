@@ -15,7 +15,25 @@ document.addEventListener('DOMContentLoaded', async() => {
         renderer: L.svg()
     });
 
-    const toCamelCase = (str) => ( (str.toLowerCase()).replace(/\w+/g, ((str) => ( str.charAt(0).toUpperCase()+str.substr(1) ).replace(/\r/g, "")) ) );
+    const timeSeconds = ((routeSeconds) => {
+      // Convert to minutes and seconds
+      let minutes = Math.floor(routeSeconds / 60);
+      let seconds = Math.round(routeSeconds % 60);
+
+      // Format the output
+      if (minutes > 0 && seconds > 0) {
+        return `${minutes} minutes ${seconds} seconds`;
+      } else if (minutes > 0) {
+        return `${minutes} minutes`;
+      } else {
+        return `${seconds} seconds`;
+      }
+    });
+
+    const toCamelCase = (str) => (typeof str !== 'string' || str === null) ? '' : str.toLowerCase().replace(/\w+/g, (word) => word.charAt(0).toUpperCase() + word.substr(1)).replace(/\r/g, '');
+
+    const getFirstAvailableLocation = (obj) => ['road', 'suburb', 'town', 'neighbourhood'].map(key => obj[key]).find(value => value !== undefined);
+
     const basemapUrl='http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
     const attributionStr= "";
 
@@ -132,9 +150,9 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     var routeType=0;
     const routeTypes=[
-      { 'OneMap': 'drive', 'Graphhopper': 'car', 'TravelTime': 'driving' },
-      { 'OneMap': 'walk', 'Graphhopper': 'foot', 'TravelTime': 'walking' },
-      { 'OneMap': 'cycle', 'Graphhopper': 'bike', 'TravelTime': 'cycling'}
+      { 'OneMap': 'drive', 'Graphhopper': 'car', 'LocationIQ': 'driving' },
+      { 'OneMap': 'walk', 'Graphhopper': 'foot', 'LocationIQ': 'walking' },
+      { 'OneMap': 'cycle', 'Graphhopper': 'bike'}
     ];
     const routeIcon=["<svg class='selection-side-icon icon icon-driving'><use xlink:href='symbol-defs.svg#icon-driving'></use></svg>","<svg class='selection-side-icon icon icon-walking'><use xlink:href='symbol-defs.svg#icon-walking'></use></svg>","<svg class='selection-side-icon icon icon-cycling'><use xlink:href='symbol-defs.svg#icon-cycling'></use></svg>"];
 
@@ -231,25 +249,92 @@ document.addEventListener('DOMContentLoaded', async() => {
     });
 
     const resetMapBtn=document.getElementById('resetMapBtn');
-    const serviceProviderOptions=document.getElementsByClassName('serviceProvider');
+
+    const serviceProviderOptions = document.getElementsByClassName('serviceProvider');
+    const routeTypeOptions = document.getElementsByClassName('routeType');
+
+    const locationIQButton = document.querySelector('button.serviceProvider[value="LocationIQ"]');
+    const cyclingRouteButton = document.querySelector('button.routeType[value="2"]');
 
     function deselectAllServiceProviders() {
-      for(let serviceProviderOption of serviceProviderOptions) {
-        if(serviceProviderOption.classList.contains('active')) {
-            serviceProviderOption.classList.remove('active');
-        }
+      for (let option of serviceProviderOptions) {
+        option.classList.remove('active');
       }
     }
-    for(let serviceProviderOption of serviceProviderOptions) {
-      serviceProviderOption.addEventListener('click', async(e) => {
+
+    function deselectAllRouteTypes() {
+      for (let option of routeTypeOptions) {
+        option.classList.remove('active');
+      }
+    }
+
+    // Update UI logic for enabling/disabling based on current selections
+    function updateDependencyState() {
+      if (serviceProvider === "LocationIQ") {
+        cyclingRouteButton.setAttribute('disabled', true);
+        cyclingRouteButton.classList.add('disabled');
+        if (routeType === 2) {
+          deselectAllRouteTypes();
+          routeType = null;
+        }
+      } else {
+        cyclingRouteButton.removeAttribute('disabled');
+        cyclingRouteButton.classList.remove('disabled');
+      }
+
+      if (routeType === 2) {
+        locationIQButton.setAttribute('disabled', true);
+        locationIQButton.classList.add('disabled');
+        if (serviceProvider === "LocationIQ") {
+          deselectAllServiceProviders();
+          serviceProvider = null;
+        }
+      } else {
+        locationIQButton.removeAttribute('disabled');
+        locationIQButton.classList.remove('disabled');
+      }
+    }
+
+    // Service Provider Selection
+    for (let serviceProviderOption of serviceProviderOptions) {
+      serviceProviderOption.addEventListener('click', async (e) => {
+        if (serviceProviderOption.hasAttribute('disabled')) {
+          return; // prevent selection if disabled
+        }
+        const selectedValue = serviceProviderOption.value;
+
         deselectAllServiceProviders();
-        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         serviceProviderOption.classList.add('active');
-        serviceProvider=serviceProviderOption.value;
+        serviceProvider = selectedValue;
+
+        updateDependencyState(); // check dependencies
         initParams(startPoint, endPoint);
         execAjax();
       });
     }
+
+    // Route Type Selection
+    for (let routeTypeOption of routeTypeOptions) {
+      routeTypeOption.addEventListener('click', async (e) => {
+        if (routeTypeOption.hasAttribute('disabled')) {
+          return; // prevent selection if disabled
+        }
+
+        const selectedValue = parseInt(routeTypeOption.value);
+
+        deselectAllRouteTypes();
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        routeTypeOption.classList.add('active');
+        routeType = selectedValue;
+
+        updateDependencyState(); // check dependencies
+        initParams(startPoint, endPoint);
+        execAjax();
+      });
+    }
+   
+
 
     function removeAllRoutes() {
       if(routes.length>0) { 
@@ -318,7 +403,6 @@ document.addEventListener('DOMContentLoaded', async() => {
           url='api/graphhopper/route/json/';
           start=start.split(',');
           start=parseFloat(start[0]).toFixed(4) + '%2C' + parseFloat(start[1]).toFixed(4);
-
           end=end.split(',');
           end=parseFloat(end[0]).toFixed(4) + '%2C' + parseFloat(end[1]).toFixed(4);
           params = {
@@ -329,17 +413,22 @@ document.addEventListener('DOMContentLoaded', async() => {
             'profile':routeTypes[routeType][serviceProvider]
           };
           break;
-        case 'TravelTime':
-          url='api/traveltimeapp/v4/route/json/';
-          start=start.split(',');
-          end=end.split(',');
-          params = {
-            'origin_lat': parseFloat(start[0]).toFixed(4),
-            'origin_lng': parseFloat(start[1]).toFixed(4),
-            'destination_lat':parseFloat(end[0]).toFixed(4),
-            'destination_lng':parseFloat(end[1]).toFixed(4),
-            'type':routeTypes[routeType][serviceProvider]
-          };
+        case 'LocationIQ':
+          // if(typeof routeTypes[routeType][serviceProvider]==='undefined') {
+
+          // } else {
+            url='api/locationiq/v1/route/json/';
+            start=start.split(',');
+            start=parseFloat(start[1]).toFixed(4) + '%2C' + parseFloat(start[0]).toFixed(4);
+
+            end=end.split(',');
+            end=parseFloat(end[1]).toFixed(4) + '%2C' + parseFloat(end[0]).toFixed(4);
+            params = {
+              'start_point': start,
+              'end_point': end,
+              'type': routeTypes[routeType][serviceProvider]
+            };
+          // }
           break;
       }
       apiCall = '';
@@ -403,7 +492,6 @@ document.addEventListener('DOMContentLoaded', async() => {
           map.invalidateSize();
         }
         await new Promise((resolve, reject) => setTimeout(resolve, 50));
-
         suggest(suggestions);
       },
       onSelect: function(e, term, item) {
@@ -425,27 +513,9 @@ document.addEventListener('DOMContentLoaded', async() => {
       'hardwareAccelerated': true
     };
 
-    function dedupeConsecutive(coords, precision = 7) {
-      if (!coords.length) return [];
-
-      const result = [coords[0]]; // always keep first
-      for (let i = 1; i < coords.length; i++) {
-        const [prevLat, prevLng] = result[result.length - 1];
-        const [lat, lng] = coords[i];
-
-        const same = prevLat.toFixed(precision) === lat.toFixed(precision) && prevLng.toFixed(precision) === lng.toFixed(precision);
-
-        if (!same) {
-          result.push(coords[i]);
-        }
-      }
-      return result;
-    }
-
-    function renderTravelTimeRoutesOnMap(responseObj) {
-      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
-      let polyline=sections.flatMap(segment => segment.coords.map(c => [c.lat, c.lng]));
-      let latlngs_1 = dedupeConsecutive(polyline);
+    function renderLocationIQRoutesOnMap(responseObj) {
+      let encoded=responseObj.routes[0].geometry;
+      let latlngs_1=polyline.decode(encoded);
 
       map.flyToBounds(L.latLngBounds(latlngs_1));
       originMarker=L.marker(latlngs_1[0], {
@@ -554,7 +624,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     async function geocodeLatlng(lat,lng) {
       loaderSignal['style']['display']=loaderSignalCSS;
       // /traveltimeapp/geocode/json/v4/:lat/:lng
-      let response=await fetch(`api/traveltimeapp/geocode/json/v4/${lat}/${lng}`);
+      let response=await fetch(`api/locationiq/geocode/json/v4/${lat}/${lng}`);
       let responseObj=await response.json();
       loaderSignal['style']['display']='none';
 
@@ -579,10 +649,10 @@ document.addEventListener('DOMContentLoaded', async() => {
           renderGraphhoperGeojson(responseObj);
           renderGraphhoperRouteInstructions(responseObj);
           break;
-        case 'TravelTime':
-          renderTravelTimeRoutesOnMap(responseObj);
-          renderTravelTimeGeojson(responseObj);
-          renderTravelTimeRouteInstructions(responseObj);
+        case 'LocationIQ':
+          renderLocationIQRoutesOnMap(responseObj);
+          renderLocationIQGeojson(responseObj);
+          renderLocationIQRouteInstructions(responseObj);
           break;
       }
     }
@@ -641,14 +711,14 @@ document.addEventListener('DOMContentLoaded', async() => {
       if(start_point.length===0) {
         let start_point_arr=startLatLng.split(',');
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['features'][0]['properties']['street'];;
+        start_point=getFirstAvailableLocation(obj.address)
       }
 
       let endLatLng=route_instructions[route_instructions.length-1][3];
       if(end_point.length===0) {
         let end_point_arr=endLatLng.split(',');
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['features'][0]['properties']['street'];;
+        end_point=getFirstAvailableLocation(obj.address)
       }
 
       if(routeType==2) { // cycle
@@ -819,14 +889,14 @@ document.addEventListener('DOMContentLoaded', async() => {
       if(start_point.length===0) {
         let start_point_arr=startLatLng;
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['features'][0]['properties']['street'];
+        start_point=getFirstAvailableLocation(obj.address)
       }
 
       let endLatLng=latlngs[latlngs.length-1];
       if(end_point.length===0) {
         let end_point_arr=endLatLng;
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['features'][0]['properties']['street'];
+        end_point=getFirstAvailableLocation(obj.address)
       }
 
       let name = start_point + " through " + end_point;
@@ -900,26 +970,9 @@ document.addEventListener('DOMContentLoaded', async() => {
 
 
 
-   
-    function sumStats(responseObj) {
-      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
-      let total = { distance: 0, travel_time: 0 };
-      let routeCounter=0;
-      let route_instructions=sections;
-
-      for(let s in sections) {
-        let section = sections[s];
-        total['travel_time']=total['travel_time']+parseInt(section['travel_time']);
-        total['distance']=total['distance']+parseInt(section['distance']);
-      }
-      return total;
-    }
-
-   
-    async function renderTravelTimeGeojson(responseObj) {
-      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
-      let polyline = sections.flatMap(segment => segment.coords.map(c => [c.lat, c.lng]));
-      let latlngs = dedupeConsecutive(polyline);
+    async function renderLocationIQGeojson(responseObj) {
+      let encodedRoute=responseObj.routes[0];
+      let latlngs=polyline.decode(encodedRoute.geometry);
 
       let routeCounter=0;
       let geojsonOutput={
@@ -928,26 +981,27 @@ document.addEventListener('DOMContentLoaded', async() => {
       };
       let start_point = '';
       let end_point = '';
-      let time_seconds = (sumStats(responseObj)['travel_time']);
-      let distance_metres = (sumStats(responseObj)['distance']);
+      let time_seconds = parseFloat(encodedRoute['duration']);
+      let distance_metres =parseFloat(encodedRoute['distance']);
 
       let startLatLng=latlngs[0];
       if(start_point.length===0) {
         let start_point_arr=startLatLng;
         let obj=await geocodeLatlng(start_point_arr[0],start_point_arr[1]);
-        start_point=obj['features'][0]['properties']['street'];
+        start_point=getFirstAvailableLocation(obj.address)
       }
 
       let endLatLng=latlngs[latlngs.length-1];
       if(end_point.length===0) {
         let end_point_arr=endLatLng;
         let obj=await geocodeLatlng(end_point_arr[0],end_point_arr[1]);
-        end_point=obj['features'][0]['properties']['street'];
+        end_point=getFirstAvailableLocation(obj.address)
       }
 
       let name = start_point + " through " + end_point;
       let description = start_point + " through " + end_point;;
 
+      
       if(routeType==2) { // cycle
         name="Cycling Path";
         description="Cycling Path";
@@ -1011,30 +1065,12 @@ document.addEventListener('DOMContentLoaded', async() => {
           cmd.addEventListener("change", handleCommand, false);
         }
       }
-    } // renderTravelTimeGeojson
+    } // renderLocationIQGeojson
 
 
-    var routeTypeOptions=document.getElementsByClassName('routeType');
-    function deselectAllRouteTypes() {
-      for(let routeTypeOption of routeTypeOptions) {
-        if(routeTypeOption.classList.contains('active')) {
-            routeTypeOption.classList.remove('active');
-        }
-      }
-    }
-    for(let routeTypeOption of routeTypeOptions) {
-      routeTypeOption.addEventListener('click', async(e) => {
-        routeType=parseInt(routeTypeOption.value);
-        deselectAllRouteTypes();
-        await new Promise((resolve, reject) => setTimeout(resolve, 50));
-        routeTypeOption.classList.add('active');
-        
-        initParams(startPoint, endPoint);
-        execAjax();
-      });
-    }
+   
 
-
+    
     function renderGraphhoperRouteInstructions(responseObj) {
       let routeCounter=0;
       let routeInstructions = '';
@@ -1049,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= toCamelCase(`${route['text']}, at ${distance_metres} metres, for ${routeSeconds} seconds.`);
+        routeInstructions+= toCamelCase(`${route['text']}, at ${distance_metres} metres, for ${timeSeconds(routeSeconds)}.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }
@@ -1073,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= toCamelCase(`${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`);
+        routeInstructions+= toCamelCase(`${route[9]}, at ${route[2]} metres, for ${timeSeconds(parseInt(route[4]))}.`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }
@@ -1097,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', async() => {
           routeInstructions+= '<tr>';
           routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
           routeInstructions+= '<td>';
-          routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+          routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${timeSeconds(parseInt(route[4]))}.`;
           routeInstructions+= '</td>';
           routeInstructions+= '</tr>';
         }
@@ -1121,7 +1157,7 @@ document.addEventListener('DOMContentLoaded', async() => {
           routeInstructions+= "<th valign='top' class='pr-2'>" + parseInt(parseInt(r)+1) + "</th>";
           routeInstructions+= "<td>";
 
-          routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${( (parseInt(route[4]/60)>0) ? parseInt(route[4]/60)+' minutes' : (route[4]+' seconds') )}.`;
+          routeInstructions+= `${route[9]}, at ${route[2]} metres, for ${timeSeconds(parseInt(route[4]))}.`;
 
           routeInstructions+= "</td>";
           routeInstructions+= "</tr>";
@@ -1152,26 +1188,35 @@ document.addEventListener('DOMContentLoaded', async() => {
         return origText;
     }
 
-    function renderTravelTimeRouteInstructions(responseObj) {
-      let sections=responseObj.results[0].locations[0].properties[0].route.parts;
+    function renderLocationIQRouteInstructions(responseObj) { // serviceProvider2
+      let encodedRoute=responseObj.routes[0];
+      let route_instructions=encodedRoute.legs[0].steps;
 
       let routeCounter=0;
       let routeInstructions = '';
       routeInstructions += '<table>';
-      let route_instructions=sections;
 
       for(let r in route_instructions) {
         let route = route_instructions[r];
-        let routeSeconds=parseInt(route['travel_time']);
-        let distance_metres=parseInt(route['distance']);
+        let routeSeconds=parseFloat(encodedRoute['duration']);
+        let distance_metres=parseFloat(encodedRoute['distance']);
 
-        let intrText=route['directions'];
+        let modifier=route['maneuver']['modifier']; // slight right
+        modifier = typeof modifier=="undefined" ? "" : modifier;
+
+        let type=route['maneuver']['type']; // depart | turn | end of road | straight | fork
+        type = typeof type=="undefined" ? "" : type;
+
+        let name=route['name'];
+        name = ((name.length===0) ? "" : "onto "+name);
+
+        let intrText=`${type} ${modifier} ${name} at ${distance_metres} metres for ${timeSeconds(routeSeconds)}.`;
         intrText=transformAbbrToOrig(intrText);
 
         routeInstructions+= '<tr>';
         routeInstructions+= '<th valign="top" class="pr-2">' + parseInt(parseInt(r)+1) + '</th>';
         routeInstructions+= '<td>';
-        routeInstructions+= toCamelCase(`${intrText}.`);
+        routeInstructions+= toCamelCase(`${intrText}`);
         routeInstructions+= '</td>';
         routeInstructions+= '</tr>';
       }
@@ -1181,7 +1226,7 @@ document.addEventListener('DOMContentLoaded', async() => {
       routeCounter++;
       setRouteInstructions(routeInstructions);
     }
-
     initParams(startPoint, endPoint);
     execAjax();
+
 });

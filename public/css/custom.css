@@ -184,6 +184,12 @@ button.btn.btn-outline-primary.rounded-pill.routeType:hover {
   color:#007bff;
 }
 
+button.btn.btn-outline-primary.rounded-pill.serviceProvider:disabled,
+button.btn.btn-outline-primary.rounded-pill.routeType:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 #route_instructions {
   overflow-x: hidden;
   overflow-y: auto;
@@ -256,11 +262,11 @@ label.form-check-label.mr-2.ml-0 {
   -ms-flex: 0 1 auto;
   flex: 0 1 auto;
   width: 3px;
-  height: 3px;
-  padding: 1.5px;
+  height: 0;
+  padding: 3px 1.5px;
   border-radius: 50%;
   margin-right: 3px;
-  margin-left: 3px;
+  margin-left: 0;
   text-indent: -999px;
   cursor: pointer;
   background-color: currentColor;
@@ -298,6 +304,7 @@ label.form-check-label.mr-2.ml-0 {
   text-align: center;
   opacity: .75;
   transition: opacity .15s ease;
+  z-index: 5000;
 }
 
 #route_instructions_hidden {

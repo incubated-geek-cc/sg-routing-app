@@ -36,7 +36,7 @@
 		<tr>
 			<th align='center' colspan='2'>OneMap</th>
 			<th align='center' colspan='2'>Graphhopper</th>
-			<th align='center' colspan='2'>TravelTime</th>
+			<th align='center' colspan='2'><s>HERE</s> <s>TravelTime</s> LocationIQ</th>
 		</tr>
 	</thead>
 	<tbody>

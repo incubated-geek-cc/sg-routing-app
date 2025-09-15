@@ -10,8 +10,11 @@ const ONEMAP_EMAIL = process.env.ONEMAP_EMAIL;
 const ONEMAP_PASSWORD = process.env.ONEMAP_PASSWORD;
 
 const GRAPHHOPPER_API_KEY=process.env.GRAPHHOPPER_API_KEY;
+
 const TRAVEL_TIME_APP_ID=process.env.TRAVEL_TIME_APP_ID;
 const TRAVEL_TIME_API_KEY=process.env.TRAVEL_TIME_API_KEY;
+
+const LOCATION_IQ_API_TOKEN=process.env.LOCATION_IQ_API_TOKEN;
 
 const path = require("path");
 const request = require("request");
@@ -97,10 +100,13 @@ router.get("/opencage/geocode/json/v1/:language/:q", (req, res) => {
 
 
 
-// traveltimeapp Geocoding
-router.get("/traveltimeapp/geocode/json/v4/:lat/:lng", (req, res) => {
-  let baseUrl="https://api.traveltimeapp.com/v4/geocoding/reverse?";  // https://api.traveltimeapp.com/v4/geocoding/reverse?lat=1.3066998&lng=103.8314
+// Geocoding
+// https://us1.locationiq.com/v1/reverse?key=Your_API_Access_Token&lat=51.50344025&lon=-0.12770820958562096&format=json
+router.get("/locationiq/geocode/json/v4/:lat/:lon", (req, res) => {
+  let baseUrl="https://us1.locationiq.com/v1/reverse?";
   let params=req.params;
+  params["format"]="json";
+  params["key"]=LOCATION_IQ_API_TOKEN;
   let fullUrl=concatParams(baseUrl,params);
   request({ 
     "url": fullUrl,
@@ -108,15 +114,15 @@ router.get("/traveltimeapp/geocode/json/v4/:lat/:lng", (req, res) => {
     "json": true,
     "headers": {
       "Accept": "application/json",
-      "Accept-Language": "en-US",
-      "X-Application-Id": TRAVEL_TIME_APP_ID,
-      "X-Api-Key": TRAVEL_TIME_API_KEY
+      "Accept-Language": "en"
+      // "X-Application-Id": TRAVEL_TIME_APP_ID,
+      // "X-Api-Key": TRAVEL_TIME_API_KEY
     }
   }, (err, response, body) => {
     if (err || response.statusCode !== 200) {
       return res.status(500).json({
         type: "error", 
-        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from TravelTimeApp's Geocoding API."
+        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from LocationIQ's Geocoding API."
       });
     }
     res.json(body)
@@ -181,17 +187,25 @@ router.get("/graphhopper/route/json/:locale/:point_o/:point_d/:elevation/:profil
 
 // https://router.hereapi.com/v8/routes?transportMode=car&origin=52.5308,13.3847&destination=52.5264,13.3686&return=summary&apikey={YOUR_API_KEY}
 // traveltimeapp routing
-router.get("/traveltimeapp/v4/route/json/:origin_lat/:origin_lng/:destination_lat/:destination_lng/:type", (req, res) => {
-  let baseUrl="https://api.traveltimeapp.com/v4/routes?";  
+// https://us1.locationiq.com/v1/directions/driving/-0.12070277,51.514156;-0.12360937,51.507996?key=Your_API_Access_Token&steps=true&alternatives=true&geometries=polyline&overview=full
+https://us1.locationiq.com/v1/directions/driving/{coordinates}?key=<YOUR_ACCESS_TOKEN>&alternatives=false&steps=true&geometries=polyline&overview=full&annotations=true
+// https://us1.locationiq.com/v1/directions/driving/103.831003321455,1.30607515954354;103.805704361472,1.3249477928719?key=pk.60f485bbb02039527d886d1c4dbea7bf&alternatives=true&steps=true&geometries=polyline&overview=full&annotations=true
+router.get("/locationiq/v1/route/json/:start_point/:end_point/:type", (req, res) => {
   let params=req.params;
-  const DateNow=new Date();
-  const datePart=DateNow.getFullYear();
-  
-  params["departure_time"]=new Date().toJSON();
-  params["app_id"]=TRAVEL_TIME_APP_ID;
-  params["api_key"]=TRAVEL_TIME_API_KEY;
+  let baseUrl=`https://us1.locationiq.com/v1/directions/${params["type"]}/${params["start_point"]};${params["end_point"]}?`;  
 
+  delete params["type"];
+  delete params["start_point"];
+  delete params["end_point"];
+  
+  params["key"]=LOCATION_IQ_API_TOKEN;
+  params["alternatives"]="true";
+  params["steps"]="true";
+  params["geometries"]="polyline";
+  params["overview"]="full";
+  params["annotations"]="true";
   let fullUrl=concatParams(baseUrl,params);
+
   // console.log(fullUrl);
   request({ 
     "url": fullUrl,
@@ -199,16 +213,15 @@ router.get("/traveltimeapp/v4/route/json/:origin_lat/:origin_lng/:destination_la
     "json": true,
     "headers": {
       "Accept": "application/json",
-      "Accept-Language": "en-US",
-      "X-Application-Id": TRAVEL_TIME_APP_ID,
-      "X-Api-Key": TRAVEL_TIME_API_KEY
+      "Accept-Language": "en",
+      "X-Api-Key": LOCATION_IQ_API_TOKEN
     }
   }, (err, response, body) => {
     // console.log(JSON.stringify(body));
     if (err || response.statusCode !== 200) {
       return res.status(500).json({
         type: "error", 
-        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from TravelTimeApp's Routing API."
+        message: (err !== null && typeof err.message !== "undefined") ? err.message : "Error. Unabled to retrieve data from LocationIQ's Routing API."
       });
     }
     res.json(body);
