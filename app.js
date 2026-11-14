@@ -322,17 +322,82 @@ function fetchTileWithKey(z, x, y, keyObj) {
   });
 }
 
+// ---- "API KEY REQUIRED" watermark detection (key health check) ----
+// CARTO answers a refused key with HTTP 200 and the real map with "API KEY REQUIRED" drawn over it,
+// so neither the status code nor a fixed fingerprint can catch it. Instead, every few minutes we fetch one
+// test tile three ways: with the key, with no key, and with a junk key. A working key gives a clean tile;
+// a refused key gives exactly the same bytes as the keyless one. Works for any style (voyager, dark, ...).
+const crypto = require("crypto");
+const sha256 = (buf) => crypto.createHash("sha256").update(buf).digest("hex");
+const KEY_CHECK_MS = parseFloat(process.env.BASEMAP_KEY_CHECK_MIN || "15") * 60000;
+const PROBE_TILE = [13, 6458, 4066]; // a Singapore tile
+const recentCacheWrites = []; // { file, keyName, at }: tiles saved since the last check, purged if that key turns out watermarked
+
+function fetchProbe(keyParam) {
+  const [z, x, y] = PROBE_TILE;
+  const url = `https://basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png` + (keyParam ? `?key=${keyParam}` : "");
+  const headers = {};
+  if (keyParam && process.env.ORIGIN && process.env.ORIGIN !== "*") headers["Referer"] = process.env.ORIGIN.replace(/\/?$/, "/");
+  return new Promise((resolve) => {
+    request({ url, encoding: null, timeout: 10000, headers }, (err, response, body) => {
+      const type = response ? String(response.headers["content-type"] || "") : "";
+      resolve(!err && response.statusCode === 200 && type.startsWith("image/") && body && body.length ? sha256(body) : null);
+    });
+  });
+}
+
+async function purgeTilesFrom(keyName, sinceMs) {
+  let n = 0;
+  for (let i = recentCacheWrites.length - 1; i >= 0; i--) {
+    const w = recentCacheWrites[i];
+    if (w.keyName === keyName && w.at >= sinceMs) {
+      await fs.promises.unlink(w.file).catch(() => {});
+      recentCacheWrites.splice(i, 1);
+      n++;
+    }
+  }
+  return n;
+}
+
+async function checkBasemapKeys() {
+  const [keyless, junk] = await Promise.all([fetchProbe(""), fetchProbe("invalid-key-probe")]);
+  const watermarkHashes = new Set([keyless, junk].filter(Boolean));
+  if (!watermarkHashes.size) return console.warn("Basemap key check skipped: CARTO unreachable");
+  for (const k of BASEMAP_KEYS) {
+    const keyed = await fetchProbe(k.key);
+    if (!keyed) continue; // network/HTTP error: the normal failover already handles those
+    const watermarked = watermarkHashes.has(keyed);
+    if (watermarked && !k.watermarked) {
+      const purged = await purgeTilesFrom(k.name, k.lastGoodCheck || 0);
+      console.warn(`Basemap ${k.name} key is getting the 'API KEY REQUIRED' watermark; switched away and purged ${purged} cached tile(s)`);
+    } else if (!watermarked && k.watermarked) {
+      console.log(`Basemap ${k.name} key is clean again`);
+    }
+    k.watermarked = watermarked;
+    k.lastCheck = Date.now();
+    if (!watermarked) k.lastGoodCheck = k.lastCheck;
+  }
+  // forget writes older than every key's last clean check
+  const oldestGood = Math.min(...BASEMAP_KEYS.map((k) => k.lastGoodCheck || 0));
+  while (recentCacheWrites.length && recentCacheWrites[0].at < oldestGood) recentCacheWrites.shift();
+}
+if (BASEMAP_KEYS.length) {
+  checkBasemapKeys();
+  setInterval(checkBasemapKeys, KEY_CHECK_MS);
+}
+
 async function fetchTileUpstream(z, x, y) {
   const now = Date.now();
   // healthy keys first (in order), then rested ones as a last resort
-  const order = BASEMAP_KEYS.filter((k) => k.badUntil <= now).concat(BASEMAP_KEYS.filter((k) => k.badUntil > now));
+  const healthy = (k) => k.badUntil <= now && !k.watermarked;
+  const order = BASEMAP_KEYS.filter(healthy).concat(BASEMAP_KEYS.filter((k) => !healthy(k)));
   let lastErr = new Error("No BASEMAP_API_KEY configured");
   for (const k of order) {
     try {
       const buf = await fetchTileWithKey(z, x, y, k);
       if (activeKeyName !== k.name) { console.warn(`Basemap now using ${k.name} key`); activeKeyName = k.name; }
       k.badUntil = 0;
-      return buf;
+      return { buf, keyName: k.name, watermarked: Boolean(k.watermarked) };
     } catch (e) {
       lastErr = e;
       if (!e.keyProblem) throw e; // tile genuinely missing: don't blame the key or try the other
@@ -347,6 +412,7 @@ async function fetchTileUpstream(z, x, y) {
 router.get("/basemap/status", (req, res) => {
   const now = Date.now();
   res.json({ active: activeKeyName, keys: BASEMAP_KEYS.map((k) => ({ name: k.name, resting: k.badUntil > now,
+    watermarked: Boolean(k.watermarked), last_check: k.lastCheck ? new Date(k.lastCheck).toISOString() : null,
     resting_minutes_left: k.badUntil > now ? Math.ceil((k.badUntil - now) / 60000) : 0 })) });
 });
 
@@ -360,7 +426,8 @@ async function writeTileAtomic(file, buf) {
 function sendTile(res, buf, cacheStatus) {
   res.set({
     "Content-Type": "image/png",
-    "Cache-Control": "public, max-age=604800", // browsers keep tiles 7 days
+    // browsers keep real tiles 7 days; a watermark must not stick in the browser either
+    "Cache-Control": cacheStatus === "WATERMARK" ? "no-store" : "public, max-age=604800",
     "X-Tile-Cache": cacheStatus
   });
   res.send(buf);
@@ -402,14 +469,24 @@ router.get("/basemap/:z/:x/:file", async (req, res) => {
   try {
     let job = inflightTiles.get(key);
     if (!job) {
-      job = fetchTileUpstream(z, x, y).then(async (buf) => {
-        if (useCache) { try { await writeTileAtomic(file, buf); } catch (e) { console.error("Tile cache write failed:", e.message); } }
-        return buf;
+      job = fetchTileUpstream(z, x, y).then(async (result) => {
+        if (useCache && !result.watermarked) {
+          try {
+            await writeTileAtomic(file, result.buf);
+            recentCacheWrites.push({ file, keyName: result.keyName, at: Date.now() });
+            if (recentCacheWrites.length > 50000) recentCacheWrites.shift();
+          } catch (e) { console.error("Tile cache write failed:", e.message); }
+        }
+        return result;
       }).finally(() => inflightTiles.delete(key));
       inflightTiles.set(key, job);
     }
-    const buf = await job;
-    sendTile(res, buf, useCache ? (stale ? "REFRESHED" : "MISS") : "BYPASS");
+    const result = await job;
+    if (result.watermarked) { // every key is watermarked: keep serving the old tile if we have one, else show CARTO's notice uncached
+      if (stale) return sendTile(res, stale, "STALE");
+      return sendTile(res, result.buf, "WATERMARK");
+    }
+    sendTile(res, result.buf, useCache ? (stale ? "REFRESHED" : "MISS") : "BYPASS");
   } catch (e) {
     if (stale) return sendTile(res, stale, "STALE"); // upstream down: serve the old tile
     if (!res.headersSent) res.sendStatus(502);
