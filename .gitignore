@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# cached map tiles from Carto
+tile_cache/

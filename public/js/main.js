@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', async() => {
     const getFirstAvailableLocation = (obj) => ['road', 'suburb', 'town', 'neighbourhood'].map(key => obj[key]).find(value => value !== undefined);
 
 
-    const basemapUrl='https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_58rr_1_c02c0535b93a9a1deb9e3272'; // http://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png
-    const attributionStr= "";
-
+    const basemapUrl='api/basemap/{z}/{x}/{y}.png';
+    const attributionStr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+    
     let basemapLayer = L.tileLayer(basemapUrl, {
       detectRetina: true,
       attribution: attributionStr,
