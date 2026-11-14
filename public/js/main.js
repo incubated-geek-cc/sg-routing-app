@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', async() => {
     const getFirstAvailableLocation = (obj) => ['road', 'suburb', 'town', 'neighbourhood'].map(key => obj[key]).find(value => value !== undefined);
 
 
-    const basemapUrl='api/basemap/{z}/{x}/{y}.png';
+    const basemapUrl='api/basemap/{z}/{x}/{y}.png'; // served by the proxy in app.js (key + cache live on the server)
     const attributionStr='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
-    
+
     let basemapLayer = L.tileLayer(basemapUrl, {
       detectRetina: true,
       attribution: attributionStr,
@@ -198,10 +198,12 @@ document.addEventListener('DOMContentLoaded', async() => {
         });
         let dwnlnk = document.createElement('a');
         dwnlnk.download = 'georoutes_'+getCurrentDatetimeStamp()+'.geojson';
-        if (window.webkitURL != null) {
-            dwnlnk.href = window.webkitURL.createObjectURL(textblob);
-        }
+        const urlApi = window.URL || window.webkitURL; // FIX: webkitURL alone fails in Firefox
+        dwnlnk.href = urlApi.createObjectURL(textblob);
+        document.body.appendChild(dwnlnk);
         dwnlnk.click();
+        document.body.removeChild(dwnlnk);
+        setTimeout(() => urlApi.revokeObjectURL(dwnlnk.href), 1000);
       }
     });
 
@@ -391,6 +393,12 @@ document.addEventListener('DOMContentLoaded', async() => {
 
     function initParams(start, end) {
       resetMap();
+      // FIX: a deselected provider or route type used to crash routeTypes[null][...]
+      if (serviceProvider === null || routeType === null || typeof routeTypes[routeType][serviceProvider] === 'undefined') {
+        apiCall = '';
+        route_info.innerHTML = '<div class="w-100 text-center text-muted midCaption mt-1 mb-1">Select a route type and a service provider.</div>';
+        return;
+      }
       switch(serviceProvider) {
         case 'OneMap':
           url='/api/onemap/directions/json/';
@@ -633,28 +641,44 @@ document.addEventListener('DOMContentLoaded', async() => {
     }
 
     async function execAjax() {
+      if (!apiCall) return; // nothing selected (see initParams)
       loaderSignal['style']['display']=loaderSignalCSS;
-      let response=await fetch(apiCall);
-      let result=await response.text();
-      let responseObj=JSON.parse(result);
-      loaderSignal['style']['display']='none';
+      try { // FIX: an API error used to throw and leave the loader spinning
+        let response=await fetch(apiCall);
+        let result=await response.text();
+        let responseObj;
+        try { responseObj=JSON.parse(result); } catch (_) { throw new Error('The routing service returned an unreadable response.'); }
+        if (!response.ok || responseObj['type']==='error') {
+          throw new Error((typeof responseObj['message']==='string' && responseObj['message']) || `${serviceProvider} could not find a route.`);
+        }
+        loaderSignal['style']['display']='none';
 
-      switch(serviceProvider) {
-        case 'OneMap':
-          renderOneMapRoutesOnMap(responseObj);
-          renderOneMapGeojson(responseObj);
-          renderOneMapRouteInstructions(responseObj);
-          break;
-        case 'Graphhopper':
-          renderGraphhopperRoutesOnMap(responseObj);
-          renderGraphhoperGeojson(responseObj);
-          renderGraphhoperRouteInstructions(responseObj);
-          break;
-        case 'LocationIQ':
-          renderLocationIQRoutesOnMap(responseObj);
-          renderLocationIQGeojson(responseObj);
-          renderLocationIQRouteInstructions(responseObj);
-          break;
+        switch(serviceProvider) {
+          case 'OneMap':
+            renderOneMapRoutesOnMap(responseObj);
+            { const geojsonJob=renderOneMapGeojson(responseObj); // same order as before; await so its errors are caught
+              renderOneMapRouteInstructions(responseObj);
+              await geojsonJob; }
+            break;
+          case 'Graphhopper':
+            renderGraphhopperRoutesOnMap(responseObj);
+            { const geojsonJob=renderGraphhoperGeojson(responseObj);
+              renderGraphhoperRouteInstructions(responseObj);
+              await geojsonJob; }
+            break;
+          case 'LocationIQ':
+            renderLocationIQRoutesOnMap(responseObj);
+            { const geojsonJob=renderLocationIQGeojson(responseObj);
+              renderLocationIQRouteInstructions(responseObj);
+              await geojsonJob; }
+            break;
+        }
+      } catch (err) {
+        console.error(err);
+        route_info.innerHTML = '<div class="w-100 text-center text-danger midCaption mt-1 mb-1"></div>';
+        route_info.firstChild.textContent = 'Route unavailable: ' + (err && err.message ? err.message : 'unknown error') + ' Try another provider.';
+      } finally {
+        loaderSignal['style']['display']='none';
       }
     }
 
@@ -915,7 +939,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         "type": "Feature",
         "geometry": {
           "type":"LineString",
-          "coordinates": latlngs
+          "coordinates": latlngs.map((ll) => [ll[1], ll[0]]) // FIX: GeoJSON is [lng, lat]; polyline.decode gives [lat, lng]
         },
         "properties": {
             "name": name,
@@ -1199,8 +1223,8 @@ document.addEventListener('DOMContentLoaded', async() => {
 
       for(let r in route_instructions) {
         let route = route_instructions[r];
-        let routeSeconds=parseFloat(encodedRoute['duration']);
-        let distance_metres=parseFloat(encodedRoute['distance']);
+        let routeSeconds=parseFloat(route['duration']); // FIX: per-step values, not the whole route's
+        let distance_metres=Math.round(parseFloat(route['distance']));
 
         let modifier=route['maneuver']['modifier']; // slight right
         modifier = typeof modifier=="undefined" ? "" : modifier;
