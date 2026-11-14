@@ -24,6 +24,8 @@ const TILE_CACHE_DIR=process.env.TILE_CACHE_DIR || require("path").join(__dirnam
 const TILE_CACHE_DAYS=parseFloat(process.env.TILE_CACHE_DAYS || "30");     // re-fetch a cached tile after this many days
 const TILE_CACHE_MAX_ZOOM=parseInt(process.env.TILE_CACHE_MAX_ZOOM || "17", 10); // deeper zooms pass through uncached (disk size)
 
+if (!BASEMAP_API_KEY && !process.env.BASEMAP_API_KEY_BACKUP) console.warn("BASEMAP_API_KEY is not set: CARTO tiles will show an 'API KEY REQUIRED' watermark and will not be cached.");
+
 const fs = require("fs");
 const path = require("path");
 const request = require("request");
@@ -292,19 +294,61 @@ const lat2tileY = (lat, z) => {
 };
 const inflightTiles = new Map(); // one upstream fetch per tile, even if many browsers ask at once
 
-function fetchTileUpstream(z, x, y) {
-  const tileUrl = `https://basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png?key=${BASEMAP_API_KEY}`;
+// Primary key first; if CARTO refuses it (403/401/429/5xx, timeout, or a non-image), switch to the backup.
+// A failed key is rested for BASEMAP_KEY_COOLDOWN_MIN minutes, then tried again automatically.
+const BASEMAP_KEYS = [
+  { name: "primary", key: BASEMAP_API_KEY, badUntil: 0 },
+  { name: "backup",  key: process.env.BASEMAP_API_KEY_BACKUP, badUntil: 0 }
+].filter((k) => k.key);
+const BASEMAP_KEY_COOLDOWN_MS = parseFloat(process.env.BASEMAP_KEY_COOLDOWN_MIN || "10") * 60000;
+let activeKeyName = BASEMAP_KEYS.length ? BASEMAP_KEYS[0].name : "none";
+
+function fetchTileWithKey(z, x, y, keyObj) {
+  const tileUrl = `https://basemaps.cartocdn.com/rastertiles/voyager/${z}/${x}/${y}.png?key=${keyObj.key}`;
+  const headers = {};
+  // If your CARTO key has website restrictions, CARTO checks the Referer; server requests have none, so send your site's
+  if (process.env.ORIGIN && process.env.ORIGIN !== "*") headers["Referer"] = process.env.ORIGIN.replace(/\/?$/, "/");
   return new Promise((resolve, reject) => {
-    request({ url: tileUrl, encoding: null, timeout: 10000 }, (err, response, body) => {
-      if (err) return reject(err);
+    request({ url: tileUrl, encoding: null, timeout: 10000, headers }, (err, response, body) => {
+      if (err) return reject(Object.assign(err, { keyProblem: true }));
       const type = String(response.headers["content-type"] || "");
       if (response.statusCode !== 200 || !type.startsWith("image/") || !body || !body.length) {
-        return reject(new Error(`Tile upstream returned ${response.statusCode}`));
+        const e = new Error(`Tile upstream returned ${response.statusCode}`);
+        e.keyProblem = response.statusCode !== 404; // 404 = tile doesn't exist, not the key's fault
+        return reject(e);
       }
       resolve(body);
     });
   });
 }
+
+async function fetchTileUpstream(z, x, y) {
+  const now = Date.now();
+  // healthy keys first (in order), then rested ones as a last resort
+  const order = BASEMAP_KEYS.filter((k) => k.badUntil <= now).concat(BASEMAP_KEYS.filter((k) => k.badUntil > now));
+  let lastErr = new Error("No BASEMAP_API_KEY configured");
+  for (const k of order) {
+    try {
+      const buf = await fetchTileWithKey(z, x, y, k);
+      if (activeKeyName !== k.name) { console.warn(`Basemap now using ${k.name} key`); activeKeyName = k.name; }
+      k.badUntil = 0;
+      return buf;
+    } catch (e) {
+      lastErr = e;
+      if (!e.keyProblem) throw e; // tile genuinely missing: don't blame the key or try the other
+      if (k.badUntil <= now) console.warn(`Basemap ${k.name} key failed (${e.message}); resting it for ${BASEMAP_KEY_COOLDOWN_MS / 60000} min`);
+      k.badUntil = Date.now() + BASEMAP_KEY_COOLDOWN_MS;
+    }
+  }
+  throw lastErr;
+}
+
+// Check which key is in use: GET /api/basemap/status (shows no keys)
+router.get("/basemap/status", (req, res) => {
+  const now = Date.now();
+  res.json({ active: activeKeyName, keys: BASEMAP_KEYS.map((k) => ({ name: k.name, resting: k.badUntil > now,
+    resting_minutes_left: k.badUntil > now ? Math.ceil((k.badUntil - now) / 60000) : 0 })) });
+});
 
 async function writeTileAtomic(file, buf) {
   await fs.promises.mkdir(path.dirname(file), { recursive: true });
@@ -340,7 +384,8 @@ router.get("/basemap/:z/:x/:file", async (req, res) => {
     if (!referer.startsWith(allowedOrigin)) return res.sendStatus(403);
   }
 
-  const useCache = z <= TILE_CACHE_MAX_ZOOM;
+  // Without a key CARTO still returns 200 but with an "API KEY REQUIRED" watermark: never cache those
+  const useCache = BASEMAP_KEYS.length > 0 && z <= TILE_CACHE_MAX_ZOOM;
   const file = path.join(TILE_CACHE_DIR, String(z), String(x), `${y}.png`);
   let stale = null;
 
